@@ -3,6 +3,7 @@
 
 #include "ChoreoPlayerController.h"
 #include "SongTempoController.h"
+#include "DanceCharacter.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -13,4 +14,37 @@ AChoreoPlayerController::AChoreoPlayerController()
 void AChoreoPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
+}
+
+void AChoreoPlayerController::PressedUp()
+{
+	if (SongTempo->IsOnTempo())
+	{
+		DanceCharacter->MoveInDirection(FVector::XAxisVector);
+	}
+}
+
+void AChoreoPlayerController::PressedDown()
+{
+	if (SongTempo->IsOnTempo())
+	{
+		DanceCharacter->MoveInDirection(-FVector::XAxisVector);
+	}
+}
+
+void AChoreoPlayerController::PressedLeft()
+{
+	if (SongTempo->IsOnTempo())
+	{
+		DanceCharacter->MoveInDirection(-FVector::YAxisVector);
+	}
+}
+
+void AChoreoPlayerController::PressedRight()
+{
+	if (SongTempo->IsOnTempo())
+	{
+		DanceCharacter->MoveInDirection(FVector::YAxisVector);
+	}
 }

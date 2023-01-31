@@ -39,7 +39,6 @@ void USongTempoController::CreateAudioImporter()
 			if (Status == ETranscodingStatus::SuccessfulImport)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Successfully imported audio with sound wave %s"), *ImportedSoundWave->GetName());
-				// Here you can handle ImportedSoundWave playback, like "UGameplayStatics::PlaySound2D(GetWorld(), ImportedSoundWave);"
 				ImportedSoundWave->OnGeneratePCMData.AddDynamic(this, &USongTempoController::AudioDataReleased);
 				ImportedSoundWave->SetLooping(true);
 				UGameplayStatics::PlaySound2D(GetWorld(), ImportedSoundWave);
@@ -65,7 +64,7 @@ void USongTempoController::AudioDataReleased(const TArray<float>& AudioFrame)
 
 bool USongTempoController::IsOnTempo()
 {
-	return AudioAnalyzer->IsBeat(7);
+	return AudioAnalyzer->IsBeat(7) || AudioAnalyzer->IsHiHat();
 }
 
 void USongTempoController::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

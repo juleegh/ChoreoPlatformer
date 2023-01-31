@@ -19,9 +19,15 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY()
 	class USongTempoController* SongTempo;
+	UPROPERTY()
+	class ADanceCharacter* DanceCharacter;
 
 public:
 	AChoreoPlayerController();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class USongTempoController* GetSongTempoController() { return SongTempo; }
+	void PressedUp();
+	void PressedDown();
+	void PressedLeft();
+	void PressedRight();
 };
