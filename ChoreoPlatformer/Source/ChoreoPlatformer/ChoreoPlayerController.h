@@ -17,11 +17,9 @@ class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void CreateAudioImporter();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
-	FString SongPath;
 
-private:
-	UPROPERTY()
-	class URuntimeAudioImporterLibrary* RuntimeAudioImporter;
+public:
+	AChoreoPlayerController();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USongTempoController* SongTempo;
 };
