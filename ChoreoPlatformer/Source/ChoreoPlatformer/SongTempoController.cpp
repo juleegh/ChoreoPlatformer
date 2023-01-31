@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "RuntimeAudioImporterLibrary.h"
 #include "Misc/Paths.h"
+#include "AudioAnalysisToolsLibrary.h"
 
 USongTempoController::USongTempoController()
 {
@@ -20,6 +21,7 @@ void USongTempoController::BeginPlay()
 void USongTempoController::CreateAudioImporter()
 {
 	RuntimeAudioImporter = URuntimeAudioImporterLibrary::CreateRuntimeAudioImporter();
+	AudioAnalyzer = UAudioAnalysisToolsLibrary::CreateAudioAnalysisTools();
 
 	if (!IsValid(RuntimeAudioImporter))
 	{
@@ -38,6 +40,8 @@ void USongTempoController::CreateAudioImporter()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Successfully imported audio with sound wave %s"), *ImportedSoundWave->GetName());
 				// Here you can handle ImportedSoundWave playback, like "UGameplayStatics::PlaySound2D(GetWorld(), ImportedSoundWave);"
+				ImportedSoundWave->OnGeneratePCMData.AddDynamic(this, &USongTempoController::AudioDataReleased);
+				ImportedSoundWave->SetLooping(true);
 				UGameplayStatics::PlaySound2D(GetWorld(), ImportedSoundWave);
 			}
 			else
@@ -51,6 +55,17 @@ void USongTempoController::CreateAudioImporter()
 	//C:/Users/Julia/Documents
 	auto dir = FPaths::GameDevelopersDir() + "Sounds/Song.wav";
 	RuntimeAudioImporter->ImportAudioFromFile(dir, EAudioFormat::Auto);
+}
+
+void USongTempoController::AudioDataReleased(const TArray<float>& AudioFrame)
+{
+	AudioAnalyzer->ProcessAudioFrame(AudioFrame);
+}
+
+
+bool USongTempoController::IsOnTempo()
+{
+	return AudioAnalyzer->IsBeat(7);
 }
 
 void USongTempoController::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

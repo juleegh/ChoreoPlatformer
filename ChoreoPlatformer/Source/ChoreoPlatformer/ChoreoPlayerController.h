@@ -7,7 +7,7 @@
 #include "ChoreoPlayerController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
@@ -17,9 +17,11 @@ class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY()
+	class USongTempoController* SongTempo;
 
 public:
 	AChoreoPlayerController();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class USongTempoController* SongTempo;
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	class USongTempoController* GetSongTempoController() { return SongTempo; }
 };

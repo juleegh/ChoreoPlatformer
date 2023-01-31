@@ -20,16 +20,20 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	void CreateAudioImporter();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
-	FString SongPath;
 
 private:
 	UPROPERTY()
 	class URuntimeAudioImporterLibrary* RuntimeAudioImporter;
+	UPROPERTY()
+	class UAudioAnalysisToolsLibrary* AudioAnalyzer;
+
+	UFUNCTION()
+	void AudioDataReleased(const TArray<float>& AudioFrame);
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsOnTempo();
 };
