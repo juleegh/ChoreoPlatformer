@@ -16,14 +16,13 @@ ADanceCharacter::ADanceCharacter()
 void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	TargetLocation = GetActorLocation();
 }
 
 // Called every frame
 void ADanceCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -40,7 +39,8 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ADanceCharacter::MoveInDirection(FVector direction)
 {
-	SetActorLocation(GetActorLocation() + direction * 10);
+	TargetLocation = GetActorLocation() + direction * 100;
+	MoveCharacterToLocation();
 }
 
 

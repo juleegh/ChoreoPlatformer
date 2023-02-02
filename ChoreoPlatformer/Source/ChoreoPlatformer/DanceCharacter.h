@@ -18,6 +18,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(BlueprintReadOnly)
+	FVector TargetLocation;
+	UFUNCTION(BlueprintImplementableEvent)
+	void MoveCharacterToLocation();
+
+private:
 
 public:	
 	// Called every frame
