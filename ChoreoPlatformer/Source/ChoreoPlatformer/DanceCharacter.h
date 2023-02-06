@@ -19,13 +19,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UPROPERTY(BlueprintReadOnly)
-	FVector TargetLocation;
+		FVector TargetLocation;
 	UFUNCTION(BlueprintImplementableEvent)
-	void MoveCharacterToLocation();
+		void MoveCharacterToLocation();
+	UPROPERTY()
+		class UTileDetectorComponent* TileDetector;
 
 private:
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

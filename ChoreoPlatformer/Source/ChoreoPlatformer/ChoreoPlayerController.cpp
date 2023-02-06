@@ -4,6 +4,7 @@
 #include "ChoreoPlayerController.h"
 #include "SongTempoController.h"
 #include "DanceCharacter.h"
+#include "TilemapLevelManager.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -15,6 +16,11 @@ void AChoreoPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
+}
+
+void AChoreoPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void AChoreoPlayerController::PressedUp()

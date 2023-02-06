@@ -30,4 +30,5 @@ public:
 	void PressedDown();
 	void PressedLeft();
 	void PressedRight();
+	virtual void Tick(float DeltaTime) override;
 };
