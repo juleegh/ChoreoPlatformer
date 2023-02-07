@@ -3,16 +3,12 @@
 
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
-#include "TileDetectorComponent.h"
 
 // Sets default values
 ADanceCharacter::ADanceCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
-	//TileDetector->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +22,6 @@ void ADanceCharacter::BeginPlay()
 void ADanceCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	TileDetector->CheckTile();
 }
 
 // Called to bind functionality to input

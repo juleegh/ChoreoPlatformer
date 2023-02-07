@@ -4,12 +4,14 @@
 #include "ChoreoPlayerController.h"
 #include "SongTempoController.h"
 #include "DanceCharacter.h"
+#include "GridCell.h"
 #include "TilemapLevelManager.h"
+#include "TileDetectorComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
 	SongTempo = CreateDefaultSubobject<USongTempoController>(TEXT("Song Tempo"));
-	SongTempo->SetupAttachment(GetRootComponent());
+	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -25,32 +27,39 @@ void AChoreoPlayerController::Tick(float DeltaTime)
 
 void AChoreoPlayerController::PressedUp()
 {
-	if (SongTempo->IsOnTempo())
-	{
-		DanceCharacter->MoveInDirection(FVector::XAxisVector);
-	}
+	CheckMovement(DanceCharacter->GetActorForwardVector());
 }
 
 void AChoreoPlayerController::PressedDown()
 {
-	if (SongTempo->IsOnTempo())
-	{
-		DanceCharacter->MoveInDirection(-FVector::XAxisVector);
-	}
+	CheckMovement(-DanceCharacter->GetActorForwardVector());
 }
 
 void AChoreoPlayerController::PressedLeft()
 {
-	if (SongTempo->IsOnTempo())
-	{
-		DanceCharacter->MoveInDirection(-FVector::YAxisVector);
-	}
+	CheckMovement(-DanceCharacter->GetActorRightVector());
 }
 
 void AChoreoPlayerController::PressedRight()
 {
+	CheckMovement(DanceCharacter->GetActorRightVector());
+}
+
+void AChoreoPlayerController::CheckMovement(FVector Direction)
+{
+	if (TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100) == ETempoTile::Blocker)
+	{
+		return;
+	}
+
+	if (TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100) == ETempoTile::None)
+	{
+		return;
+	}
+
 	if (SongTempo->IsOnTempo())
 	{
-		DanceCharacter->MoveInDirection(FVector::YAxisVector);
+		DanceCharacter->MoveInDirection(Direction);
 	}
 }
+

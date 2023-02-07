@@ -21,9 +21,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		FVector TargetLocation;
 	UFUNCTION(BlueprintImplementableEvent)
-		void MoveCharacterToLocation();
-	UPROPERTY()
-		class UTileDetectorComponent* TileDetector;
+	void MoveCharacterToLocation();
 
 private:
 

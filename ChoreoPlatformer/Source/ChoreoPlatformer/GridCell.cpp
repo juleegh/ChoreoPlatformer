@@ -20,7 +20,6 @@ void AGridCell::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
 bool AGridCell::IsOnTempo()
 {
 	auto Controller = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());

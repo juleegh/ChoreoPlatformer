@@ -20,7 +20,10 @@ protected:
 	UPROPERTY()
 	class USongTempoController* SongTempo;
 	UPROPERTY()
+	class UTileDetectorComponent* TileDetector;
+	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
+	void CheckMovement(FVector Direction);
 
 public:
 	AChoreoPlayerController();

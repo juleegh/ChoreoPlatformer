@@ -9,10 +9,12 @@
 UENUM(BlueprintType)
 enum class ETempoTile : uint8
 {
+	None,
 	Round,
 	White,
 	Black,
-	Half
+	Half,
+	Blocker,
 };
 
 UCLASS()
@@ -35,4 +37,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable)
 	bool IsOnTempo();
+	ETempoTile GetTileType() { return TileType; }
 };

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TilemapLevelManager.h"
 #include "GridCell.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,22 +31,19 @@ void ATilemapLevelManager::LoadMap(UPaperTileMap* TileMap)
 			FString TypeT = "";
 			auto TileInfo = LayerInfo->GetCell(column, row);
 			auto TileType = TileInfo.PackedTileIndex;
-			const FVector DeltaPos = FVector(column * TileInfo.TileSet->GetTileSize().X, row * TileInfo.TileSet->GetTileSize().Y, 0.25) + GetActorLocation();
+			const FVector DeltaPos = GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
 
 			if (TileType == 0)
 			{
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlackTile);
-				SpawnedTile->SetActorLocation(DeltaPos);
+				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlackTile, DeltaPos, GetActorRotation());
 			}
 			else if (TileType == 1)
 			{
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(HalfTile);
-				SpawnedTile->SetActorLocation(DeltaPos);
+				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(HalfTile, DeltaPos, GetActorRotation());
 			}
 			else if (TileType == 2)
 			{
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlockerTile);
-				SpawnedTile->SetActorLocation(DeltaPos);
+				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlockerTile, DeltaPos, GetActorRotation());
 			}
 		}
 	}

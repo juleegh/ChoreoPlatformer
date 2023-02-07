@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GridCell.h"
 #include "TileDetectorComponent.generated.h"
 
 
@@ -15,7 +16,12 @@ class CHOREOPLATFORMER_API UTileDetectorComponent : public UActorComponent
 public:
 	UTileDetectorComponent();
 
+protected:
+	virtual void BeginPlay() override;
+	UPROPERTY()
+	AActor* PlayerPawn;
+
 public:
-	void CheckTile();
+	ETempoTile CheckTile(FVector Start);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

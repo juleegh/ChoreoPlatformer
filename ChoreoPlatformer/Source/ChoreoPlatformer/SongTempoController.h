@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "Components/ActorComponent.h"
 #include "SongTempoController.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(IsBlueprintBase = "true") )
-class CHOREOPLATFORMER_API USongTempoController : public USceneComponent
+class CHOREOPLATFORMER_API USongTempoController : public UActorComponent
 {
 	GENERATED_BODY()
 
