@@ -2,7 +2,7 @@
 
 
 #include "ChoreoPlayerController.h"
-#include "SongTempoController.h"
+#include "SongTempoComponent.h"
 #include "DanceCharacter.h"
 #include "GridCell.h"
 #include "TilemapLevelManager.h"
@@ -10,7 +10,7 @@
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
-	SongTempo = CreateDefaultSubobject<USongTempoController>(TEXT("Song Tempo"));
+	SongTempo = CreateDefaultSubobject<USongTempoComponent>(TEXT("Song Tempo"));
 	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 }
 

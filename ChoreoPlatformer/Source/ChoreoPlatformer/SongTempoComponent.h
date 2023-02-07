@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "SongTempoController.generated.h"
+#include "SongTempoComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(IsBlueprintBase = "true") )
-class CHOREOPLATFORMER_API USongTempoController : public UActorComponent
+class CHOREOPLATFORMER_API USongTempoComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	USongTempoController();
+	USongTempoComponent();
 
 protected:
 	// Called when the game starts

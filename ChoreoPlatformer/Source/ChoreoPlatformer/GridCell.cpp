@@ -3,7 +3,7 @@
 
 #include "GridCell.h"
 #include "Kismet/GameplayStatics.h"
-#include "SongTempoController.h"
+#include "SongTempoComponent.h"
 #include "ChoreoPlayerController.h"
 
 // Sets default values
@@ -23,7 +23,7 @@ void AGridCell::BeginPlay()
 bool AGridCell::IsOnTempo()
 {
 	auto Controller = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
-	auto TempoController = Controller->GetSongTempoController();
+	auto TempoController = Controller->GetSongTempoComponent();
 	return TempoController->IsOnTempo();
 }
 

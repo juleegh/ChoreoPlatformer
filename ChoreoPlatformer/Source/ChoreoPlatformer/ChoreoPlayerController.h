@@ -18,7 +18,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UPROPERTY()
-	class USongTempoController* SongTempo;
+	class USongTempoComponent* SongTempo;
 	UPROPERTY()
 	class UTileDetectorComponent* TileDetector;
 	UPROPERTY()
@@ -28,7 +28,7 @@ protected:
 public:
 	AChoreoPlayerController();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	class USongTempoController* GetSongTempoController() { return SongTempo; }
+	class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();
