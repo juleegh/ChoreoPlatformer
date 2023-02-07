@@ -51,7 +51,6 @@ void USongTempoComponent::CreateAudioImporter()
 			RuntimeAudioImporter = nullptr;
 		});
 
-	//C:/Users/Julia/Documents
 	auto dir = FPaths::GameDevelopersDir() + "Sounds/Song.wav";
 	RuntimeAudioImporter->ImportAudioFromFile(dir, EAudioFormat::Auto);
 }

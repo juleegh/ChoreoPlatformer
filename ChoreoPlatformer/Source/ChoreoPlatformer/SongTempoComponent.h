@@ -7,7 +7,7 @@
 #include "SongTempoComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(IsBlueprintBase = "true") )
+UCLASS()
 class CHOREOPLATFORMER_API USongTempoComponent : public UActorComponent
 {
 	GENERATED_BODY()

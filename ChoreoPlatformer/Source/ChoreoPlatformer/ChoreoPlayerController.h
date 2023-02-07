@@ -27,8 +27,7 @@ protected:
 
 public:
 	AChoreoPlayerController();
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
+	//class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();

@@ -35,7 +35,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION(BlueprintCallable)
-	bool IsOnTempo();
 	ETempoTile GetTileType() { return TileType; }
 };

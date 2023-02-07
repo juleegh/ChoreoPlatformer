@@ -20,13 +20,6 @@ void AGridCell::BeginPlay()
 	Super::BeginPlay();
 	
 }
-bool AGridCell::IsOnTempo()
-{
-	auto Controller = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
-	auto TempoController = Controller->GetSongTempoComponent();
-	return TempoController->IsOnTempo();
-}
-
 
 // Called every frame
 void AGridCell::Tick(float DeltaTime)

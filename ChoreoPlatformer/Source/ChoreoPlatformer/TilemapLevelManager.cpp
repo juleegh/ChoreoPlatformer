@@ -36,14 +36,17 @@ void ATilemapLevelManager::LoadMap(UPaperTileMap* TileMap)
 			if (TileType == 0)
 			{
 				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlackTile, DeltaPos, GetActorRotation());
+				SpawnedTile->SetOwner(this);
 			}
 			else if (TileType == 1)
 			{
 				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(HalfTile, DeltaPos, GetActorRotation());
+				SpawnedTile->SetOwner(this);
 			}
 			else if (TileType == 2)
 			{
 				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlockerTile, DeltaPos, GetActorRotation());
+				SpawnedTile->SetOwner(this);
 			}
 		}
 	}
