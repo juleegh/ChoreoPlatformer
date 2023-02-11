@@ -1,5 +1,6 @@
 #include "TileDetectorComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Enemy.h"
 
 UTileDetectorComponent::UTileDetectorComponent()
 {
@@ -33,7 +34,15 @@ ETempoTile UTileDetectorComponent::CheckTile(FVector Start)
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetActor()->GetName()));
-		return Cast<AGridCell>(OutHit.GetActor())->GetTileType();
+		if (auto cell = Cast<AGridCell>(OutHit.GetActor()))
+		{
+			return cell->GetTileType();
+		}
+
+		if (auto enemy = Cast<AEnemy>(OutHit.GetActor()))
+		{
+			return ETempoTile::Enemy;
+		}
 	}
 
 	return ETempoTile::None;

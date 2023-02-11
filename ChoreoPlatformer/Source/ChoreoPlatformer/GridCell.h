@@ -15,6 +15,7 @@ enum class ETempoTile : uint8
 	Black,
 	Half,
 	Blocker,
+	Enemy,
 };
 
 UCLASS()
