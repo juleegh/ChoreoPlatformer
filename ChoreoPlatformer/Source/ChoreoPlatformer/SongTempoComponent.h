@@ -20,8 +20,20 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	void CreateAudioImporter();
+	UPROPERTY()
+	FTimerHandle InTempoDelay;
+	UPROPERTY()
+	FTimerHandle NotInTempoDelay;
+	UPROPERTY()
+	float AcceptancePercentage = 0.35f;
+	UPROPERTY()
+	float SongDelay = 0.4688f;
+	UPROPERTY()
+	bool InTempo;
 
 private:
+	void SetInTempo();
+	void SetNotInTempo();
 	UPROPERTY()
 	class URuntimeAudioImporterLibrary* RuntimeAudioImporter;
 	UPROPERTY()

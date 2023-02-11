@@ -27,7 +27,7 @@ protected:
 
 public:
 	AChoreoPlayerController();
-	//class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
+	class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();

@@ -6,6 +6,8 @@
 #include "RuntimeAudioImporterLibrary.h"
 #include "Misc/Paths.h"
 #include "AudioAnalysisToolsLibrary.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 USongTempoComponent::USongTempoComponent()
 {
@@ -42,6 +44,7 @@ void USongTempoComponent::CreateAudioImporter()
 				ImportedSoundWave->OnGeneratePCMData.AddDynamic(this, &USongTempoComponent::AudioDataReleased);
 				ImportedSoundWave->SetLooping(true);
 				UGameplayStatics::PlaySound2D(GetWorld(), ImportedSoundWave);
+				GetWorld()->GetTimerManager().SetTimer(NotInTempoDelay, this, &USongTempoComponent::SetInTempo, SongDelay * (1 - AcceptancePercentage + AcceptancePercentage / 2));
 			}
 			else
 			{
@@ -60,10 +63,23 @@ void USongTempoComponent::AudioDataReleased(const TArray<float>& AudioFrame)
 	AudioAnalyzer->ProcessAudioFrame(AudioFrame);
 }
 
+void USongTempoComponent::SetInTempo()
+{
+	InTempo = true;
+	GetWorld()->GetTimerManager().SetTimer(InTempoDelay, this, &USongTempoComponent::SetNotInTempo, SongDelay * AcceptancePercentage);
+}
+
+void USongTempoComponent::SetNotInTempo()
+{
+	InTempo = false;
+	GetWorld()->GetTimerManager().SetTimer(NotInTempoDelay, this, &USongTempoComponent::SetInTempo, SongDelay * (1 - AcceptancePercentage));
+}
+
 
 bool USongTempoComponent::IsOnTempo()
 {
-	return AudioAnalyzer->IsBeat(7) || AudioAnalyzer->IsHiHat();
+	//return AudioAnalyzer->IsBeatRange(character->Min, character->Max, character->Threshold);
+	return InTempo;
 }
 
 void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
