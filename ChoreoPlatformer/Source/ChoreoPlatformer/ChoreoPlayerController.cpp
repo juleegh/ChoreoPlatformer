@@ -57,7 +57,8 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	if (SongTempo->IsOnTempo())
+	float target = TileDetector->CheckTile(DanceCharacter->GetActorLocation()) == ETempoTile::Half ? 0.5f : 1;
+	if (SongTempo->IsOnTempo(target))
 	{
 		DanceCharacter->MoveInDirection(Direction);
 	}

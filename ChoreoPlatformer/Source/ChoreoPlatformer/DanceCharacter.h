@@ -32,4 +32,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveInDirection(FVector direction);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Min;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Max;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Threshold;
 };

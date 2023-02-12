@@ -8,6 +8,7 @@
 #include "AudioAnalysisToolsLibrary.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "DanceCharacter.h"
 
 USongTempoComponent::USongTempoComponent()
 {
@@ -40,6 +41,7 @@ void USongTempoComponent::CreateAudioImporter()
 		{
 			if (Status == ETranscodingStatus::SuccessfulImport)
 			{
+				character = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 				UE_LOG(LogTemp, Warning, TEXT("Successfully imported audio with sound wave %s"), *ImportedSoundWave->GetName());
 				ImportedSoundWave->OnGeneratePCMData.AddDynamic(this, &USongTempoComponent::AudioDataReleased);
 				ImportedSoundWave->SetLooping(true);
@@ -76,14 +78,19 @@ void USongTempoComponent::SetNotInTempo()
 }
 
 
-bool USongTempoComponent::IsOnTempo()
+bool USongTempoComponent::IsOnTempo(float target)
 {
+	//return AudioAnalyzer->IsBeat(7);
 	//return AudioAnalyzer->IsBeatRange(character->Min, character->Max, character->Threshold);
-	return InTempo;
+	//return InTempo;
+	float Whole = FMath::FloorToInt(CurrentTime / SongDelay * target);
+	Residue = (CurrentTime / SongDelay) - Whole;
+	return Residue < AcceptancePercentage * 0.4f || Residue >= (target - AcceptancePercentage * 0.6f);
 }
 
 void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	CurrentTime += DeltaTime;
 }
 

@@ -25,11 +25,17 @@ protected:
 	UPROPERTY()
 	FTimerHandle NotInTempoDelay;
 	UPROPERTY()
-	float AcceptancePercentage = 0.35f;
+	float AcceptancePercentage = 0.6f;
 	UPROPERTY()
 	float SongDelay = 0.4688f;
 	UPROPERTY()
 	bool InTempo;
+	UPROPERTY()
+	float CurrentTime;
+	UPROPERTY()
+	float Residue;
+	UPROPERTY()
+	class ADanceCharacter* character;
 
 private:
 	void SetInTempo();
@@ -47,5 +53,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsOnTempo();
+	bool IsOnTempo(float target = 1);
 };
