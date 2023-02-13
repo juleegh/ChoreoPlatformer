@@ -22,12 +22,15 @@ protected:
 	UPROPERTY()
 	class UTileDetectorComponent* TileDetector;
 	UPROPERTY()
+	class ULevelProgressComponent* LevelProgress;
+	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	void CheckMovement(FVector Direction);
 
 public:
 	AChoreoPlayerController();
 	class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
+	class ULevelProgressComponent* GetLevelProgressComponent() { return LevelProgress; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();

@@ -7,11 +7,13 @@
 #include "GridCell.h"
 #include "TilemapLevelManager.h"
 #include "TileDetectorComponent.h"
+#include "LevelProgressComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
 	SongTempo = CreateDefaultSubobject<USongTempoComponent>(TEXT("Song Tempo"));
 	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
+	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
 }
 
 void AChoreoPlayerController::BeginPlay()

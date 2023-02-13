@@ -51,7 +51,7 @@ class CHOREOPLATFORMER_API AWalkingEnemy : public ASplinedEnemy
 	GENERATED_BODY()
 
 public:
-	AWalkingEnemy() {};
+	AWalkingEnemy() {}
 
 protected:
 	
@@ -66,7 +66,7 @@ class CHOREOPLATFORMER_API ARotatingEnemy : public ASplinedEnemy
 	GENERATED_BODY()
 
 public:
-	ARotatingEnemy() {};
+	ARotatingEnemy() {}
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
