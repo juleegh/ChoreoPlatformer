@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "LevelProgressComponent.h"
 #include "ChoreoPlayerController.h"
+#include "DancerHealthComponent.h"
 #include "DanceCharacter.h"
 
 AGridElement::AGridElement()
@@ -44,5 +45,10 @@ void AGridElement::OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, A
 void ACheckpoint::OnEnterRange()
 {
 	DanceCharacter->GetChoreoController()->GetLevelProgressComponent()->ToggleCheckpoint(this);
+}
+
+void AMine::OnEnterRange()
+{
+	DanceCharacter->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
 }
 

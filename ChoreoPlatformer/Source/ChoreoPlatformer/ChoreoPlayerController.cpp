@@ -8,12 +8,14 @@
 #include "TilemapLevelManager.h"
 #include "TileDetectorComponent.h"
 #include "LevelProgressComponent.h"
+#include "DancerHealthComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
 	SongTempo = CreateDefaultSubobject<USongTempoComponent>(TEXT("Song Tempo"));
 	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
+	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -50,11 +52,6 @@ void AChoreoPlayerController::PressedRight()
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
 	if (TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100) == ETempoTile::Blocker)
-	{
-		return;
-	}
-
-	if (TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100) == ETempoTile::None)
 	{
 		return;
 	}

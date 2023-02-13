@@ -38,11 +38,6 @@ ETempoTile UTileDetectorComponent::CheckTile(FVector Start)
 		{
 			return cell->GetTileType();
 		}
-
-		if (auto enemy = Cast<AEnemy>(OutHit.GetActor()))
-		{
-			return ETempoTile::Enemy;
-		}
 	}
 
 	return ETempoTile::None;

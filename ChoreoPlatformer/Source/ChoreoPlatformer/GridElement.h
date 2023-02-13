@@ -38,7 +38,19 @@ class CHOREOPLATFORMER_API ACheckpoint : public AGridElement
 	GENERATED_BODY()
 
 public:
-	ACheckpoint() {};
+	ACheckpoint() {}
+
+protected:
+	void OnEnterRange() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AMine : public AGridElement
+{
+	GENERATED_BODY()
+
+public:
+	AMine() {}
 
 protected:
 	void OnEnterRange() override;

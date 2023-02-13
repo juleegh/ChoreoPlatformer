@@ -24,6 +24,8 @@ protected:
 	UPROPERTY()
 	class ULevelProgressComponent* LevelProgress;
 	UPROPERTY()
+	class UDancerHealthComponent* DancerHealth;
+	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	void CheckMovement(FVector Direction);
 
@@ -31,6 +33,7 @@ public:
 	AChoreoPlayerController();
 	class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
 	class ULevelProgressComponent* GetLevelProgressComponent() { return LevelProgress; }
+	class UDancerHealthComponent* GetDancerHealthComponent() { return DancerHealth; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();
