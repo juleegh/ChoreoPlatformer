@@ -29,25 +29,47 @@ public:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API AWalkingEnemy : public AEnemy
+class CHOREOPLATFORMER_API ASplinedEnemy : public AEnemy
 {
 	GENERATED_BODY()
 
 public:
-	AWalkingEnemy();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class USplineComponent* PatrolRoad;
+	ASplinedEnemy();
 
 protected:
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	class USplineComponent* PatrolRoad;
 	FVector GetWorldLocationByIndex(int Index) const;
 	int GetLastIndex() const;
-
-
 	UPROPERTY(BlueprintReadOnly)
 	int PatrolIndex = -1;
+}; 
 
+UCLASS()
+class CHOREOPLATFORMER_API AWalkingEnemy : public ASplinedEnemy
+{
+	GENERATED_BODY()
+
+public:
+	AWalkingEnemy() {};
+
+protected:
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void MoveToLocation(FVector Location);
+	void DoTempoAction() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ARotatingEnemy : public ASplinedEnemy
+{
+	GENERATED_BODY()
+
+public:
+	ARotatingEnemy() {};
+
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void RotateToLocation(FVector Location);
 	void DoTempoAction() override;
 };

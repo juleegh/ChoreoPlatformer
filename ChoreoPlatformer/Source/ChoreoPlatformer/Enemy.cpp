@@ -50,13 +50,13 @@ void AEnemy::DoTempoAction()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Did action")));
 }
 
-AWalkingEnemy::AWalkingEnemy()
+ASplinedEnemy::ASplinedEnemy()
 {
 	PatrolRoad = CreateDefaultSubobject<USplineComponent>(TEXT("Patrol Road"));
 	PatrolRoad->SetupAttachment(RootComponent);
 }
 
-FVector AWalkingEnemy::GetWorldLocationByIndex(int Index) const
+FVector ASplinedEnemy::GetWorldLocationByIndex(int Index) const
 {
 	if (PatrolRoad && Index < GetLastIndex())
 	{
@@ -65,7 +65,7 @@ FVector AWalkingEnemy::GetWorldLocationByIndex(int Index) const
 	return GetActorLocation();
 }
 
-int AWalkingEnemy::GetLastIndex() const
+int ASplinedEnemy::GetLastIndex() const
 {
 	if (PatrolRoad)
 	{
@@ -83,6 +83,16 @@ void AWalkingEnemy::DoTempoAction()
 		PatrolIndex = 0;
 	}
 	MoveToLocation(GetWorldLocationByIndex(PatrolIndex));
+}
+
+void ARotatingEnemy::DoTempoAction()
+{
+	PatrolIndex++;
+	if (PatrolIndex >= GetLastIndex())
+	{
+		PatrolIndex = 0;
+	}
+	RotateToLocation(GetWorldLocationByIndex(PatrolIndex));
 }
 
 
