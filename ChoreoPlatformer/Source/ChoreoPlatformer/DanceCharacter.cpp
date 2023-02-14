@@ -3,18 +3,18 @@
 
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
+#include "TimelineCreatorComponent.h"
 
 ADanceCharacter::ADanceCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	MoveTimeline = CreateDefaultSubobject<UMoveTimeline>("Move Timeline");
 }
 
 void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	TargetLocation = GetActorLocation();
 }
-
 
 void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -29,8 +29,11 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ADanceCharacter::MoveInDirection(FVector direction)
 {
-	TargetLocation = GetActorLocation() + direction * 100;
-	MoveCharacterToLocation();
+	if (MoveTimeline->IsRunning())
+	{
+		return;
+	}
+	MoveTimeline->MoveToPosition(GetActorLocation() + direction * 100);
 }
 
 AChoreoPlayerController* ADanceCharacter::GetChoreoController()

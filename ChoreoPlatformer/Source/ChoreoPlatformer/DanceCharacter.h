@@ -18,22 +18,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(BlueprintReadOnly)
-	FVector TargetLocation;
-	UFUNCTION(BlueprintImplementableEvent)
-	void MoveCharacterToLocation();
+	UPROPERTY()
+	class UMoveTimeline* MoveTimeline;
 
 private:
 
 public:
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveInDirection(FVector direction);
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Min;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Max;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float Threshold;
 	class AChoreoPlayerController* GetChoreoController();
 };
