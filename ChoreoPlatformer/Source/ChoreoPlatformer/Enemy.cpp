@@ -6,13 +6,15 @@
 #include "Components/SplineComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "TimelineCreatorComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
 	RootComponent = BoxComponent;
-	
+
 	EnemyBody = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Enemy Body"));
 	EnemyBody->SetupAttachment(RootComponent);
 }
@@ -75,6 +77,11 @@ int ASplinedEnemy::GetLastIndex() const
 	return 0;
 }
 
+AWalkingEnemy::AWalkingEnemy()
+{
+	MoveTimeline = CreateDefaultSubobject<UMoveTimeline>("Move Timeline");
+}
+
 void AWalkingEnemy::DoTempoAction()
 {
 	PatrolIndex++;
@@ -82,7 +89,12 @@ void AWalkingEnemy::DoTempoAction()
 	{
 		PatrolIndex = 0;
 	}
-	MoveToLocation(GetWorldLocationByIndex(PatrolIndex));
+	MoveTimeline->MoveToPosition(GetWorldLocationByIndex(PatrolIndex));
+}
+
+ARotatingEnemy::ARotatingEnemy()
+{
+	RotateTimeline = CreateDefaultSubobject<URotateTimeline>("Rotate Timeline");
 }
 
 void ARotatingEnemy::DoTempoAction()
@@ -92,7 +104,10 @@ void ARotatingEnemy::DoTempoAction()
 	{
 		PatrolIndex = 0;
 	}
-	RotateToLocation(GetWorldLocationByIndex(PatrolIndex));
+	//FRotator LookAt = GetWorldLocationByIndex(PatrolIndex);
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(PatrolIndex));
+	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
+	RotateTimeline->RotateToPosition(Rotation);
 }
 
 

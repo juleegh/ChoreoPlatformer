@@ -52,8 +52,23 @@ protected:
     UPROPERTY()
     FVector TargetLocation;
     void TimelineCallback(float val) override;
-    void TimelineFinishedCallback() override;
 
 public:
     void MoveToPosition(FVector TargetPosition);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API URotateTimeline : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+protected:
+    UPROPERTY()
+    FRotator OriginRotation;
+    UPROPERTY()
+    FRotator TargetRotation;
+    void TimelineCallback(float val) override;
+
+public:
+    void RotateToPosition(FRotator TargetPosition);
 };

@@ -75,16 +75,12 @@ void UTimelineCreatorComponent::PlayTimeline()
     }
 }
 
-void UMoveTimeline::TimelineCallback(float interpolatedVal)
-{
-    FVector Pos = UKismetMathLibrary::VLerp(OriginLocation, TargetLocation, MyTimeline->GetPlaybackPosition() / TimelineLength);
-    TimelineTarget->SetActorLocation(Pos);
-}
-
+/*
 void UMoveTimeline::TimelineFinishedCallback()
 {
     //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Did action")));
 }
+*/
 
 void UMoveTimeline::MoveToPosition(FVector TargetPosition)
 {
@@ -92,4 +88,24 @@ void UMoveTimeline::MoveToPosition(FVector TargetPosition)
     TargetLocation = TargetPosition;
     float Length = MyTimeline->GetTimelineLength();
     PlayTimeline();
+}
+
+void UMoveTimeline::TimelineCallback(float interpolatedVal)
+{
+    FVector Pos = UKismetMathLibrary::VLerp(OriginLocation, TargetLocation, MyTimeline->GetPlaybackPosition() / TimelineLength);
+    TimelineTarget->SetActorLocation(Pos);
+}
+
+void URotateTimeline::RotateToPosition(FRotator TargetPosition)
+{
+    OriginRotation = TimelineTarget->GetActorRotation();
+    TargetRotation = TargetPosition;
+    float Length = MyTimeline->GetTimelineLength();
+    PlayTimeline();
+}
+
+void URotateTimeline::TimelineCallback(float interpolatedVal)
+{
+    FRotator Rot = UKismetMathLibrary::RLerp(OriginRotation, TargetRotation, MyTimeline->GetPlaybackPosition() / TimelineLength, false);
+    TimelineTarget->SetActorRotation(Rot);
 }

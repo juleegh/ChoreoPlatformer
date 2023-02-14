@@ -51,12 +51,12 @@ class CHOREOPLATFORMER_API AWalkingEnemy : public ASplinedEnemy
 	GENERATED_BODY()
 
 public:
-	AWalkingEnemy() {}
+	AWalkingEnemy();
 
 protected:
 	
-	UFUNCTION(BlueprintImplementableEvent)
-	void MoveToLocation(FVector Location);
+	UPROPERTY()
+	class UMoveTimeline* MoveTimeline;
 	void DoTempoAction() override;
 };
 
@@ -66,10 +66,10 @@ class CHOREOPLATFORMER_API ARotatingEnemy : public ASplinedEnemy
 	GENERATED_BODY()
 
 public:
-	ARotatingEnemy() {}
+	ARotatingEnemy();
 
 protected:
-	UFUNCTION(BlueprintImplementableEvent)
-	void RotateToLocation(FVector Location);
+	UPROPERTY()
+	class URotateTimeline* RotateTimeline;
 	void DoTempoAction() override;
 };
