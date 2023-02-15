@@ -25,6 +25,8 @@ protected:
 	UPROPERTY()
 	class UDancerHealthComponent* DancerHealth;
 	UPROPERTY()
+	class UDancerUIComponent* DancerUI;
+	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()

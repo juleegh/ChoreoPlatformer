@@ -10,7 +10,6 @@ UDancerHealthComponent::UDancerHealthComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
 void UDancerHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -25,4 +24,5 @@ void UDancerHealthComponent::TakeHit(int Damage)
 		PlayerDied.Broadcast();
 		CurrentHealth = MaxHealth;
 	}
+	HealthChanged.Broadcast(CurrentHealth, MaxHealth);
 }

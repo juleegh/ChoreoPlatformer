@@ -9,6 +9,7 @@
 #include "TileDetectorComponent.h"
 #include "LevelProgressComponent.h"
 #include "DancerHealthComponent.h"
+#include "DancerUIComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -16,6 +17,7 @@ AChoreoPlayerController::AChoreoPlayerController()
 	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
 	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
+	DancerUI = CreateDefaultSubobject<UDancerUIComponent>(TEXT("Dancer UI"));
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -23,6 +25,7 @@ void AChoreoPlayerController::BeginPlay()
 	Super::BeginPlay();
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
+	DancerHealth->HealthChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateHealth);
 }
 
 void AChoreoPlayerController::Tick(float DeltaTime)
