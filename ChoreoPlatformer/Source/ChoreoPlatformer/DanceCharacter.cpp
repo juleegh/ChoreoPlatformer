@@ -36,7 +36,12 @@ void ADanceCharacter::MoveInDirection(FVector direction)
 	MoveTimeline->MoveToPosition(GetActorLocation() + direction * 100);
 }
 
-AChoreoPlayerController* ADanceCharacter::GetChoreoController()
+void ADanceCharacter::StopMovement()
+{
+	MoveTimeline->Stop();
+}
+
+AChoreoPlayerController* ADanceCharacter::GetChoreoController() const
 {
 	return Cast<AChoreoPlayerController>(GetController());
 }

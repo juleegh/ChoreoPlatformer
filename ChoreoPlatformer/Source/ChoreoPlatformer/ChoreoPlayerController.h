@@ -27,12 +27,14 @@ protected:
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	void CheckMovement(FVector Direction);
+	UFUNCTION()
+	void OnPlayerDied();
 
 public:
 	AChoreoPlayerController();
-	class USongTempoComponent* GetSongTempoComponent() { return SongTempo; }
-	class ULevelProgressComponent* GetLevelProgressComponent() { return LevelProgress; }
-	class UDancerHealthComponent* GetDancerHealthComponent() { return DancerHealth; }
+	class USongTempoComponent* GetSongTempoComponent() const { return SongTempo; }
+	class ULevelProgressComponent* GetLevelProgressComponent() const { return LevelProgress; }
+	class UDancerHealthComponent* GetDancerHealthComponent() const { return DancerHealth; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();

@@ -48,7 +48,15 @@ void UTimelineCreatorComponent::BeginPlay()
     }
 }
 
-bool UTimelineCreatorComponent::IsRunning()
+void UTimelineCreatorComponent::Stop()
+{
+    if (MyTimeline != NULL)
+    {
+        MyTimeline->Stop();
+    }
+}
+
+bool UTimelineCreatorComponent::IsRunning() const
 {
     if (MyTimeline != NULL)
     {

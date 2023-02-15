@@ -17,7 +17,8 @@ public:
 	UTimelineCreatorComponent();
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void PlayTimeline();
-    bool IsRunning();
+    void Stop();
+    bool IsRunning() const;
 
 protected:
     UPROPERTY()

@@ -12,19 +12,18 @@ class CHOREOPLATFORMER_API ADanceCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ADanceCharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 	UPROPERTY()
 	class UMoveTimeline* MoveTimeline;
+	virtual void BeginPlay() override;
 
 private:
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveInDirection(FVector direction);
-	class AChoreoPlayerController* GetChoreoController();
+	void StopMovement();
+	class AChoreoPlayerController* GetChoreoController() const;
 };

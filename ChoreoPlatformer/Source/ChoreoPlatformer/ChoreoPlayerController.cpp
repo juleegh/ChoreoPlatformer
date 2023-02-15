@@ -22,6 +22,7 @@ void AChoreoPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
+	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 }
 
 void AChoreoPlayerController::Tick(float DeltaTime)
@@ -62,4 +63,11 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		DanceCharacter->MoveInDirection(Direction);
 	}
 }
+
+void AChoreoPlayerController::OnPlayerDied()
+{
+	DanceCharacter->StopMovement();
+	LevelProgress->LoadCheckpoint();
+}
+
 

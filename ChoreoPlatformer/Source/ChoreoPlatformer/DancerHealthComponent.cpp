@@ -22,8 +22,7 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	CurrentHealth--;
 	if (CurrentHealth == 0)
 	{
-		auto controller = Cast<AChoreoPlayerController>(GetOwner());
-		controller->GetLevelProgressComponent()->LoadCheckpoint();
+		PlayerDied.Broadcast();
 		CurrentHealth = MaxHealth;
 	}
 }
