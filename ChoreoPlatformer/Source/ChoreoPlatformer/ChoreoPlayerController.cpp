@@ -55,7 +55,8 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100) == ETempoTile::Blocker)
+	auto NextBlock = TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100);
+	if (NextBlock == ETempoTile::Blocker)
 	{
 		return;
 	}
