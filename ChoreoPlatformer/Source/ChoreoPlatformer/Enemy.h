@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "Enemy.generated.h"
 
 UCLASS(ClassGroup = (Custom))
-class CHOREOPLATFORMER_API AEnemy : public AActor
+class CHOREOPLATFORMER_API AEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -16,13 +16,13 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class USkeletalMeshComponent* EnemyBody;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UBoxComponent* BoxComponent;
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
-	virtual void BeginPlay() override;
 	bool hasDoneTempoAction;
+	virtual void BeginPlay() override;
+	UFUNCTION()
+	void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	virtual void DoTempoAction();
 public:
 	virtual void Tick(float DeltaTime) override;
