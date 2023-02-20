@@ -4,6 +4,7 @@
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
 #include "TimelineCreatorComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 ADanceCharacter::ADanceCharacter()
 {
@@ -33,7 +34,7 @@ void ADanceCharacter::MoveInDirection(FVector direction)
 	{
 		return;
 	}
-	MoveTimeline->MoveToPosition(GetActorLocation() + direction * 100);
+	MoveTimeline->MoveToPosition(UDanceUtilsFunctionLibrary::GetTransformedPosition(GetActorLocation(), direction));
 }
 
 void ADanceCharacter::StopMovement()

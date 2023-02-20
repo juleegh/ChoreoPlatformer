@@ -10,6 +10,7 @@
 #include "LevelProgressComponent.h"
 #include "DancerHealthComponent.h"
 #include "DancerUIComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -55,14 +56,13 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	auto NextBlock = TileDetector->CheckTile(DanceCharacter->GetActorLocation() + Direction * 100);
+	auto NextBlock = TileDetector->CheckTile(UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction));
 	if (NextBlock == ETempoTile::Blocker)
 	{
 		return;
 	}
 
-	float target = TileDetector->CheckTile(DanceCharacter->GetActorLocation()) == ETempoTile::Half ? 0.5f : 1;
-	if (SongTempo->IsOnTempo(target))
+	if (SongTempo->IsOnTempo(UDanceUtilsFunctionLibrary::GetTargetTempo(TileDetector->CheckTile(DanceCharacter->GetActorLocation()))))
 	{
 		DanceCharacter->MoveInDirection(Direction);
 	}
