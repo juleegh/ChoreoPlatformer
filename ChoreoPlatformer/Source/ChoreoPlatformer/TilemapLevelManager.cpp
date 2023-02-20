@@ -3,6 +3,8 @@
 #include "TilemapLevelManager.h"
 #include "GridCell.h"
 #include "Kismet/GameplayStatics.h"
+#include "PaperTileMapActor.h"
+#include "PaperTileMapComponent.h"
 #include "PaperTileMap.h"
 #include "PaperTileLayer.h"
 #include "PaperTileSet.h"
@@ -15,11 +17,20 @@ ATilemapLevelManager::ATilemapLevelManager()
 void ATilemapLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
-	LoadMap(SelectedMap);
+	LoadMap();
 }
 
-void ATilemapLevelManager::LoadMap(UPaperTileMap* TileMap)
+void ATilemapLevelManager::LoadMap()
 {
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperTileMapActor::StaticClass(), FoundActors);
+
+	if (FoundActors.Num() == 0)
+	{
+		return;
+	}
+	auto TileMap = Cast<APaperTileMapActor>(FoundActors[0])->GetRenderComponent()->TileMap;
+
 	auto LayerInfo = TileMap->TileLayers[0];
 	auto LayerWidth = LayerInfo->GetLayerWidth();
 	auto LayerHeight = LayerInfo->GetLayerHeight();
@@ -51,7 +62,7 @@ void ATilemapLevelManager::LoadMap(UPaperTileMap* TileMap)
 		}
 	}
 
-
+	FoundActors[0]->SetHidden(true);
 }
 
 
