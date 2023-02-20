@@ -31,6 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, Category = "Tile Properties")
 	ETempoTile TileType;
+	UPROPERTY(BlueprintReadOnly)
+	class USongTempoComponent* SongTempo;
 
 public:	
 	// Called every frame

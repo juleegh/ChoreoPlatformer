@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SongTempoComponent.h"
 #include "ChoreoPlayerController.h"
+#include "SongTempoComponent.h"
 
 // Sets default values
 AGridCell::AGridCell()
@@ -18,7 +19,8 @@ AGridCell::AGridCell()
 void AGridCell::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
+	SongTempo = PlayerController->GetSongTempoComponent();
 }
 
 // Called every frame

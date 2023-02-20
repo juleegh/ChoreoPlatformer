@@ -33,8 +33,6 @@ protected:
 	UPROPERTY()
 	float CurrentTime;
 	UPROPERTY()
-	float Residue;
-	UPROPERTY()
 	class ADanceCharacter* character;
 
 private:
@@ -54,4 +52,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsOnTempo(float target = 1);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float TempoPercentage(float target = 1);
 };

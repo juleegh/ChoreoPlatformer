@@ -80,12 +80,15 @@ void USongTempoComponent::SetNotInTempo()
 
 bool USongTempoComponent::IsOnTempo(float target)
 {
-	//return AudioAnalyzer->IsBeat(7);
-	//return AudioAnalyzer->IsBeatRange(character->Min, character->Max, character->Threshold);
-	//return InTempo;
+	float Residue = TempoPercentage(target);
+	return Residue < AcceptancePercentage * 0.5f || Residue >= (target - AcceptancePercentage * 0.5f);
+}
+
+float USongTempoComponent::TempoPercentage(float target)
+{
 	float Whole = FMath::FloorToInt(CurrentTime / SongDelay * target);
-	Residue = (CurrentTime / SongDelay) - Whole;
-	return Residue < AcceptancePercentage * 0.4f || Residue >= (target - AcceptancePercentage * 0.6f);
+	float Residue = (CurrentTime / SongDelay) - Whole;
+	return 1 - Residue;
 }
 
 void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
