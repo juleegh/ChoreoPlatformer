@@ -29,7 +29,8 @@ void ATilemapLevelManager::LoadMap()
 	{
 		return;
 	}
-	auto TileMap = Cast<APaperTileMapActor>(FoundActors[0])->GetRenderComponent()->TileMap;
+	auto TileMapActor = FoundActors[0];
+	auto TileMap = Cast<APaperTileMapActor>(TileMapActor)->GetRenderComponent()->TileMap;
 
 	auto LayerInfo = TileMap->TileLayers[0];
 	auto LayerWidth = LayerInfo->GetLayerWidth();
@@ -62,7 +63,7 @@ void ATilemapLevelManager::LoadMap()
 		}
 	}
 
-	FoundActors[0]->SetHidden(true);
+	TileMapActor->SetActorLocation(TileMapActor->GetActorLocation() + FVector::DownVector * 50);
 }
 
 
