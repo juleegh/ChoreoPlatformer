@@ -55,3 +55,18 @@ public:
 protected:
 	void OnEnterRange() override;
 };
+
+UCLASS()
+class CHOREOPLATFORMER_API ATeleporter : public AGridElement
+{
+	GENERATED_BODY()
+
+public:
+	ATeleporter() {}
+
+	UPROPERTY(EditInstanceOnly)
+	ATeleporter* OtherEnd;
+
+protected:
+	void OnEnterRange() override;
+};

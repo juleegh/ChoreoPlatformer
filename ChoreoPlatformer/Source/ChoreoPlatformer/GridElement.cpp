@@ -53,3 +53,11 @@ void AMine::OnEnterRange()
 	Destroy();
 }
 
+void ATeleporter::OnEnterRange()
+{
+	if (OtherEnd)
+	{
+		DanceCharacter->SetActorLocation(OtherEnd->GetActorLocation());
+	}
+}
+
