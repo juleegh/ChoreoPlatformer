@@ -25,45 +25,43 @@ void ATilemapLevelManager::LoadMap()
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperTileMapActor::StaticClass(), FoundActors);
 
-	if (FoundActors.Num() == 0)
+	for (auto TileMapActor : FoundActors)
 	{
-		return;
-	}
-	auto TileMapActor = FoundActors[0];
-	auto TileMap = Cast<APaperTileMapActor>(TileMapActor)->GetRenderComponent()->TileMap;
+		auto TileMap = Cast<APaperTileMapActor>(TileMapActor)->GetRenderComponent()->TileMap;
 
-	auto LayerInfo = TileMap->TileLayers[0];
-	auto LayerWidth = LayerInfo->GetLayerWidth();
-	auto LayerHeight = LayerInfo->GetLayerHeight();
+		auto LayerInfo = TileMap->TileLayers[0];
+		auto LayerWidth = LayerInfo->GetLayerWidth();
+		auto LayerHeight = LayerInfo->GetLayerHeight();
 
-	for (int column = 0; column < LayerWidth; column++)
-	{
-		for (int row = 0; row < LayerHeight; row++)
+		for (int column = 0; column < LayerWidth; column++)
 		{
-			FString TypeT = "";
-			auto TileInfo = LayerInfo->GetCell(column, row);
-			auto TileType = TileInfo.PackedTileIndex;
-			const FVector DeltaPos = GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
+			for (int row = 0; row < LayerHeight; row++)
+			{
+				FString TypeT = "";
+				auto TileInfo = LayerInfo->GetCell(column, row);
+				auto TileType = TileInfo.PackedTileIndex;
+				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
 
-			if (TileType == 0)
-			{
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlackTile, DeltaPos, GetActorRotation());
-				SpawnedTile->SetOwner(this);
-			}
-			else if (TileType == 1)
-			{
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(HalfTile, DeltaPos, GetActorRotation());
-				SpawnedTile->SetOwner(this);
-			}
-			else if (TileType == 2)
-			{
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlockerTile, DeltaPos, GetActorRotation());
-				SpawnedTile->SetOwner(this);
+				if (TileType == 0)
+				{
+					auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlackTile, DeltaPos, GetActorRotation());
+					SpawnedTile->SetOwner(this);
+				}
+				else if (TileType == 1)
+				{
+					auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(HalfTile, DeltaPos, GetActorRotation());
+					SpawnedTile->SetOwner(this);
+				}
+				else if (TileType == 2)
+				{
+					auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlockerTile, DeltaPos, GetActorRotation());
+					SpawnedTile->SetOwner(this);
+				}
 			}
 		}
-	}
 
-	TileMapActor->SetActorLocation(TileMapActor->GetActorLocation() + FVector::DownVector * 50);
+		TileMapActor->SetActorLocation(TileMapActor->GetActorLocation() + FVector::DownVector * 50);
+	}
 }
 
 
