@@ -50,5 +50,6 @@ void ACheckpoint::OnEnterRange()
 void AMine::OnEnterRange()
 {
 	DanceCharacter->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+	Destroy();
 }
 
