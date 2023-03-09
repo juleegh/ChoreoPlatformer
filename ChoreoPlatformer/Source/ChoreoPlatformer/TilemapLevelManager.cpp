@@ -39,6 +39,10 @@ void ATilemapLevelManager::LoadMap()
 			{
 				FString TypeT = "";
 				auto TileInfo = LayerInfo->GetCell(column, row);
+
+				if (TileInfo.TileSet == nullptr)
+					continue;
+
 				auto TileType = TileInfo.PackedTileIndex;
 				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
 
