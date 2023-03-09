@@ -19,11 +19,6 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	void CreateAudioImporter();
-	UPROPERTY()
-	FTimerHandle InTempoDelay;
-	UPROPERTY()
-	FTimerHandle NotInTempoDelay;
 	UPROPERTY()
 	float AcceptancePercentage = 0.6f;
 	UPROPERTY()
@@ -34,17 +29,6 @@ protected:
 	float CurrentTime;
 	UPROPERTY()
 	class ADanceCharacter* character;
-
-private:
-	void SetInTempo();
-	void SetNotInTempo();
-	UPROPERTY()
-	class URuntimeAudioImporterLibrary* RuntimeAudioImporter;
-	UPROPERTY()
-	class UAudioAnalysisToolsLibrary* AudioAnalyzer;
-
-	UFUNCTION()
-	void AudioDataReleased(const TArray<float>& AudioFrame);
 
 public:	
 	// Called every frame
