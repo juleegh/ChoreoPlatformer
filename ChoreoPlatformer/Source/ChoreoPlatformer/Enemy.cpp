@@ -30,6 +30,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
 	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 	SongTempo = PlayerController->GetSongTempoComponent();
 }
@@ -59,13 +60,25 @@ void AEnemy::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (auto character = Cast<ADanceCharacter>(OtherActor))
 	{
-		character->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+		PlayerCharacter = character;
 	}
 }
 
+void AEnemy::OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (auto character = Cast<ADanceCharacter>(OtherActor))
+	{
+		PlayerCharacter = nullptr;
+	}
+}
+
+
 void AEnemy::DoTempoAction()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Did action")));
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+	}
 }
 
 ASplinedEnemy::ASplinedEnemy()
@@ -100,6 +113,8 @@ AWalkingEnemy::AWalkingEnemy()
 
 void AWalkingEnemy::DoTempoAction()
 {
+	Super::DoTempoAction();
+
 	PatrolIndex++;
 	if (PatrolIndex >= GetLastIndex())
 	{
@@ -117,6 +132,8 @@ ARotatingEnemy::ARotatingEnemy()
 
 void ARotatingEnemy::DoTempoAction()
 {
+	Super::DoTempoAction();
+
 	PatrolIndex++;
 	if (PatrolIndex >= GetLastIndex())
 	{
