@@ -19,6 +19,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	bool ShouldTakeDamage();
 	UPROPERTY()
 	int CurrentHealth;
 	UPROPERTY()

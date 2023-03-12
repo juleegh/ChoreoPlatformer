@@ -28,6 +28,8 @@ protected:
 	class UDancerUIComponent* DancerUI;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	bool bShouldTakeDamage = false;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
 	void OnPlayerDied();
@@ -41,5 +43,6 @@ public:
 	void PressedDown();
 	void PressedLeft();
 	void PressedRight();
+	bool ShouldTakeDamage() { return bShouldTakeDamage; }
 	virtual void Tick(float DeltaTime) override;
 };

@@ -16,8 +16,21 @@ void UDancerHealthComponent::BeginPlay()
 	CurrentHealth = MaxHealth;
 }
 
+bool UDancerHealthComponent::ShouldTakeDamage()
+{
+	if (auto Controller = Cast<AChoreoPlayerController>(GetOwner()))
+	{
+		return Controller->ShouldTakeDamage();
+	}
+	return true;
+}
+
 void UDancerHealthComponent::TakeHit(int Damage)
 {
+	if (!ShouldTakeDamage())
+	{
+		return;
+	}
 	CurrentHealth--;
 	if (CurrentHealth == 0)
 	{
