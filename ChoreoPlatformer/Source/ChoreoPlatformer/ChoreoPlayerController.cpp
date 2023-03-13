@@ -36,22 +36,22 @@ void AChoreoPlayerController::Tick(float DeltaTime)
 
 void AChoreoPlayerController::PressedUp()
 {
-	CheckMovement(DanceCharacter->GetActorForwardVector());
+	CheckMovement(-FVector::RightVector);
 }
 
 void AChoreoPlayerController::PressedDown()
 {
-	CheckMovement(-DanceCharacter->GetActorForwardVector());
+	CheckMovement(FVector::RightVector);
 }
 
 void AChoreoPlayerController::PressedLeft()
 {
-	CheckMovement(-DanceCharacter->GetActorRightVector());
+	CheckMovement(-FVector::ForwardVector);
 }
 
 void AChoreoPlayerController::PressedRight()
 {
-	CheckMovement(DanceCharacter->GetActorRightVector());
+	CheckMovement(FVector::ForwardVector);
 }
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)

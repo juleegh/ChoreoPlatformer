@@ -16,7 +16,7 @@ public:
 
 protected:
 	UPROPERTY()
-	class UMoveTimeline* MoveTimeline;
+	class UTimelineCreatorComponent* MoveTimeline;
 	virtual void BeginPlay() override;
 
 private:

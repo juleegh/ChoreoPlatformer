@@ -61,7 +61,7 @@ public:
 protected:
 	void BeginPlay() override;
 	UPROPERTY()
-	class UMoveTimeline* MoveTimeline;
+	class UTimelineCreatorComponent* MoveTimeline;
 	void DoTempoAction() override;
 	UFUNCTION()
 	void LookAtNextTarget();
@@ -76,7 +76,8 @@ public:
 	ARotatingEnemy();
 
 protected:
+	void BeginPlay() override;
 	UPROPERTY()
-	class URotateTimeline* RotateTimeline;
+	class UTimelineCreatorComponent* RotateTimeline;
 	void DoTempoAction() override;
 };

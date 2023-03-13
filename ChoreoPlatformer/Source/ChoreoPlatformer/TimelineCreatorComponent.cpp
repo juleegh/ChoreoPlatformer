@@ -15,9 +15,8 @@ UTimelineCreatorComponent::UTimelineCreatorComponent()
     PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
-void UTimelineCreatorComponent::BeginPlay()
+void UTimelineCreatorComponent::Initialize()
 {
-    Super::BeginPlay();
     FOnTimelineEventStatic onTimelineFinishedCallback;
     FOnTimelineFloat onTimelineCallback;
 
@@ -39,8 +38,8 @@ void UTimelineCreatorComponent::BeginPlay()
 
         //Add the float curve to the timeline and connect it to your timelines's interpolation function
         onTimelineCallback.BindUFunction(this, FName{ TEXT("TimelineCallback") });
-        onTimelineFinishedCallback.BindUFunction(this, FName{ TEXT("TimelineFinishedCallback") });
         MyTimeline->AddInterpFloat(FloatCurve, onTimelineCallback, "ElapsedTime");
+        onTimelineFinishedCallback.BindUFunction(this, FName{ TEXT("TimelineFinishedCallback") });
         MyTimeline->SetTimelineFinishedFunc(onTimelineFinishedCallback);
 
         MyTimeline->RegisterComponent();
@@ -92,36 +91,39 @@ void UTimelineCreatorComponent::PlayTimeline()
     }
 }
 
-/*
-void UMoveTimeline::TimelineFinishedCallback()
+void UTimelineCreatorComponent::TimelineCallback(float interpolatedVal)
 {
-    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Did action")));
+    if (TimelineTick.IsBound())
+    {
+        TimelineTick.Execute(interpolatedVal);
+    }
 }
-*/
 
-void UMoveTimeline::MoveToPosition(FVector TargetPosition)
+void UTimelineCreatorComponent::MoveToPosition(FVector TargetPosition)
 {
     OriginLocation = TimelineTarget->GetActorLocation();
     TargetLocation = TargetPosition;
     float Length = MyTimeline->GetTimelineLength();
+    TimelineTick.BindDynamic(this, &UTimelineCreatorComponent::MoveCallback);
     PlayTimeline();
 }
 
-void UMoveTimeline::TimelineCallback(float interpolatedVal)
+void UTimelineCreatorComponent::MoveCallback(float interpolatedVal)
 {
     FVector Pos = UKismetMathLibrary::VLerp(OriginLocation, TargetLocation, MyTimeline->GetPlaybackPosition() / TimelineLength);
     TimelineTarget->SetActorLocation(Pos);
 }
 
-void URotateTimeline::RotateToPosition(FRotator TargetPosition)
+void UTimelineCreatorComponent::RotateToPosition(FRotator TargetPosition)
 {
     OriginRotation = TimelineTarget->GetActorRotation();
     TargetRotation = TargetPosition;
     float Length = MyTimeline->GetTimelineLength();
+    TimelineTick.BindDynamic(this, &UTimelineCreatorComponent::RotateCallback);
     PlayTimeline();
 }
 
-void URotateTimeline::TimelineCallback(float interpolatedVal)
+void UTimelineCreatorComponent::RotateCallback(float interpolatedVal)
 {
     FRotator Rot = UKismetMathLibrary::RLerp(OriginRotation, TargetRotation, MyTimeline->GetPlaybackPosition() / TimelineLength, false);
     TimelineTarget->SetActorRotation(Rot);

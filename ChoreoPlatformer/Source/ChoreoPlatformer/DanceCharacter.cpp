@@ -5,16 +5,18 @@
 #include "ChoreoPlayerController.h"
 #include "TimelineCreatorComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ADanceCharacter::ADanceCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	MoveTimeline = CreateDefaultSubobject<UMoveTimeline>("Move Timeline");
+	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
 }
 
 void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	MoveTimeline->Initialize();
 }
 
 void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -34,7 +36,11 @@ void ADanceCharacter::MoveInDirection(FVector direction)
 	{
 		return;
 	}
-	MoveTimeline->MoveToPosition(UDanceUtilsFunctionLibrary::GetTransformedPosition(GetActorLocation(), direction));
+	FVector position = UDanceUtilsFunctionLibrary::GetTransformedPosition(GetActorLocation(), direction);
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), position);
+	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
+	GetController()->SetControlRotation(Rotation);
+	MoveTimeline->MoveToPosition(position);
 }
 
 void ADanceCharacter::StopMovement()

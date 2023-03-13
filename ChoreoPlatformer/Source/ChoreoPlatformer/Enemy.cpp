@@ -108,12 +108,13 @@ int ASplinedEnemy::GetLastIndex() const
 
 AWalkingEnemy::AWalkingEnemy()
 {
-	MoveTimeline = CreateDefaultSubobject<UMoveTimeline>("Move Timeline");
+	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
 }
 
 void AWalkingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	MoveTimeline->Initialize();
 	MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
 }
 
@@ -138,16 +139,21 @@ void AWalkingEnemy::LookAtNextTarget()
 	{
 		LookIndex = 0;
 	}
-	//FRotator LookAt = GetWorldLocationByIndex(PatrolIndex);
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(LookIndex));
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
-	SetActorRotation(Rotation);
+	MoveTimeline->RotateToPosition(Rotation);
 }
 
 
 ARotatingEnemy::ARotatingEnemy()
 {
-	RotateTimeline = CreateDefaultSubobject<URotateTimeline>("Rotate Timeline");
+	RotateTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Rotate Timeline");
+}
+
+void ARotatingEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	RotateTimeline->Initialize();
 }
 
 void ARotatingEnemy::DoTempoAction()

@@ -8,6 +8,7 @@
 #include "TimelineCreatorComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTimelineEnded);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FTimelineTick, float, val);
 
 UCLASS()
 class CHOREOPLATFORMER_API UTimelineCreatorComponent : public UActorComponent
@@ -16,12 +17,15 @@ class CHOREOPLATFORMER_API UTimelineCreatorComponent : public UActorComponent
 
 public:
 	UTimelineCreatorComponent();
+    void Initialize();
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void PlayTimeline();
     void Stop();
     bool IsRunning() const;
     UPROPERTY()
     FTimelineEnded TimelineEnded;
+    void MoveToPosition(FVector TargetPosition);
+    void RotateToPosition(FRotator TargetPosition);
 
 protected:
     UPROPERTY()
@@ -31,11 +35,25 @@ protected:
     UPROPERTY()
     class UCurveFloat* FloatCurve;
 
-    virtual void BeginPlay() override;
+    UPROPERTY()
+    FVector OriginLocation;
+    UPROPERTY()
+    FVector TargetLocation;
+    UPROPERTY()
+    FRotator OriginRotation;
+    UPROPERTY()
+    FRotator TargetRotation;
+    UPROPERTY()
+    FTimelineTick TimelineTick;
+
     UFUNCTION()
-    virtual void TimelineCallback(float val) {}
+    void TimelineCallback(float val);
     UFUNCTION()
-        void TimelineFinishedCallback();
+    void MoveCallback(float val);
+    UFUNCTION()
+    void RotateCallback(float val);
+    UFUNCTION()
+    void TimelineFinishedCallback();
 
     UPROPERTY()
     TEnumAsByte<ETimelineDirection::Type> TimelineDirection;
@@ -43,36 +61,4 @@ protected:
     float TimelineLength = 0.15f;
     UPROPERTY()
     float ElapsedTime;
-};
-
-UCLASS()
-class CHOREOPLATFORMER_API UMoveTimeline : public UTimelineCreatorComponent
-{
-    GENERATED_BODY()
-
-protected:
-    UPROPERTY()
-    FVector OriginLocation;
-    UPROPERTY()
-    FVector TargetLocation;
-    void TimelineCallback(float val) override;
-
-public:
-    void MoveToPosition(FVector TargetPosition);
-};
-
-UCLASS()
-class CHOREOPLATFORMER_API URotateTimeline : public UTimelineCreatorComponent
-{
-    GENERATED_BODY()
-
-protected:
-    UPROPERTY()
-    FRotator OriginRotation;
-    UPROPERTY()
-    FRotator TargetRotation;
-    void TimelineCallback(float val) override;
-
-public:
-    void RotateToPosition(FRotator TargetPosition);
 };
