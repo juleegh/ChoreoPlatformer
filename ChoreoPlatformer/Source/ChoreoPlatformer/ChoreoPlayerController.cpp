@@ -11,6 +11,7 @@
 #include "DancerHealthComponent.h"
 #include "DancerUIComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "TimelineCreatorComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -27,6 +28,7 @@ void AChoreoPlayerController::BeginPlay()
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	DancerHealth->HealthChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateHealth);
+	DanceCharacter->GetMovementTimeline()->TimelineEnded.AddDynamic(this, &AChoreoPlayerController::OnFinishedMovement);
 }
 
 void AChoreoPlayerController::Tick(float DeltaTime)
@@ -56,15 +58,25 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	auto NextBlock = TileDetector->CheckTile(UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction));
+	auto NextBlock = TileDetector->CheckTile(UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction))->GetTileType();
 	if (NextBlock == ETempoTile::Blocker)
 	{
 		return;
 	}
 
-	if (SongTempo->IsOnTempo(UDanceUtilsFunctionLibrary::GetTargetTempo(TileDetector->CheckTile(DanceCharacter->GetActorLocation()))))
+	if (SongTempo->IsOnTempo(UDanceUtilsFunctionLibrary::GetTargetTempo(TileDetector->CheckTile(DanceCharacter->GetActorLocation())->GetTileType())))
 	{
 		DanceCharacter->MoveInDirection(Direction);
+	}
+}
+
+void AChoreoPlayerController::OnFinishedMovement()
+{
+	auto NewBlock = TileDetector->CheckTile(DanceCharacter->GetActorLocation());
+
+	if (NewBlock->ForcesPlayerPosition())
+	{
+		DanceCharacter->MoveInDirection(NewBlock->ForcedDirection());
 	}
 }
 

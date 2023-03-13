@@ -22,6 +22,6 @@ protected:
 	AActor* PlayerPawn;
 
 public:
-	ETempoTile CheckTile(FVector Start);
+	AGridCell* CheckTile(FVector Start);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

@@ -25,10 +25,6 @@ protected:
 public:
 	// Called every frame
 	void LoadMap();
-	UPROPERTY(EditDefaultsOnly, Category = "Tile Types")
-	TSubclassOf<AGridCell> BlockerTile;
-	UPROPERTY(EditDefaultsOnly, Category = "Tile Types")
-	TSubclassOf<AGridCell> BlackTile;
-	UPROPERTY(EditDefaultsOnly, Category = "Tile Types")
-	TSubclassOf<AGridCell> HalfTile;
+	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
+	TSubclassOf<AGridCell> TileBP;
 };

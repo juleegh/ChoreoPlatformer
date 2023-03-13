@@ -26,4 +26,5 @@ public:
 	void MoveInDirection(FVector direction);
 	void StopMovement();
 	class AChoreoPlayerController* GetChoreoController() const;
+	class UTimelineCreatorComponent* GetMovementTimeline() { return MoveTimeline; }
 };

@@ -32,6 +32,8 @@ protected:
 	bool bShouldTakeDamage = false;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
+	void OnFinishedMovement();
+	UFUNCTION()
 	void OnPlayerDied();
 
 public:

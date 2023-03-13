@@ -18,7 +18,7 @@ void UTileDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-ETempoTile UTileDetectorComponent::CheckTile(FVector Start)
+AGridCell* UTileDetectorComponent::CheckTile(FVector Start)
 {
 	FHitResult OutHit;
 
@@ -37,9 +37,9 @@ ETempoTile UTileDetectorComponent::CheckTile(FVector Start)
 		auto actor = Cast<AGridCell>(OutHit.GetActor());
 		if (actor != NULL)
 		{
-			return actor->GetTileType();
+			return actor;
 		}
 	}
 
-	return ETempoTile::None;
+	return nullptr;
 }

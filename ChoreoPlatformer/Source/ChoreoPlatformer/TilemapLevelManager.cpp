@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TilemapLevelManager.h"
-#include "GridCell.h"
 #include "Kismet/GameplayStatics.h"
+#include "GridCell.h"
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "PaperTileMap.h"
@@ -11,7 +11,7 @@
 
 ATilemapLevelManager::ATilemapLevelManager()
 {
-
+	
 }
 
 void ATilemapLevelManager::BeginPlay()
@@ -45,22 +45,10 @@ void ATilemapLevelManager::LoadMap()
 
 				auto TileType = TileInfo.PackedTileIndex;
 				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
-
-				if (TileType == 0)
-				{
-					auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlackTile, DeltaPos, GetActorRotation());
-					SpawnedTile->SetOwner(this);
-				}
-				else if (TileType == 1)
-				{
-					auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(HalfTile, DeltaPos, GetActorRotation());
-					SpawnedTile->SetOwner(this);
-				}
-				else if (TileType == 2)
-				{
-					auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(BlockerTile, DeltaPos, GetActorRotation());
-					SpawnedTile->SetOwner(this);
-				}
+				
+				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, DeltaPos, GetActorRotation());
+				SpawnedTile->Initialize((ETempoTile)TileType);
+				SpawnedTile->SetOwner(this);
 			}
 		}
 
