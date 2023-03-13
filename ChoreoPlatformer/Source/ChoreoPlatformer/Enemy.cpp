@@ -111,6 +111,12 @@ AWalkingEnemy::AWalkingEnemy()
 	MoveTimeline = CreateDefaultSubobject<UMoveTimeline>("Move Timeline");
 }
 
+void AWalkingEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
+}
+
 void AWalkingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
@@ -124,6 +130,20 @@ void AWalkingEnemy::DoTempoAction()
 	Position.Z = GetActorLocation().Z;
 	MoveTimeline->MoveToPosition(Position);
 }
+
+void AWalkingEnemy::LookAtNextTarget()
+{
+	int LookIndex = PatrolIndex + 1;
+	if (LookIndex >= GetLastIndex())
+	{
+		LookIndex = 0;
+	}
+	//FRotator LookAt = GetWorldLocationByIndex(PatrolIndex);
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(LookIndex));
+	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
+	SetActorRotation(Rotation);
+}
+
 
 ARotatingEnemy::ARotatingEnemy()
 {

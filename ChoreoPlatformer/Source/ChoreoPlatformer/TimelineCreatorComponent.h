@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "TimelineCreatorComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTimelineEnded);
 
 UCLASS()
 class CHOREOPLATFORMER_API UTimelineCreatorComponent : public UActorComponent
@@ -19,6 +20,8 @@ public:
     void PlayTimeline();
     void Stop();
     bool IsRunning() const;
+    UPROPERTY()
+    FTimelineEnded TimelineEnded;
 
 protected:
     UPROPERTY()
@@ -32,7 +35,7 @@ protected:
     UFUNCTION()
     virtual void TimelineCallback(float val) {}
     UFUNCTION()
-    virtual void TimelineFinishedCallback() {}
+        void TimelineFinishedCallback();
 
     UPROPERTY()
     TEnumAsByte<ETimelineDirection::Type> TimelineDirection;

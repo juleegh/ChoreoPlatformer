@@ -48,6 +48,15 @@ void UTimelineCreatorComponent::BeginPlay()
     }
 }
 
+void UTimelineCreatorComponent::TimelineFinishedCallback()
+{
+    if (TimelineEnded.IsBound())
+    {
+        TimelineEnded.Broadcast();
+    }
+}
+
+
 void UTimelineCreatorComponent::Stop()
 {
     if (MyTimeline != NULL)

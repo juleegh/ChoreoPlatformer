@@ -59,10 +59,12 @@ public:
 	AWalkingEnemy();
 
 protected:
-	
+	void BeginPlay() override;
 	UPROPERTY()
 	class UMoveTimeline* MoveTimeline;
 	void DoTempoAction() override;
+	UFUNCTION()
+	void LookAtNextTarget();
 };
 
 UCLASS()
