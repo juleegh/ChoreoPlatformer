@@ -28,3 +28,12 @@ void ABrickWall::TriggerInteraction()
 		Destroy();
 	}
 }
+
+void ALever::TriggerInteraction()
+{
+	if (ConnectedDoor)
+	{
+		ConnectedDoor->Destroy();
+		ConnectedDoor = nullptr;
+	}
+}

@@ -39,3 +39,27 @@ protected:
 	int HitsLeft = 2;
 	void TriggerInteraction() override;
 };
+
+UCLASS()
+class CHOREOPLATFORMER_API ADoor : public AContextualElement
+{
+	GENERATED_BODY()
+
+public:
+	ADoor() {}
+
+protected:
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ALever : public AContextualElement
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditInstanceOnly)
+	ADoor* ConnectedDoor;
+public:
+	ALever() {}
+	void TriggerInteraction() override;
+};
