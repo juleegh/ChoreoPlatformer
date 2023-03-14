@@ -12,6 +12,7 @@
 #include "DancerUIComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "TimelineCreatorComponent.h"
+#include "ContextualElement.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -58,13 +59,20 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	auto NextBlock = TileDetector->CheckTile(UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction))->GetTileType();
-	if (NextBlock == ETempoTile::Blocker)
+	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
+	FDetectedInfo NextTile = TileDetector->CheckPosition(TargetPosition);
+	if (NextTile.bHitElement)
+	{
+		NextTile.HitElement->TriggerInteraction();
+		return;
+	}
+	else if (NextTile.TileType == ETempoTile::Blocker)
 	{
 		return;
 	}
 
-	if (SongTempo->IsOnTempo(UDanceUtilsFunctionLibrary::GetTargetTempo(TileDetector->CheckTile(DanceCharacter->GetActorLocation())->GetTileType())))
+	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
+	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo))
 	{
 		DanceCharacter->MoveInDirection(Direction);
 	}
@@ -72,11 +80,11 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 void AChoreoPlayerController::OnFinishedMovement()
 {
-	auto NewBlock = TileDetector->CheckTile(DanceCharacter->GetActorLocation());
+	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
 
-	if (NewBlock->ForcesPlayerPosition())
+	if (CurrentTile.bForcesDirection)
 	{
-		DanceCharacter->MoveInDirection(NewBlock->ForcedDirection());
+		DanceCharacter->MoveInDirection(CurrentTile.ForcedDirection);
 	}
 }
 

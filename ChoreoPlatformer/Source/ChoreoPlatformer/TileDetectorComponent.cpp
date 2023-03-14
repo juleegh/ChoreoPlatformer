@@ -1,6 +1,8 @@
 #include "TileDetectorComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy.h"
+#include "ContextualElement.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 UTileDetectorComponent::UTileDetectorComponent()
 {
@@ -18,9 +20,10 @@ void UTileDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-AGridCell* UTileDetectorComponent::CheckTile(FVector Start)
+FDetectedInfo UTileDetectorComponent::CheckPosition(FVector Start)
 {
 	FHitResult OutHit;
+	FDetectedInfo DetectedInfo;
 
 	Start.Z -= 50.f;
 
@@ -34,12 +37,26 @@ AGridCell* UTileDetectorComponent::CheckTile(FVector Start)
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldDynamic, CollisionParams))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetActor()->GetName()));
-		auto actor = Cast<AGridCell>(OutHit.GetActor());
-		if (actor != NULL)
+		if(auto actor = Cast<AGridCell>(OutHit.GetActor()))
 		{
-			return actor;
+			DetectedInfo.TileType = actor->GetTileType();
+			DetectedInfo.TargetTempo = UDanceUtilsFunctionLibrary::GetTargetTempo(actor->GetTileType());
+			DetectedInfo.bForcesDirection = actor->ForcesPlayerPosition();
+			DetectedInfo.ForcedDirection = actor->ForcedDirection();
 		}
 	}
 
-	return nullptr;
+	Start.Z += 50.f;
+
+	DetectedInfo.bHitElement = false;
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldDynamic, CollisionParams))
+	{
+		if (auto element = Cast<AContextualElement>(OutHit.GetActor()))
+		{
+			DetectedInfo.bHitElement = true;
+			DetectedInfo.HitElement = element;
+		}
+	}
+
+	return DetectedInfo;
 }

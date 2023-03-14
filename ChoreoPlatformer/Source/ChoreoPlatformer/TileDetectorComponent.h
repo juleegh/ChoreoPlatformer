@@ -7,6 +7,24 @@
 #include "GridCell.h"
 #include "TileDetectorComponent.generated.h"
 
+USTRUCT()
+struct FDetectedInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	bool bHitElement;
+	UPROPERTY()
+	class AContextualElement* HitElement;
+	UPROPERTY()
+	ETempoTile TileType;
+	UPROPERTY()
+	float TargetTempo;
+	UPROPERTY()
+	bool bForcesDirection;
+	UPROPERTY()
+	FVector ForcedDirection;
+};
 
 UCLASS(ClassGroup = (Custom), meta = (IsBlueprintBase = "true"))
 class CHOREOPLATFORMER_API UTileDetectorComponent : public UActorComponent
@@ -22,6 +40,6 @@ protected:
 	AActor* PlayerPawn;
 
 public:
-	AGridCell* CheckTile(FVector Start);
+	FDetectedInfo CheckPosition(FVector Start);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
