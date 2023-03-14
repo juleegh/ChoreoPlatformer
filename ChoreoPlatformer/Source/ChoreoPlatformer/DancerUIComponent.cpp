@@ -27,3 +27,8 @@ void UDancerUIComponent::UpdateHealth(int Current, int Max)
     StateUI.MaxHealth = Max;
     DancerUI->UpdateUIState(StateUI);
 }
+
+void UDancerUIComponent::UpdateCountdown(int TemposLeft)
+{
+    DancerUI->UpdateCountdown(TemposLeft);
+}

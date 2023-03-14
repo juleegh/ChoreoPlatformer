@@ -25,6 +25,8 @@ class CHOREOPLATFORMER_API UDancerUI : public UUserWidget
 	GENERATED_BODY()
 public:
     UFUNCTION(BlueprintImplementableEvent)
+    void UpdateCountdown(int TemposLeft);
+    UFUNCTION(BlueprintImplementableEvent)
     void UpdateUIState(FStateUI StateUI);
 	
 };
@@ -36,6 +38,8 @@ class CHOREOPLATFORMER_API UDancerUIComponent : public UActorComponent
 
 public:
     UDancerUIComponent();
+    UFUNCTION()
+    void UpdateCountdown(int TemposLeft);
     UFUNCTION()
     void UpdateHealth(int Current, int Max);
 

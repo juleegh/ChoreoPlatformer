@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "SongTempoComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewTempoStarted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTempoCountdown, int, Tempos);
 
 UCLASS()
 class CHOREOPLATFORMER_API USongTempoComponent : public UActorComponent
@@ -28,9 +30,15 @@ protected:
 	UPROPERTY()
 	float CurrentTime;
 	UPROPERTY()
+	int CurrentPauseTempos;
+	UPROPERTY()
 	class ADanceCharacter* character;
 
 public:	
+	UPROPERTY()
+	FNewTempoStarted NewTempoStarted;
+	UPROPERTY()
+	FTempoCountdown TempoCountdown;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -38,4 +46,9 @@ public:
 	bool IsOnTempo(float target = 1);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float TempoPercentage(float target = 1);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool TempoPercentageIsAcceptable(float target = 1);
+	void AddPauseTempos(int);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	int GetRemainingPauseTempos() { return CurrentPauseTempos; }
 };

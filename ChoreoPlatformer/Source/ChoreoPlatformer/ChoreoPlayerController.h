@@ -29,6 +29,8 @@ protected:
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	int IntroductionTempos = 4;
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bShouldTakeDamage = false;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
