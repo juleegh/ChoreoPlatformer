@@ -10,6 +10,8 @@
 #include "Components/CapsuleComponent.h"
 #include "TimelineCreatorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "DanceUtilsFunctionLibrary.h"
+#include "TileDetectorComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -24,6 +26,8 @@ AEnemy::AEnemy()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
+	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 }
 
 void AEnemy::BeginPlay()
@@ -38,17 +42,19 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	FDetectedInfo CurrentTile = TileDetector->CheckPosition(GetActorLocation());
+	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
 
 	if (hasDoneTempoAction)
 	{
-		if (!SongTempo->IsOnTempo())
+		if (Result > UDanceUtilsFunctionLibrary::GetAcceptanceRate())
 		{
 			hasDoneTempoAction = false;
 		}
 	}
 	else
 	{
-		if (SongTempo->IsOnTempo())
+		if (Result <= UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
 		{
 			hasDoneTempoAction = true;
 			DoTempoAction();
@@ -106,11 +112,6 @@ int ASplinedEnemy::GetLastIndex() const
 	return 0;
 }
 
-AWalkingEnemy::AWalkingEnemy()
-{
-	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
-}
-
 void AWalkingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -144,16 +145,10 @@ void AWalkingEnemy::LookAtNextTarget()
 	MoveTimeline->RotateToPosition(Rotation);
 }
 
-
-ARotatingEnemy::ARotatingEnemy()
-{
-	RotateTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Rotate Timeline");
-}
-
 void ARotatingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	RotateTimeline->Initialize();
+	MoveTimeline->Initialize();
 }
 
 void ARotatingEnemy::DoTempoAction()
@@ -168,7 +163,7 @@ void ARotatingEnemy::DoTempoAction()
 	//FRotator LookAt = GetWorldLocationByIndex(PatrolIndex);
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(PatrolIndex));
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
-	RotateTimeline->RotateToPosition(Rotation);
+	MoveTimeline->RotateToPosition(Rotation);
 }
 
 

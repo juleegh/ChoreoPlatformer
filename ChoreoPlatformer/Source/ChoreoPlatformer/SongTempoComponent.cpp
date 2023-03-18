@@ -36,11 +36,10 @@ bool USongTempoComponent::IsOnTempo(float target)
 float USongTempoComponent::TempoResult(float target)
 {
 	float Distance = TempoPercentage();
-	while (Distance >= target * 2)
+	while (Distance > target)
 	{
 		Distance -= target;
 	}
-	Distance = FMath::Abs(Distance - target);
 	return Distance;
 }
 
@@ -48,13 +47,13 @@ float USongTempoComponent::TempoPercentage()
 {
 	float Whole = FMath::FloorToInt(CurrentTime / SongDelay);
 	float Residue = (CurrentTime / SongDelay) - Whole;
-	return Residue / SongDelay;
+	return Residue;
 }
 
 bool USongTempoComponent::TempoPercentageIsAcceptable(float target)
 {
-	float Residue = TempoPercentage();
-	return Residue < GetAcceptancePercentage() * 0.5f || Residue >= (target - GetAcceptancePercentage() * 0.5f);
+	float Residue = TempoResult(target);
+	return Residue < GetAcceptancePercentage() * 0.5f || Residue >= (1 - GetAcceptancePercentage() * 0.5f);
 }
 
 void USongTempoComponent::AddPauseTempos(int TemposToAdd)

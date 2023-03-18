@@ -12,7 +12,7 @@ UTileDetectorComponent::UTileDetectorComponent()
 void UTileDetectorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	PlayerPawn = GetOwner();
 }
 
 void UTileDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

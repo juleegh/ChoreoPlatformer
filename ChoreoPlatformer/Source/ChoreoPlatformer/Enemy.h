@@ -21,6 +21,10 @@ protected:
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()
 	class ADanceCharacter* PlayerCharacter;
+	UPROPERTY()
+	class UTimelineCreatorComponent* MoveTimeline;
+	UPROPERTY()
+	class UTileDetectorComponent* TileDetector;
 
 	bool hasDoneTempoAction;
 	virtual void BeginPlay() override;
@@ -55,13 +59,8 @@ class CHOREOPLATFORMER_API AWalkingEnemy : public ASplinedEnemy
 {
 	GENERATED_BODY()
 
-public:
-	AWalkingEnemy();
-
 protected:
 	void BeginPlay() override;
-	UPROPERTY()
-	class UTimelineCreatorComponent* MoveTimeline;
 	void DoTempoAction() override;
 	UFUNCTION()
 	void LookAtNextTarget();
@@ -72,12 +71,7 @@ class CHOREOPLATFORMER_API ARotatingEnemy : public ASplinedEnemy
 {
 	GENERATED_BODY()
 
-public:
-	ARotatingEnemy();
-
 protected:
 	void BeginPlay() override;
-	UPROPERTY()
-	class UTimelineCreatorComponent* RotateTimeline;
 	void DoTempoAction() override;
 };
