@@ -28,7 +28,8 @@ public:
     void UpdateCountdown(int TemposLeft);
     UFUNCTION(BlueprintImplementableEvent)
     void UpdateUIState(FStateUI StateUI);
-	
+    UFUNCTION(BlueprintImplementableEvent)
+    void PromptTempoResult(float Distance);
 };
 
 UCLASS()
@@ -40,6 +41,8 @@ public:
     UDancerUIComponent();
     UFUNCTION()
     void UpdateCountdown(int TemposLeft);
+    UFUNCTION()
+    void PromptTempoResult(float Distance);
     UFUNCTION()
     void UpdateHealth(int Current, int Max);
 

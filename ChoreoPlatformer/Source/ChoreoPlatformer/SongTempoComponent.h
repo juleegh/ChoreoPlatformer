@@ -22,8 +22,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	UPROPERTY()
-	float AcceptancePercentage = 0.6f;
-	UPROPERTY()
 	float SongDelay = 0.4688f;
 	UPROPERTY()
 	bool InTempo;
@@ -33,7 +31,7 @@ protected:
 	int CurrentPauseTempos;
 	UPROPERTY()
 	class ADanceCharacter* character;
-
+	float GetAcceptancePercentage();
 public:	
 	UPROPERTY()
 	FNewTempoStarted NewTempoStarted;
@@ -45,7 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsOnTempo(float target = 1);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float TempoPercentage(float target = 1);
+	float TempoResult(float target);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float TempoPercentage();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool TempoPercentageIsAcceptable(float target = 1);
 	void AddPauseTempos(int);

@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "DanceCharacter.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 USongTempoComponent::USongTempoComponent()
 {
@@ -17,6 +18,11 @@ void USongTempoComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+float USongTempoComponent::GetAcceptancePercentage()
+{
+	return UDanceUtilsFunctionLibrary::GetAcceptanceRate();
+}
+
 bool USongTempoComponent::IsOnTempo(float target)
 {
 	if (CurrentPauseTempos > 0)
@@ -24,20 +30,31 @@ bool USongTempoComponent::IsOnTempo(float target)
 		return false;
 	}
 	
-	return TempoPercentageIsAcceptable(target);
+	return TempoResult(target) <= GetAcceptancePercentage();
 }
 
-float USongTempoComponent::TempoPercentage(float target)
+float USongTempoComponent::TempoResult(float target)
 {
-	float Whole = FMath::FloorToInt(CurrentTime / SongDelay * target);
+	float Distance = TempoPercentage();
+	while (Distance >= target * 2)
+	{
+		Distance -= target;
+	}
+	Distance = FMath::Abs(Distance - target);
+	return Distance;
+}
+
+float USongTempoComponent::TempoPercentage()
+{
+	float Whole = FMath::FloorToInt(CurrentTime / SongDelay);
 	float Residue = (CurrentTime / SongDelay) - Whole;
-	return 1 - Residue;
+	return Residue / SongDelay;
 }
 
 bool USongTempoComponent::TempoPercentageIsAcceptable(float target)
 {
-	float Residue = TempoPercentage(target);
-	return Residue < AcceptancePercentage * 0.5f || Residue >= (target - AcceptancePercentage * 0.5f);
+	float Residue = TempoPercentage();
+	return Residue < GetAcceptancePercentage() * 0.5f || Residue >= (target - GetAcceptancePercentage() * 0.5f);
 }
 
 void USongTempoComponent::AddPauseTempos(int TemposToAdd)

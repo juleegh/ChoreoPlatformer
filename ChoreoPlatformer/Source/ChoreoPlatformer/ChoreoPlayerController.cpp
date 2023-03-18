@@ -61,11 +61,15 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
+	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
+	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
+
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FDetectedInfo NextTile = TileDetector->CheckPosition(TargetPosition);
 	if (NextTile.bHitElement)
 	{
 		NextTile.HitElement->TriggerInteraction();
+		DancerUI->PromptTempoResult(Result);
 		return;
 	}
 	else if (NextTile.TileType == ETempoTile::Blocker)
@@ -73,7 +77,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
+	DancerUI->PromptTempoResult(Result);
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo))
 	{
 		DanceCharacter->MoveInDirection(Direction);

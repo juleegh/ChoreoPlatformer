@@ -32,3 +32,8 @@ void UDancerUIComponent::UpdateCountdown(int TemposLeft)
 {
     DancerUI->UpdateCountdown(TemposLeft);
 }
+
+void UDancerUIComponent::PromptTempoResult(float Distance)
+{
+    DancerUI->PromptTempoResult(Distance);
+}

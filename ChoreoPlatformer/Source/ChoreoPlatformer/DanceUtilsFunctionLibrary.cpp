@@ -19,3 +19,17 @@ FVector UDanceUtilsFunctionLibrary::GetTransformedPosition(FVector Origin, FVect
 	return Origin + Direction * 100;
 }
 
+ETempoAccuracy UDanceUtilsFunctionLibrary::GetTempoResult(float Distance)
+{
+	if (Distance <= GetPerfectAcceptanceRate())
+	{
+		return ETempoAccuracy::Perfect;
+	}
+	else if (Distance <= GetAcceptanceRate())
+	{
+		return ETempoAccuracy::Great;
+	}
+	return ETempoAccuracy::Bad;
+}
+
+
