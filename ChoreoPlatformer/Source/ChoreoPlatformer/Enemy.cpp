@@ -47,7 +47,7 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (hasDoneTempoAction)
 	{
-		if (Result > UDanceUtilsFunctionLibrary::GetAcceptanceRate())
+		if (Result > 0.4)
 		{
 			hasDoneTempoAction = false;
 		}
@@ -116,7 +116,7 @@ void AWalkingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
-	MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
+	//MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
 }
 
 void AWalkingEnemy::DoTempoAction()
@@ -124,19 +124,22 @@ void AWalkingEnemy::DoTempoAction()
 	Super::DoTempoAction();
 
 	PatrolIndex++;
-	if (PatrolIndex >= GetLastIndex())
+	if (PatrolIndex == GetLastIndex())
 	{
 		PatrolIndex = 0;
 	}
 	FVector Position = GetWorldLocationByIndex(PatrolIndex);
 	Position.Z = GetActorLocation().Z;
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(PatrolIndex));
+	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
+	SetActorRotation(Rotation);
 	MoveTimeline->MoveToPosition(Position);
 }
 
 void AWalkingEnemy::LookAtNextTarget()
 {
 	int LookIndex = PatrolIndex + 1;
-	if (LookIndex >= GetLastIndex())
+	if (LookIndex == GetLastIndex())
 	{
 		LookIndex = 0;
 	}
@@ -156,7 +159,7 @@ void ARotatingEnemy::DoTempoAction()
 	Super::DoTempoAction();
 
 	PatrolIndex++;
-	if (PatrolIndex >= GetLastIndex())
+	if (PatrolIndex == GetLastIndex())
 	{
 		PatrolIndex = 0;
 	}

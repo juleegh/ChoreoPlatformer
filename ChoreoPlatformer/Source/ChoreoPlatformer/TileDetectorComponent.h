@@ -19,7 +19,7 @@ struct FDetectedInfo
 	UPROPERTY()
 	ETempoTile TileType;
 	UPROPERTY()
-	float TargetTempo;
+	float TargetTempo = 1;
 	UPROPERTY()
 	bool bForcesDirection;
 	UPROPERTY()
