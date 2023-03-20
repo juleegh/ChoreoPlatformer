@@ -24,19 +24,20 @@ protected:
 	UPROPERTY()
 	float SongDelay = 0.4688f;
 	UPROPERTY()
+	float CalibrationDeficit;
+	UPROPERTY()
 	bool InTempo;
 	UPROPERTY()
 	float CurrentTime;
 	UPROPERTY()
 	int CurrentPauseTempos;
-	UPROPERTY()
-	class ADanceCharacter* character;
 	float GetAcceptancePercentage();
 public:	
 	UPROPERTY()
 	FNewTempoStarted NewTempoStarted;
 	UPROPERTY()
 	FTempoCountdown TempoCountdown;
+	void SetupCalibrationDeficit(float Deficit);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

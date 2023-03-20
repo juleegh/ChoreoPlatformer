@@ -47,7 +47,7 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (hasDoneTempoAction)
 	{
-		if (Result > 0.4)
+		if (Result > UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
 		{
 			hasDoneTempoAction = false;
 		}

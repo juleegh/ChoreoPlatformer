@@ -4,6 +4,7 @@
 #include "ChoreoPlayerController.h"
 #include "SongTempoComponent.h"
 #include "DanceCharacter.h"
+#include "CalibrationComponent.h"
 #include "GridCell.h"
 #include "TilemapLevelManager.h"
 #include "TileDetectorComponent.h"
@@ -21,6 +22,7 @@ AChoreoPlayerController::AChoreoPlayerController()
 	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
 	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
 	DancerUI = CreateDefaultSubobject<UDancerUIComponent>(TEXT("Dancer UI"));
+	Calibration = CreateDefaultSubobject<UCalibrationComponent>(TEXT("Calibration"));
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -61,6 +63,14 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
+	if (!Calibration->IsCalibrated())
+	{
+		Calibration->ReceiveInput();
+		float Result = SongTempo->TempoResult(1);
+		DancerUI->PromptTempoResult(Result);
+		return;
+	}
+	
 	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
 

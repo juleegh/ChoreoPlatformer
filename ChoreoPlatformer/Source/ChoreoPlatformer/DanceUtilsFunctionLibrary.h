@@ -25,6 +25,6 @@ public:
 	static FVector GetTransformedPosition(FVector Origin, FVector Direction);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static ETempoAccuracy GetTempoResult(float Distance);
-	static float GetAcceptanceRate() { return 0.6; }
-	static float GetPerfectAcceptanceRate() { return 0.15; }
+	static float GetAcceptanceRate() { return 0.3; }
+	static float GetPerfectAcceptanceRate() { return 0.1; }
 };

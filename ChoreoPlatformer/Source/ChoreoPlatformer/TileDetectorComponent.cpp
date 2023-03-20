@@ -13,6 +13,10 @@ void UTileDetectorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerPawn = GetOwner();
+	if (auto Controller = Cast<AController>(PlayerPawn))
+	{
+		PlayerPawn = Controller->GetPawn();
+	}
 }
 
 void UTileDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

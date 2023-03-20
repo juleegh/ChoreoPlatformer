@@ -5,7 +5,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
-#include "DanceCharacter.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 USongTempoComponent::USongTempoComponent()
@@ -16,6 +15,11 @@ USongTempoComponent::USongTempoComponent()
 void USongTempoComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void USongTempoComponent::SetupCalibrationDeficit(float Deficit)
+{
+	CalibrationDeficit = Deficit * SongDelay;
 }
 
 float USongTempoComponent::GetAcceptancePercentage()
@@ -36,23 +40,27 @@ bool USongTempoComponent::IsOnTempo(float target)
 float USongTempoComponent::TempoResult(float target)
 {
 	float Distance = TempoPercentage();
-	while (Distance > target)
+	float MinDistance = Distance;
+	for (float step = 0; step <= 1; step += target)
 	{
-		Distance -= target;
+		if (FMath::Abs(step - Distance) < MinDistance)
+		{
+			MinDistance = FMath::Abs(step - Distance);
+		}
 	}
-	return Distance;
+	return MinDistance;
 }
 
 float USongTempoComponent::TempoPercentage()
 {
-	float Whole = FMath::FloorToInt(CurrentTime / SongDelay);
-	float Residue = (CurrentTime / SongDelay) - Whole;
+	float Whole = FMath::FloorToInt((CurrentTime + CalibrationDeficit) / SongDelay);
+	float Residue = ((CurrentTime + CalibrationDeficit) / SongDelay) - Whole;
 	return Residue;
 }
 
 bool USongTempoComponent::TempoPercentageIsAcceptable(float target)
 {
-	float Residue = TempoResult(target);
+	float Residue = TempoPercentage();
 	return Residue < GetAcceptancePercentage() * 0.5f || Residue >= (1 - GetAcceptancePercentage() * 0.5f);
 }
 
