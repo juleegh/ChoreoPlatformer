@@ -27,8 +27,6 @@ protected:
 	UPROPERTY()
 	class UDancerUIComponent* DancerUI;
 	UPROPERTY()
-	class UCalibrationComponent* Calibration;
-	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	int IntroductionTempos = 4;

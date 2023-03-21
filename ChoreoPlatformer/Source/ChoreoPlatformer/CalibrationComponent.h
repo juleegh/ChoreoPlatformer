@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "GameFramework/Actor.h"
 #include "Components/ActorComponent.h"
 #include "CalibrationComponent.generated.h"
 
@@ -28,6 +29,21 @@ protected:
 public:
 	bool IsCalibrated();
 	void ReceiveInput();
+};
+
+UCLASS(ClassGroup = (Custom))
+class CHOREOPLATFORMER_API ACalibrator : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ACalibrator();
+
+protected:
+	UPROPERTY()
+	class UCalibrationComponent* Calibration;
+	virtual void BeginPlay() override;
+	void KeyPressed();
 };
 
 UCLASS()
