@@ -19,7 +19,7 @@ void USongTempoComponent::BeginPlay()
 
 void USongTempoComponent::SetupCalibrationDeficit(float Deficit)
 {
-	CalibrationDeficit = Deficit * SongDelay;
+	CalibrationDeficit = Deficit * SongFrequency;
 }
 
 float USongTempoComponent::GetAcceptancePercentage()
@@ -53,8 +53,8 @@ float USongTempoComponent::TempoResult(float target)
 
 float USongTempoComponent::TempoPercentage()
 {
-	float Whole = FMath::FloorToInt((CurrentTime + CalibrationDeficit) / SongDelay);
-	float Residue = ((CurrentTime + CalibrationDeficit) / SongDelay) - Whole;
+	float Whole = FMath::FloorToInt((CurrentTime + CalibrationDeficit) / SongFrequency);
+	float Residue = ((CurrentTime + CalibrationDeficit) / SongFrequency) - Whole;
 	return Residue;
 }
 
@@ -72,6 +72,10 @@ void USongTempoComponent::AddPauseTempos(int TemposToAdd)
 void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!bIsCountingTempo)
+	{
+		return;
+	}
 	CurrentTime += DeltaTime;
 	if (!InTempo && TempoPercentageIsAcceptable(1))
 	{
@@ -89,5 +93,21 @@ void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		}
 	}
 	InTempo = TempoPercentageIsAcceptable(1);
+}
+
+void USongTempoComponent::SetupTempo(float Frequency)
+{
+	SongFrequency = Frequency;
+}
+
+void USongTempoComponent::StartTempoCounting()
+{
+	CurrentTime = 0;
+	bIsCountingTempo = true;
+}
+
+void USongTempoComponent::StopTempoCounting()
+{
+	bIsCountingTempo = false;
 }
 

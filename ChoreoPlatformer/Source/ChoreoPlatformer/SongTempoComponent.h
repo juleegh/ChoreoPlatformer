@@ -22,7 +22,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	UPROPERTY()
-	float SongDelay = 0.4688f;
+	float SongFrequency;
 	UPROPERTY()
 	float CalibrationDeficit;
 	UPROPERTY()
@@ -32,6 +32,8 @@ protected:
 	UPROPERTY()
 	int CurrentPauseTempos;
 	float GetAcceptancePercentage();
+	UPROPERTY()
+	bool bIsCountingTempo = false;
 public:	
 	UPROPERTY()
 	FNewTempoStarted NewTempoStarted;
@@ -52,4 +54,7 @@ public:
 	void AddPauseTempos(int);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int GetRemainingPauseTempos() { return CurrentPauseTempos; }
+	void SetupTempo(float Frequency);
+	void StartTempoCounting();
+	void StopTempoCounting();
 };
