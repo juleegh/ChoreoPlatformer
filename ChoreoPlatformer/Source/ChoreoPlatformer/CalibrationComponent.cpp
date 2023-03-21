@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "TutorialLevelActor.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 UCalibrationComponent::UCalibrationComponent()
 {
@@ -20,7 +21,8 @@ bool UCalibrationComponent::IsCalibrated()
 float UCalibrationComponent::GetCalibrationDelta()
 {
 	int Pre = PreTempos == 0 ? 1 : PreTempos;
-	return PreTempoMargin / PreTempos;
+	int Post = PostTempos == 0 ? 1 : PostTempos;
+	return (PreTempoMargin / PreTempos) - (PostTempoMargin / PostTempos);
 }
 
 
@@ -30,15 +32,38 @@ void UCalibrationComponent::ReceiveInput()
 	{
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	}
-	PreTempos++;
-	PreTempoMargin += SongTempo->TempoPercentage();
+	float Result = SongTempo->TempoPercentage();
+	if (Result < 0.5f)
+	{
+		PostTempos++;
+		PostTempoMargin += Result;
+	}
+	else
+	{
+		PreTempos++;
+		PreTempoMargin += 1 - Result;
+	}
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
+	if (Result <= UDanceUtilsFunctionLibrary::GetAcceptanceRate())
+	{
+		Streak++;
+	}
+	else
+	{
+		Streak = 0;
+	}
 
-	if (PreTempos == 8)
+	if (Streak >= RequiredStreak)
 	{
 		bIsCalibrated = true;
 	}
 }
+
+void UCalibrationComponent::Setup(int Required)
+{
+	RequiredStreak = Required;
+}
+
 
 ACalibrator::ACalibrator()
 {
@@ -54,6 +79,7 @@ void ACalibrator::BeginPlay()
 	PlayerInputComponent->BindAction("Down", IE_Pressed, this, &ACalibrator::KeyPressed);
 	PlayerInputComponent->BindAction("Left", IE_Pressed, this, &ACalibrator::KeyPressed);
 	PlayerInputComponent->BindAction("Right", IE_Pressed, this, &ACalibrator::KeyPressed);
+	Calibration->Setup(RequiredStreak);
 }
 
 void ACalibrator::KeyPressed()

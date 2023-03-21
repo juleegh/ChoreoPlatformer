@@ -23,12 +23,21 @@ protected:
 	UPROPERTY()
 	float PreTempos = 0;
 	UPROPERTY()
+	float PostTempos = 0;
+	UPROPERTY()
 	float PreTempoMargin;
+	UPROPERTY()
+	float PostTempoMargin;
+	UPROPERTY()
+	int Streak;
+	UPROPERTY()
+	int RequiredStreak;
 	float GetCalibrationDelta();
 
 public:
 	bool IsCalibrated();
 	void ReceiveInput();
+	void Setup(int Required);
 };
 
 UCLASS(ClassGroup = (Custom))
@@ -42,6 +51,8 @@ public:
 protected:
 	UPROPERTY()
 	class UCalibrationComponent* Calibration;
+	UPROPERTY()
+	int RequiredStreak = 8;
 	virtual void BeginPlay() override;
 	void KeyPressed();
 };
