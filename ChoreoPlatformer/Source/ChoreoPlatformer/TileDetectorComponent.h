@@ -24,6 +24,8 @@ struct FDetectedInfo
 	bool bForcesDirection;
 	UPROPERTY()
 	FVector ForcedDirection;
+	UPROPERTY()
+	FGameplayTag Section;
 };
 
 UCLASS(ClassGroup = (Custom), meta = (IsBlueprintBase = "true"))

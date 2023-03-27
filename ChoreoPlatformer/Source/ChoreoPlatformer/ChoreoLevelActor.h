@@ -4,21 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Engine/LevelScriptActor.h"
-#include "TutorialLevelActor.generated.h"
+#include "ChoreoLevelActor.generated.h"
 
 UCLASS()
 class CHOREOPLATFORMER_API AChoreoLevelActor : public ALevelScriptActor
 {
 	GENERATED_BODY()
 
+public:
+	AChoreoLevelActor() {}
+
 protected:
 	virtual void BeginPlay() override;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level Setup")
-	class USoundBase* Song;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level Setup")
-	float SongFrequency;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level Setup")
-	int IntroTempos;
 };
 
 UCLASS()

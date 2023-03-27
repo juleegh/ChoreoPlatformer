@@ -47,6 +47,7 @@ FDetectedInfo UTileDetectorComponent::CheckPosition(FVector Start)
 			DetectedInfo.TargetTempo = UDanceUtilsFunctionLibrary::GetTargetTempo(actor->GetTileType());
 			DetectedInfo.bForcesDirection = actor->ForcesPlayerPosition();
 			DetectedInfo.ForcedDirection = actor->ForcedDirection();
+			DetectedInfo.Section = actor->GetSection();
 		}
 	}
 

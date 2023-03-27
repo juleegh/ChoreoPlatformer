@@ -13,6 +13,7 @@
 #include "DanceUtilsFunctionLibrary.h"
 #include "TimelineCreatorComponent.h"
 #include "ContextualElement.h"
+#include "Kismet/GameplayStatics.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -31,6 +32,15 @@ void AChoreoPlayerController::BeginPlay()
 	DancerHealth->HealthChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateHealth);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
 	DanceCharacter->GetMovementTimeline()->TimelineEnded.AddDynamic(this, &AChoreoPlayerController::OnFinishedMovement);
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), FoundActors);
+
+	for (auto SectionActor : FoundActors)
+	{
+		SectionManager = Cast<ASectionLevelManager>(SectionActor);
+		break;
+	}
 }
 
 void AChoreoPlayerController::Tick(float DeltaTime)
@@ -74,6 +84,10 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	else if (NextTile.TileType == ETempoTile::Blocker)
 	{
 		return;
+	}
+	else if(SectionManager)
+	{
+		SectionManager->SectionChanged(NextTile.Section);
 	}
 
 	DancerUI->PromptTempoResult(Result);

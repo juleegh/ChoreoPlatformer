@@ -5,7 +5,7 @@
 #include "SongTempoComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
-#include "TutorialLevelActor.h"
+#include "ChoreoLevelActor.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 UCalibrationComponent::UCalibrationComponent()

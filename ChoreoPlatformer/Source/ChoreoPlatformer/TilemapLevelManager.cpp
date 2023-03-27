@@ -8,6 +8,8 @@
 #include "PaperTileMap.h"
 #include "PaperTileLayer.h"
 #include "PaperTileSet.h"
+#include "GameplayTagContainer.h"
+#include "SongTempoComponent.h"
 
 ATilemapLevelManager::ATilemapLevelManager()
 {
@@ -28,8 +30,9 @@ void ATilemapLevelManager::LoadMap()
 	for (auto TileMapActor : FoundActors)
 	{
 		auto TileMap = Cast<APaperTileMapActor>(TileMapActor)->GetRenderComponent()->TileMap;
-
 		auto LayerInfo = TileMap->TileLayers[0];
+		auto LayerName = FName(LayerInfo->LayerName.ToString());
+		FGameplayTag SectionIdentifier = FGameplayTag::RequestGameplayTag(LayerName, false);
 		auto LayerWidth = LayerInfo->GetLayerWidth();
 		auto LayerHeight = LayerInfo->GetLayerHeight();
 
@@ -47,12 +50,37 @@ void ATilemapLevelManager::LoadMap()
 				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
 				
 				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, DeltaPos, GetActorRotation());
-				SpawnedTile->Initialize((ETempoTile)TileType);
+				SpawnedTile->Initialize((ETempoTile)TileType, SectionIdentifier);
 				SpawnedTile->SetOwner(this);
 			}
 		}
 
 		TileMapActor->SetActorLocation(TileMapActor->GetActorLocation() + FVector::DownVector * 50);
+	}
+}
+
+void ASectionLevelManager::BeginPlay()
+{
+	Super::BeginPlay();
+	if (auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>())
+	{
+		SongTempo->AddPauseTempos(IntroTempos);
+		SongTempo->SetupTempo(SongFrequency);
+		SongTempo->StartTempoCounting();
+	}
+}
+
+void ASectionLevelManager::SectionChanged(FGameplayTag& NewSection)
+{
+	if (!CurrentSection.IsValid() || CurrentSection != NewSection)
+	{
+		CurrentSection = NewSection;
+		if (Sections.Contains(CurrentSection))
+		{
+			CurrentSectionStart = Sections[CurrentSection].BeatStart;
+			CurrentSectionDuration = Sections[CurrentSection].BeatDuration;
+			PlayCurrentSection();
+		}
 	}
 }
 

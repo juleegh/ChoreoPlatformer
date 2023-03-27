@@ -15,9 +15,10 @@ AGridCell::AGridCell()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AGridCell::Initialize(ETempoTile Properties)
+void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection)
 {
 	TileType = Properties;
+	Section = BelongingSection;
 	PaintTile();
 }
 
@@ -61,5 +62,11 @@ FVector AGridCell::ForcedDirection()
 			return FVector::ZeroVector;
 	}
 }
+
+FGameplayTag& AGridCell::GetSection()
+{
+	return Section;
+}
+
 
 
