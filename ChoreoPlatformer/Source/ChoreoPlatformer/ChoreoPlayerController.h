@@ -19,8 +19,6 @@ protected:
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()
-	class UTileDetectorComponent* TileDetector;
-	UPROPERTY()
 	class ULevelProgressComponent* LevelProgress;
 	UPROPERTY()
 	class UDancerHealthComponent* DancerHealth;

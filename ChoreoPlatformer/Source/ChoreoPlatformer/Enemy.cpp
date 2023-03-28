@@ -11,7 +11,6 @@
 #include "TimelineCreatorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DanceUtilsFunctionLibrary.h"
-#include "TileDetectorComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -27,7 +26,6 @@ AEnemy::AEnemy()
 
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
-	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 }
 
 void AEnemy::BeginPlay()
@@ -42,7 +40,7 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FDetectedInfo CurrentTile = TileDetector->CheckPosition(GetActorLocation());
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition(this, GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
 
 	if (hasDoneTempoAction)

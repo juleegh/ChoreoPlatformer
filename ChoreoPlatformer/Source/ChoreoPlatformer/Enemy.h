@@ -23,8 +23,6 @@ protected:
 	class ADanceCharacter* PlayerCharacter;
 	UPROPERTY()
 	class UTimelineCreatorComponent* MoveTimeline;
-	UPROPERTY()
-	class UTileDetectorComponent* TileDetector;
 
 	bool hasDoneTempoAction;
 	virtual void BeginPlay() override;

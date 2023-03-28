@@ -6,7 +6,6 @@
 #include "DanceCharacter.h"
 #include "GridCell.h"
 #include "TilemapLevelManager.h"
-#include "TileDetectorComponent.h"
 #include "LevelProgressComponent.h"
 #include "DancerHealthComponent.h"
 #include "DancerUIComponent.h"
@@ -18,7 +17,6 @@
 AChoreoPlayerController::AChoreoPlayerController()
 {
 	SongTempo = CreateDefaultSubobject<USongTempoComponent>(TEXT("Song Tempo"));
-	TileDetector = CreateDefaultSubobject<UTileDetectorComponent>(TEXT("Tile Detector"));
 	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
 	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
 	DancerUI = CreateDefaultSubobject<UDancerUIComponent>(TEXT("Dancer UI"));
@@ -70,11 +68,11 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
 
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
-	FDetectedInfo NextTile = TileDetector->CheckPosition(TargetPosition);
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, TargetPosition);
 	if (NextTile.bHitElement)
 	{
 		NextTile.HitElement->TriggerInteraction();
@@ -85,21 +83,18 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	{
 		return;
 	}
-	else if(SectionManager)
-	{
-		SectionManager->SectionChanged(NextTile.Section);
-	}
 
 	DancerUI->PromptTempoResult(Result);
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo))
 	{
 		DanceCharacter->MoveInDirection(Direction);
+		SectionManager->SectionChanged(NextTile.Section);
 	}
 }
 
 void AChoreoPlayerController::OnFinishedMovement()
 {
-	FDetectedInfo CurrentTile = TileDetector->CheckPosition(DanceCharacter->GetActorLocation());
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
 
 	if (CurrentTile.bForcesDirection)
 	{

@@ -74,7 +74,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void SectionChanged(FGameplayTag& NewSection);
+	UFUNCTION(BlueprintCallable)
+	void SectionChanged(FGameplayTag NewSection);
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCurrentSection();
 };

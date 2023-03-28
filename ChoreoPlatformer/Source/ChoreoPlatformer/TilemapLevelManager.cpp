@@ -70,7 +70,7 @@ void ASectionLevelManager::BeginPlay()
 	}
 }
 
-void ASectionLevelManager::SectionChanged(FGameplayTag& NewSection)
+void ASectionLevelManager::SectionChanged(FGameplayTag NewSection)
 {
 	if (!CurrentSection.IsValid() || CurrentSection != NewSection)
 	{
