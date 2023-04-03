@@ -72,6 +72,11 @@ void ASectionLevelManager::BeginPlay()
 
 void ASectionLevelManager::SectionChanged(FGameplayTag NewSection)
 {
+	if (!NewSection.IsValid())
+	{
+		return;
+	}
+
 	if (!CurrentSection.IsValid() || CurrentSection != NewSection)
 	{
 		CurrentSection = NewSection;

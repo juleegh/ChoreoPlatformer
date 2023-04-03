@@ -88,6 +88,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo))
 	{
 		DanceCharacter->MoveInDirection(Direction);
+		PlayerMoved.Broadcast();
 		SectionManager->SectionChanged(NextTile.Section);
 	}
 }
@@ -99,6 +100,7 @@ void AChoreoPlayerController::OnFinishedMovement()
 	if (CurrentTile.bForcesDirection)
 	{
 		DanceCharacter->MoveInDirection(CurrentTile.ForcedDirection);
+		PlayerMoved.Broadcast();
 	}
 }
 

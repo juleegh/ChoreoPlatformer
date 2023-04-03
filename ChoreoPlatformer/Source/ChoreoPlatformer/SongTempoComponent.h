@@ -35,7 +35,7 @@ protected:
 	UPROPERTY()
 	bool bIsCountingTempo = false;
 public:	
-	UPROPERTY()
+	UPROPERTY(BlueprintAssignable)
 	FNewTempoStarted NewTempoStarted;
 	UPROPERTY()
 	FTempoCountdown TempoCountdown;

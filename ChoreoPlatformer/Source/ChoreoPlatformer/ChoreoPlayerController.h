@@ -6,9 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "ChoreoPlayerController.generated.h"
 
-/**
- *
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerMoved);
+
 UCLASS()
 class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 {
@@ -40,6 +39,9 @@ protected:
 
 public:
 	AChoreoPlayerController();
+	UPROPERTY(BlueprintAssignable)
+	FPlayerMoved PlayerMoved;
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class USongTempoComponent* GetSongTempoComponent() const { return SongTempo; }
 	class ULevelProgressComponent* GetLevelProgressComponent() const { return LevelProgress; }
 	class UDancerHealthComponent* GetDancerHealthComponent() const { return DancerHealth; }
