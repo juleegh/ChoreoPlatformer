@@ -31,6 +31,8 @@ protected:
 	int IntroductionTempos = 4;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bShouldTakeDamage = false;
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	bool bShouldPunishTempo = false;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
 	void OnFinishedMovement();

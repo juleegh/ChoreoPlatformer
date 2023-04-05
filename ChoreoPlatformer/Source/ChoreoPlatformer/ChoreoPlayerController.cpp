@@ -85,7 +85,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	}
 
 	DancerUI->PromptTempoResult(Result);
-	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo))
+	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo) || !bShouldPunishTempo)
 	{
 		DanceCharacter->MoveInDirection(Direction);
 		PlayerMoved.Broadcast();
