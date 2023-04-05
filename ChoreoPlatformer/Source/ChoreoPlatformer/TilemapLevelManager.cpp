@@ -10,6 +10,7 @@
 #include "PaperTileSet.h"
 #include "GameplayTagContainer.h"
 #include "SongTempoComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 ATilemapLevelManager::ATilemapLevelManager()
 {
@@ -67,6 +68,10 @@ void ASectionLevelManager::BeginPlay()
 		SongTempo->AddPauseTempos(IntroTempos);
 		SongTempo->SetupTempo(SongFrequency);
 		SongTempo->StartTempoCounting();
+
+		auto DanceCharacter = GetWorld()->GetFirstPlayerController()->GetPawn();
+		FTileInfo StartTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
+		SectionChanged(StartTile.Section);
 	}
 }
 
