@@ -72,12 +72,38 @@ void AHalfCoin::PlayerChangedPosition()
 	if (bUnderProgress)
 	{
 		TemposRemaining--;
+		ChallengeUpdated();
 	}
 	if (bUnderProgress && TemposRemaining == 0)
 	{
 		bUnderProgress = false;
 		ChallengeEnded(false);
 		PlayerUI->ChallengeEnded(ChallengeType, false);
+	}
+}
+
+void ACoinTrail::StartChallenge()
+{
+	CurrentCoin = -1;
+}
+
+void ACoinTrail::PlayerChangedPosition()
+{
+	Super::PlayerChangedPosition();
+
+	if (bUnderProgress)
+	{
+		if (GetPlayerCurrentIndex() == CurrentCoin + 1)
+		{
+			CurrentCoin++;
+			ChallengeUpdated();
+		}
+		else
+		{
+			bUnderProgress = false;
+			ChallengeEnded(false);
+			PlayerUI->ChallengeEnded(ChallengeType, false);
+		}
 	}
 }
 

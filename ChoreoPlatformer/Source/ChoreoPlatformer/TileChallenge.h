@@ -43,6 +43,8 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChallengeStarted(); 
 	UFUNCTION(BlueprintImplementableEvent)
+	void ChallengeUpdated();
+	UFUNCTION(BlueprintImplementableEvent)
 	void ChallengeEnded(bool bWasSuccessful);
 };
 
@@ -57,6 +59,23 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	int TemposRemaining;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	int TemposBetweenHalfs;
+	void StartChallenge() override;
+	void PlayerChangedPosition() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ACoinTrail : public ATileChallenge
+{
+	GENERATED_BODY()
+
+public:
+	ACoinTrail() { ChallengeType = EChallengeType::CoinTrail; }
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	int CurrentCoin;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	int TemposBetweenHalfs;
 	void StartChallenge() override;
