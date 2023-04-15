@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "TileChallenge.h"
 #include "DancerUIComponent.generated.h"
 
 USTRUCT(BlueprintType)
@@ -33,6 +34,17 @@ public:
 };
 
 UCLASS()
+class CHOREOPLATFORMER_API UChallengeUI : public UUserWidget
+{
+    GENERATED_BODY()
+public:
+    UFUNCTION(BlueprintImplementableEvent)
+    void ChallengeStarted(EChallengeType ChallengeType);
+    UFUNCTION(BlueprintImplementableEvent)
+    void ChallengeEnded(EChallengeType ChallengeType, bool Success);
+};
+
+UCLASS()
 class CHOREOPLATFORMER_API UDancerUIComponent : public UActorComponent
 {
     GENERATED_BODY()
@@ -45,12 +57,20 @@ public:
     void PromptTempoResult(float Distance);
     UFUNCTION()
     void UpdateHealth(int Current, int Max);
+    UFUNCTION()
+    void ChallengeStarted(EChallengeType ChallengeType);
+    UFUNCTION()
+    void ChallengeEnded(EChallengeType ChallengeType, bool Success);
 
 protected:
     UPROPERTY()
     TSubclassOf<UUserWidget> DancerClass;
     UPROPERTY()
+    TSubclassOf<UUserWidget> ChallengeClass;
+    UPROPERTY()
     UDancerUI* DancerUI;
+    UPROPERTY()
+    UChallengeUI* ChallengeUI;
     UPROPERTY()
     FStateUI StateUI;
     virtual void BeginPlay() override;

@@ -17,6 +17,7 @@ void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
+	MoveTimeline->TimelineEnded.AddDynamic(this, &ADanceCharacter::ReachedNextTile);
 }
 
 void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -36,6 +37,7 @@ void ADanceCharacter::MoveInDirection(FVector direction)
 	{
 		return;
 	}
+	PlayerMoved.Broadcast();
 	FVector position = UDanceUtilsFunctionLibrary::GetTransformedPosition(GetActorLocation(), direction);
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
@@ -46,6 +48,11 @@ void ADanceCharacter::MoveInDirection(FVector direction)
 void ADanceCharacter::StopMovement()
 {
 	MoveTimeline->Stop();
+}
+
+void ADanceCharacter::ReachedNextTile()
+{
+	PlayerNewPosition.Broadcast();
 }
 
 AChoreoPlayerController* ADanceCharacter::GetChoreoController() const
