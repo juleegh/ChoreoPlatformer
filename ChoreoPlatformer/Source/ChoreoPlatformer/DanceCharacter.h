@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "DanceCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerMoved);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerNewPosition);
+
 UCLASS()
 class CHOREOPLATFORMER_API ADanceCharacter : public ACharacter
 {
@@ -18,10 +21,16 @@ protected:
 	UPROPERTY()
 	class UTimelineCreatorComponent* MoveTimeline;
 	virtual void BeginPlay() override;
+	UFUNCTION()
+	void ReachedNextTile();
 
 private:
 
 public:
+	UPROPERTY(BlueprintAssignable)
+	FPlayerMoved PlayerMoved;
+	UPROPERTY(BlueprintAssignable)
+	FPlayerNewPosition PlayerNewPosition;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveInDirection(FVector direction);
 	void StopMovement();

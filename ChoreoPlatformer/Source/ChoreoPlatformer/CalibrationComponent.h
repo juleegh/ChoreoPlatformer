@@ -51,7 +51,7 @@ public:
 protected:
 	UPROPERTY()
 	class UCalibrationComponent* Calibration;
-	UPROPERTY()
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	int RequiredStreak = 8;
 	virtual void BeginPlay() override;
 	void KeyPressed();

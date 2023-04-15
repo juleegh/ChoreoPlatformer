@@ -75,5 +75,11 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(AActor* ToIgnore, FVector St
 	return DetectedInfo;
 }
 
-
-
+bool UDanceUtilsFunctionLibrary::PositionsAreEqual(FVector pos1, FVector pos2)
+{
+	int x1 = pos1.X;
+	int x2 = pos2.X;
+	int y1 = pos1.Y;
+	int y2 = pos2.Y;
+	return x1 == x2 && y1 == y2;
+}

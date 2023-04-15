@@ -40,7 +40,7 @@ UCLASS()
 class CHOREOPLATFORMER_API UDanceUtilsFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	
+
 public:
 	static float GetTargetTempo(ETempoTile TileType);
 	static FVector GetTransformedPosition(FVector Origin, FVector Direction);
@@ -48,6 +48,7 @@ public:
 	static ETempoAccuracy GetTempoResult(float Distance);
 	static float GetAcceptanceRate() { return 0.3; }
 	static float GetPerfectAcceptanceRate() { return 0.1; }
+	static bool PositionsAreEqual(FVector pos1, FVector pos2);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FTileInfo CheckPosition(class AActor* ToIgnore, FVector Start);
 };
