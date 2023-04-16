@@ -47,8 +47,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static ETempoAccuracy GetTempoResult(float Distance);
 	static float GetAcceptanceRate() { return 0.3; }
+	static int GetDamageCooldown() { return 5; }
 	static float GetPerfectAcceptanceRate() { return 0.1; }
 	static bool PositionsAreEqual(FVector pos1, FVector pos2);
+	static float GetHealthDelta(ETempoAccuracy result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FTileInfo CheckPosition(class AActor* ToIgnore, FVector Start);
 };

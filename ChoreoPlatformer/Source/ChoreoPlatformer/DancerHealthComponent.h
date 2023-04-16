@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 #include "DancerHealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHealthChanged, int, Health, int, Max);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHealthChanged, float, Health, float, Max);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChanged, bool, bIsOnCooldown);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDied);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -21,15 +23,21 @@ protected:
 	virtual void BeginPlay() override;
 	bool ShouldTakeDamage();
 	UPROPERTY()
-	int CurrentHealth;
+	int Cooldown;
 	UPROPERTY()
-	int MaxHealth = 3;
+	TMap<ETempoAccuracy, int> Steps;
+	UPROPERTY()
+	float Health;
 public:	
 	UPROPERTY()
 	FHealthChanged HealthChanged;
+	UPROPERTY(BlueprintAssignable)
+	FCooldownChanged CooldownChanged;
 	UPROPERTY()
 	FPlayerDied PlayerDied;
+	void Restart();
 	void TakeHit(int Damage = 1);
-	int GetCurrentHealth() const { return CurrentHealth; }
-	int GetMaxHealth() const { return MaxHealth; }
+	void CountStep(ETempoAccuracy result);
+	float GetCurrentHealth() const { return Health; }
+	float GetMaxHealth() const { return 1; }
 };

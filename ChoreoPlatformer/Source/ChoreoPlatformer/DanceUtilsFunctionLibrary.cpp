@@ -83,3 +83,18 @@ bool UDanceUtilsFunctionLibrary::PositionsAreEqual(FVector pos1, FVector pos2)
 	int y2 = pos2.Y;
 	return x1 == x2 && y1 == y2;
 }
+
+float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
+{
+	switch (result)
+	{
+		case ETempoAccuracy::Bad:
+			return -0.25f;
+		case ETempoAccuracy::Great:
+			return 0.05f;
+		case ETempoAccuracy::Perfect:
+			return 0.1f;
+	}
+
+	return 0;
+}

@@ -31,7 +31,7 @@ void UDancerUIComponent::BeginPlay()
     ChallengeUI->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UDancerUIComponent::UpdateHealth(int Current, int Max)
+void UDancerUIComponent::UpdateHealth(float Current, float Max)
 {
     StateUI.CurrentHealth = Current;
     StateUI.MaxHealth = Max;

@@ -84,6 +84,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
+	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 	DancerUI->PromptTempoResult(Result);
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo) || !bShouldPunishTempo)
 	{

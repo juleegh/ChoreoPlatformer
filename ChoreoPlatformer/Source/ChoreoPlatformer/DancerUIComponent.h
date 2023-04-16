@@ -15,9 +15,9 @@ struct FStateUI
 
 public:
     UPROPERTY(BlueprintReadOnly)
-    int CurrentHealth;
+    float CurrentHealth;
     UPROPERTY(BlueprintReadOnly)
-    int MaxHealth;
+    float MaxHealth;
 };
 
 UCLASS()
@@ -56,7 +56,7 @@ public:
     UFUNCTION()
     void PromptTempoResult(float Distance);
     UFUNCTION()
-    void UpdateHealth(int Current, int Max);
+    void UpdateHealth(float Current, float Max);
     UFUNCTION()
     void ChallengeStarted(EChallengeType ChallengeType);
     UFUNCTION()

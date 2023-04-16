@@ -42,6 +42,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class USongTempoComponent* GetSongTempoComponent() const { return SongTempo; }
 	class ULevelProgressComponent* GetLevelProgressComponent() const { return LevelProgress; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class UDancerHealthComponent* GetDancerHealthComponent() const { return DancerHealth; }
 	class UDancerUIComponent* GetDancerUIComponent() const { return DancerUI; }
 	void PressedUp();

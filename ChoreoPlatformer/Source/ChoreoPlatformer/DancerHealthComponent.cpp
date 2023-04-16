@@ -13,7 +13,11 @@ UDancerHealthComponent::UDancerHealthComponent()
 void UDancerHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	CurrentHealth = MaxHealth;
+	Health = GetMaxHealth() / 2;
+	Steps = TMap<ETempoAccuracy, int>();
+	Steps.Add(ETempoAccuracy::Bad, 0);
+	Steps.Add(ETempoAccuracy::Great, 0);
+	Steps.Add(ETempoAccuracy::Perfect, 0);
 }
 
 bool UDancerHealthComponent::ShouldTakeDamage()
@@ -25,17 +29,50 @@ bool UDancerHealthComponent::ShouldTakeDamage()
 	return true;
 }
 
+void UDancerHealthComponent::CountStep(ETempoAccuracy result)
+{
+	Health += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
+	if (Cooldown > 0)
+	{
+		Cooldown--;
+		if (Cooldown == 0)
+		{
+			CooldownChanged.Broadcast(false);
+		}
+	}
+	Steps[result]++;
+	if (Health > GetMaxHealth())
+	{
+		Health = GetMaxHealth();
+	}
+	if (Health <= 0)
+	{
+		Restart();
+	}
+	HealthChanged.Broadcast(GetCurrentHealth(), GetMaxHealth());
+}
+
 void UDancerHealthComponent::TakeHit(int Damage)
 {
 	if (!ShouldTakeDamage())
 	{
 		return;
 	}
-	CurrentHealth--;
-	if (CurrentHealth == 0)
+	if (Cooldown > 0)
 	{
-		PlayerDied.Broadcast();
-		CurrentHealth = MaxHealth;
+		Restart();
 	}
-	HealthChanged.Broadcast(CurrentHealth, MaxHealth);
+	else
+	{
+		Cooldown = UDanceUtilsFunctionLibrary::GetDamageCooldown();
+		CooldownChanged.Broadcast(true);
+	}
+}
+
+void UDancerHealthComponent::Restart()
+{
+	Health = GetMaxHealth() / 2;
+	Cooldown = 0;
+	PlayerDied.Broadcast();
+	CooldownChanged.Broadcast(false);
 }
