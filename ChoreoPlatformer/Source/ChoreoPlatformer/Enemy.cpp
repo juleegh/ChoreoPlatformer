@@ -132,6 +132,7 @@ void AWalkingEnemy::DoTempoAction()
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	SetActorRotation(Rotation);
 	MoveTimeline->MoveToPosition(Position);
+	StartedWalking();
 }
 
 void AWalkingEnemy::LookAtNextTarget()
@@ -165,6 +166,7 @@ void ARotatingEnemy::DoTempoAction()
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(PatrolIndex));
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	MoveTimeline->RotateToPosition(Rotation);
+	StartedRotating();
 }
 
 

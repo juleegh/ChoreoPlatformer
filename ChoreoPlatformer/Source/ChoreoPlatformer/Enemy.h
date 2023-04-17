@@ -31,6 +31,11 @@ protected:
 	UFUNCTION()
 	void OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	virtual void DoTempoAction();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartedWalking();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartedRotating();
+
 public:
 	virtual void Tick(float DeltaTime) override;
 };
