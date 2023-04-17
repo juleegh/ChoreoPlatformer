@@ -31,6 +31,11 @@ bool UDancerHealthComponent::ShouldTakeDamage()
 
 void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 {
+	if (!ShouldTakeDamage())
+	{
+		return;
+	}
+
 	Health += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
 	if (Cooldown > 0)
 	{
