@@ -34,6 +34,10 @@ void ATilemapLevelManager::LoadMap()
 		auto LayerInfo = TileMap->TileLayers[0];
 		auto LayerName = FName(LayerInfo->LayerName.ToString());
 		FGameplayTag SectionIdentifier = FGameplayTag::RequestGameplayTag(LayerName, false);
+		if (!SectionIdentifier.IsValid())
+		{
+			continue;
+		}
 		auto LayerWidth = LayerInfo->GetLayerWidth();
 		auto LayerHeight = LayerInfo->GetLayerHeight();
 
