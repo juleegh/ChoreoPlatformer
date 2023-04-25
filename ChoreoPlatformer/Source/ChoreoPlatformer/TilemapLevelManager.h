@@ -56,8 +56,6 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
 	class USoundWave* Song;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
-	float SongFrequency;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
 	float SongBPM;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
 	int IntroTempos;

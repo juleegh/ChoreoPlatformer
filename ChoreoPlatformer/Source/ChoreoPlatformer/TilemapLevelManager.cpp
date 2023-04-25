@@ -70,7 +70,7 @@ void ASectionLevelManager::BeginPlay()
 	if (auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>())
 	{
 		SongTempo->AddPauseTempos(IntroTempos);
-		SongTempo->SetupTempo(SongFrequency);
+		SongTempo->SetupTempo(60 / SongBPM);
 		SongTempo->StartTempoCounting();
 
 		auto DanceCharacter = GetWorld()->GetFirstPlayerController()->GetPawn();
