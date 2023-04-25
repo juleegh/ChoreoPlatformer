@@ -21,11 +21,7 @@ protected:
 	class USongTempoComponent* SongTempo;
 	bool bIsCalibrated = false;
 	UPROPERTY()
-	float PreTempos = 0;
-	UPROPERTY()
 	float PostTempos = 0;
-	UPROPERTY()
-	float PreTempoMargin;
 	UPROPERTY()
 	float PostTempoMargin;
 	UPROPERTY()

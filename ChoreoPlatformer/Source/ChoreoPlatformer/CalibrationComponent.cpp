@@ -20,9 +20,8 @@ bool UCalibrationComponent::IsCalibrated()
 
 float UCalibrationComponent::GetCalibrationDelta()
 {
-	int Pre = PreTempos == 0 ? 1 : PreTempos;
 	int Post = PostTempos == 0 ? 1 : PostTempos;
-	return (PreTempoMargin / PreTempos) - (PostTempoMargin / PostTempos);
+	return (PostTempoMargin / PostTempos);
 }
 
 
@@ -32,17 +31,13 @@ void UCalibrationComponent::ReceiveInput()
 	{
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	}
-	float Result = SongTempo->TempoPercentage();
-	if (Result < 0.5f)
+	float Result = SongTempo->TempoResult(1);
+	if (Result > UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
 	{
 		PostTempos++;
 		PostTempoMargin += Result;
 	}
-	else
-	{
-		PreTempos++;
-		PreTempoMargin += 1 - Result;
-	}
+
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
 	if (Result <= UDanceUtilsFunctionLibrary::GetAcceptanceRate())
 	{
