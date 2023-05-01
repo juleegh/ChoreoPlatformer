@@ -11,6 +11,7 @@ enum class EChallengeType : uint8
 {
 	HalfCoin,
 	CoinTrail,
+	CoinStop,
 };
 
 UCLASS()
@@ -27,15 +28,23 @@ protected:
 	UPROPERTY()
 	bool bUnderProgress;
 	UPROPERTY()
+	bool bCompleted;
+	UPROPERTY()
+	int TemposWithoutMoving;
+	UPROPERTY()
 	class ADanceCharacter* Player;
 	UPROPERTY()
 	class UDancerUIComponent* PlayerUI;
+	UPROPERTY()
+	class USongTempoComponent* SongTempo;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	class USplineComponent* InterestPoints;
 	
 	virtual void BeginPlay() override;
 	int GetPlayerCurrentIndex();
 	virtual void StartChallenge() {}
+	UFUNCTION()
+	virtual void TempoHasPassed();
 	UFUNCTION()
 	virtual void PlayerChangedPosition();
 	UFUNCTION(BlueprintCallable)
@@ -62,7 +71,7 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	int TemposBetweenHalfs;
 	void StartChallenge() override;
-	void PlayerChangedPosition() override;
+	void TempoHasPassed() override;
 };
 
 UCLASS()
@@ -79,5 +88,21 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	int TemposBetweenHalfs;
 	void StartChallenge() override;
+	void TempoHasPassed() override;
 	void PlayerChangedPosition() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ACoinStop : public ATileChallenge
+{
+	GENERATED_BODY()
+
+public:
+	ACoinStop() { ChallengeType = EChallengeType::CoinStop; }
+
+protected:
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	int TemposInStop;
+	void PlayerChangedPosition() override;
+	void TempoHasPassed() override;
 };

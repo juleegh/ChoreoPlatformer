@@ -3,6 +3,7 @@
 
 #include "TileChallenge.h"
 #include "ChoreoPlayerController.h"
+#include "SongTempoComponent.h"
 #include "DancerUIComponent.h"
 #include "Components/SplineComponent.h"
 #include "DanceCharacter.h"
@@ -19,10 +20,23 @@ void ATileChallenge::BeginPlay()
 {
 	Super::BeginPlay();
 	bUnderProgress = false;
+	bCompleted = false;
 	Player = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	Player->PlayerNewPosition.AddDynamic(this, &ATileChallenge::PlayerChangedPosition);
 	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 	PlayerUI = PlayerController->GetDancerUIComponent();
+	SongTempo = PlayerController->GetSongTempoComponent();
+	SongTempo->NewTempoStarted.AddDynamic(this, &ATileChallenge::TempoHasPassed);
+}
+
+void ATileChallenge::TempoHasPassed()
+{
+	if (!IsUndergoing() || bCompleted)
+	{
+		return;
+	}
+
+	TemposWithoutMoving++;
 }
 
 int ATileChallenge::GetPlayerCurrentIndex()
@@ -40,6 +54,11 @@ int ATileChallenge::GetPlayerCurrentIndex()
 
 void ATileChallenge::PlayerChangedPosition()
 {
+	if (bCompleted)
+	{
+		return;
+	}
+
 	if (!bUnderProgress && GetPlayerCurrentIndex() == 0)
 	{
 		bUnderProgress = true;
@@ -47,11 +66,16 @@ void ATileChallenge::PlayerChangedPosition()
 		ChallengeStarted();
 		PlayerUI->ChallengeStarted(ChallengeType);
 	}
-	else if (bUnderProgress && GetPlayerCurrentIndex() == InterestPoints->GetNumberOfSplinePoints() - 1)
+	else if (bUnderProgress)
 	{
-		ChallengeEnded(true);
-		PlayerUI->ChallengeEnded(ChallengeType, true);
-		bUnderProgress = false;
+		TemposWithoutMoving--;
+		if (GetPlayerCurrentIndex() == InterestPoints->GetNumberOfSplinePoints() - 1)
+		{
+			ChallengeEnded(true);
+			PlayerUI->ChallengeEnded(ChallengeType, true);
+			bUnderProgress = false;
+			bCompleted = true;
+		}
 	}
 }
 
@@ -65,9 +89,9 @@ void AHalfCoin::StartChallenge()
 	TemposRemaining = TemposBetweenHalfs;
 }
 
-void AHalfCoin::PlayerChangedPosition()
+void AHalfCoin::TempoHasPassed()
 {
-	Super::PlayerChangedPosition();
+	Super::TempoHasPassed();
 
 	if (bUnderProgress)
 	{
@@ -77,6 +101,7 @@ void AHalfCoin::PlayerChangedPosition()
 	if (bUnderProgress && TemposRemaining == 0)
 	{
 		bUnderProgress = false;
+		bCompleted = true;
 		ChallengeEnded(false);
 		PlayerUI->ChallengeEnded(ChallengeType, false);
 	}
@@ -85,6 +110,18 @@ void AHalfCoin::PlayerChangedPosition()
 void ACoinTrail::StartChallenge()
 {
 	CurrentCoin = -1;
+}
+
+void ACoinTrail::TempoHasPassed()
+{
+	Super::TempoHasPassed();
+
+	if (TemposWithoutMoving >= 2)
+	{
+		bUnderProgress = false;
+		ChallengeEnded(false);
+		PlayerUI->ChallengeEnded(ChallengeType, false);
+	}
 }
 
 void ACoinTrail::PlayerChangedPosition()
@@ -101,9 +138,60 @@ void ACoinTrail::PlayerChangedPosition()
 		else
 		{
 			bUnderProgress = false;
+			bCompleted = true;
 			ChallengeEnded(false);
 			PlayerUI->ChallengeEnded(ChallengeType, false);
 		}
+	}
+}
+
+void ACoinStop::PlayerChangedPosition()
+{
+	if (bCompleted)
+	{
+		return;
+	}
+
+	if (!bUnderProgress && GetPlayerCurrentIndex() == 0)
+	{
+		bUnderProgress = true;
+		StartChallenge();
+		ChallengeStarted();
+		PlayerUI->ChallengeStarted(ChallengeType);
+		return;
+	}
+
+	if (bUnderProgress)
+	{
+		if (TemposWithoutMoving >= TemposInStop - 1 && SongTempo->TempoResult(1))
+		{
+			ChallengeEnded(true);
+			PlayerUI->ChallengeEnded(ChallengeType, true);
+		}
+		else
+		{
+			ChallengeEnded(false);
+			PlayerUI->ChallengeEnded(ChallengeType, false);
+		}
+		bUnderProgress = false;
+		bCompleted = true;
+	}
+}
+
+void ACoinStop::TempoHasPassed()
+{
+	if (!IsUndergoing() || bCompleted)
+	{
+		return;
+	}
+
+	TemposWithoutMoving++;
+	if (TemposWithoutMoving >= TemposInStop)
+	{
+		bUnderProgress = false;
+		ChallengeEnded(true);
+		PlayerUI->ChallengeEnded(ChallengeType, true);
+		bCompleted = true;
 	}
 }
 
