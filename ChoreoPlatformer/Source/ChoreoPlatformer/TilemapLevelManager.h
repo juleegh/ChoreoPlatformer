@@ -76,4 +76,6 @@ public:
 	void SectionChanged(FGameplayTag NewSection);
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCurrentSection();
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayTempoResult(ETempoAccuracy Result);
 };

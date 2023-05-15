@@ -38,6 +38,7 @@ public:
 	void Restart();
 	void TakeHit(int Damage = 1);
 	void CountStep(ETempoAccuracy result);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float GetCurrentHealth() const { return Health; }
 	float GetMaxHealth() const { return 1; }
 };
