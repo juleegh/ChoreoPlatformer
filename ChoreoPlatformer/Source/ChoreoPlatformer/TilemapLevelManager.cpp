@@ -10,7 +10,6 @@
 #include "PaperTileSet.h"
 #include "GameplayTagContainer.h"
 #include "SongTempoComponent.h"
-#include "DanceUtilsFunctionLibrary.h"
 #include "DanceCharacter.h"
 
 ATilemapLevelManager::ATilemapLevelManager()
