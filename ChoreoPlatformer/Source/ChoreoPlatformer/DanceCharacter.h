@@ -36,4 +36,6 @@ public:
 	void StopMovement();
 	class AChoreoPlayerController* GetChoreoController() const;
 	class UTimelineCreatorComponent* GetMovementTimeline() { return MoveTimeline; }
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetupToLevel();
 };

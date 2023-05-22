@@ -11,6 +11,7 @@
 #include "GameplayTagContainer.h"
 #include "SongTempoComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "DanceCharacter.h"
 
 ATilemapLevelManager::ATilemapLevelManager()
 {
@@ -73,7 +74,8 @@ void ASectionLevelManager::BeginPlay()
 		SongTempo->SetupTempo(60 / SongBPM);
 		SongTempo->StartTempoCounting();
 
-		auto DanceCharacter = GetWorld()->GetFirstPlayerController()->GetPawn();
+		auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		DanceCharacter->SetupToLevel();
 		FTileInfo StartTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
 		SectionChanged(StartTile.Section);
 	}

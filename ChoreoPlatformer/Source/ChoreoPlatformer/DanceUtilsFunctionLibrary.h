@@ -46,8 +46,10 @@ public:
 	static FVector GetTransformedPosition(FVector Origin, FVector Direction);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static ETempoAccuracy GetTempoResult(float Distance);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static float GetAcceptanceRate() { return 0.3; }
 	static int GetDamageCooldown() { return 5; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static float GetPerfectAcceptanceRate() { return 0.1; }
 	static bool PositionsAreEqual(FVector pos1, FVector pos2);
 	static float GetHealthDelta(ETempoAccuracy result);

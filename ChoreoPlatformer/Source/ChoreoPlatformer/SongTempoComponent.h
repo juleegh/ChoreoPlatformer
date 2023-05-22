@@ -53,6 +53,8 @@ public:
 	bool TempoPercentageIsAcceptable(float target = 1);
 	void AddPauseTempos(int);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetFrequency() { return SongFrequency; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int GetRemainingPauseTempos() { return CurrentPauseTempos; }
 	void SetupTempo(float Frequency);
 	void StartTempoCounting();
