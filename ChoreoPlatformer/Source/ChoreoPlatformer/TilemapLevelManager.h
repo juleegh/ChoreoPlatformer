@@ -31,7 +31,7 @@ class CHOREOPLATFORMER_API ATilemapLevelManager : public AActor
 
 public:
 	// Sets default values for this component's properties
-	ATilemapLevelManager();
+	ATilemapLevelManager() {}
 
 protected:
 	// Called when the game starts

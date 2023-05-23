@@ -5,7 +5,6 @@
 #include "SongTempoComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
-#include "ChoreoLevelActor.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 UCalibrationComponent::UCalibrationComponent()
@@ -28,6 +27,11 @@ float UCalibrationComponent::GetCalibrationDelta()
 
 void UCalibrationComponent::ReceiveInput()
 {
+	if (bIsCalibrated)
+	{
+		return;
+	}
+
 	if (!SongTempo)
 	{
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
@@ -85,13 +89,5 @@ void ACalibrator::KeyPressed()
 	if (Calibration->IsCalibrated())
 	{
 		DisableInput(GetWorld()->GetFirstPlayerController());
-		if (auto TutorialActor = Cast<ATutorialLevelActor>(GetWorld()->GetLevelScriptActor()))
-		{
-			TutorialActor->CallibrationEnded();
-		}
-		if (UWorld* World = GetWorld())
-		{
-			UGameplayStatics::OpenLevel(World, FName("Map_1"));
-		}
 	}
 }

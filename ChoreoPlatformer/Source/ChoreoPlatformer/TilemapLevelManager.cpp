@@ -10,12 +10,10 @@
 #include "PaperTileSet.h"
 #include "GameplayTagContainer.h"
 #include "SongTempoComponent.h"
+#include "ChoreoPlayerController.h"
+#include "LevelEventsComponent.h"
 #include "DanceCharacter.h"
-
-ATilemapLevelManager::ATilemapLevelManager()
-{
-	
-}
+#include "DanceUtilsFunctionLibrary.h"
 
 void ATilemapLevelManager::BeginPlay()
 {
@@ -90,6 +88,8 @@ void ASectionLevelManager::SectionChanged(FGameplayTag NewSection)
 	if (!CurrentSection.IsValid() || CurrentSection != NewSection)
 	{
 		CurrentSection = NewSection;
+		auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
+		LevelEvents->ActivateTrigger(NewSection);
 		if (Sections.Contains(CurrentSection))
 		{
 			CurrentSectionStart = Sections[CurrentSection].BeatStart;

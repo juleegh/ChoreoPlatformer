@@ -22,6 +22,8 @@ protected:
 	UPROPERTY()
 	class UDancerUIComponent* DancerUI;
 	UPROPERTY()
+	class ULevelEventsComponent* LevelEvents;
+	UPROPERTY()
 	class ASectionLevelManager* SectionManager;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
@@ -45,6 +47,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class UDancerHealthComponent* GetDancerHealthComponent() const { return DancerHealth; }
 	class UDancerUIComponent* GetDancerUIComponent() const { return DancerUI; }
+	class ULevelEventsComponent* GetEventsComponent() const { return LevelEvents; }
 	void PressedUp();
 	void PressedDown();
 	void PressedLeft();

@@ -12,6 +12,7 @@
 #include "DanceUtilsFunctionLibrary.h"
 #include "TimelineCreatorComponent.h"
 #include "ContextualElement.h"
+#include "LevelEventsComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
@@ -20,6 +21,7 @@ AChoreoPlayerController::AChoreoPlayerController()
 	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
 	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
 	DancerUI = CreateDefaultSubobject<UDancerUIComponent>(TEXT("Dancer UI"));
+	LevelEvents = CreateDefaultSubobject<ULevelEventsComponent>(TEXT("Level Events"));
 }
 
 void AChoreoPlayerController::BeginPlay()
