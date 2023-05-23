@@ -1,4 +1,6 @@
 #include "LevelEventsComponent.h"
+#include "SongTempoComponent.h"
+#include "ChoreoPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 ULevelEventsComponent::ULevelEventsComponent()
@@ -12,11 +14,18 @@ ULevelEventsComponent::ULevelEventsComponent()
 
 void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 {
-    if (!LevelEvents->WidgetEvents.Contains(TriggerTag))
+    if (LevelEvents->WidgetEvents.Contains(TriggerTag))
     {
-        return;
+        HandleWidgetEvent(TriggerTag);
     }
+    if (LevelEvents->CountdownEvents.Contains(TriggerTag))
+    {
+        HandleCountdownEvent(TriggerTag);
+    }
+}
 
+void ULevelEventsComponent::HandleWidgetEvent(FGameplayTag TriggerTag)
+{
     auto EventInfo = LevelEvents->WidgetEvents[TriggerTag];
     if (EventInfo.bSpawnsWidget)
     {
@@ -34,5 +43,14 @@ void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
             Widgets[EventInfo.LevelWidget]->RemoveFromViewport();
             Widgets.Remove(EventInfo.LevelWidget);
         }
+    }
+}
+
+void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)
+{
+    if (!Countdowns.Contains(TriggerTag))
+    {
+        auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
+        SongTempo->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
     }
 }

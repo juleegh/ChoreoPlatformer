@@ -71,6 +71,11 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
+	if (SongTempo->IsOnPause())
+	{
+		return;
+	}
+
 	if (!SectionManager)
 	{
 		TArray<AActor*> FoundActors;

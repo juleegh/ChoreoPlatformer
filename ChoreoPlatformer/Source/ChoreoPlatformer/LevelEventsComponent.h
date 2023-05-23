@@ -22,6 +22,12 @@ protected:
 
 	UPROPERTY()
 	TMap<TSubclassOf<UUserWidget>, UUserWidget*> Widgets;
+	
+	UPROPERTY()
+	TMap<FGameplayTag, int> Countdowns;
+
+	void HandleWidgetEvent(FGameplayTag TriggerTag);
+	void HandleCountdownEvent(FGameplayTag TriggerTag);
 
 public:
 	void ActivateTrigger(FGameplayTag TriggerTag);

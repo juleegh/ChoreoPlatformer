@@ -43,6 +43,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	bool IsOnPause() { return CurrentPauseTempos > 0; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsOnTempo(float target = 1);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
