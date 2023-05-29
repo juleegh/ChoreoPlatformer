@@ -1,5 +1,6 @@
 #include "LevelEventsComponent.h"
 #include "SongTempoComponent.h"
+#include "Components/BoxComponent.h"
 #include "ChoreoPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -53,4 +54,25 @@ void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)
         auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
         SongTempo->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
     }
+}
+
+AEventTrigger::AEventTrigger()
+{
+    PrimaryActorTick.bCanEverTick = false;
+    BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
+    BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+    BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+    RootComponent = BoxComponent;
+}
+
+void AEventTrigger::BeginPlay()
+{
+    Super::BeginPlay();
+    BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEventTrigger::OnOverlapRangeBegin);
+}
+
+void AEventTrigger::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
+    LevelEvents->ActivateTrigger(ActorTrigger);
 }

@@ -76,3 +76,11 @@ protected:
     virtual void BeginPlay() override;
 };
 
+UCLASS()
+class CHOREOPLATFORMER_API ULevelCompleteUI : public UUserWidget
+{
+    GENERATED_BODY()
+public:
+    
+};
+
