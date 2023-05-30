@@ -31,6 +31,7 @@ bool UDancerHealthComponent::ShouldTakeDamage()
 
 void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 {
+	Steps[result]++;
 	if (!ShouldTakeDamage())
 	{
 		return;
@@ -45,7 +46,6 @@ void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 			CooldownChanged.Broadcast(false);
 		}
 	}
-	Steps[result]++;
 	if (Health > GetMaxHealth())
 	{
 		Health = GetMaxHealth();

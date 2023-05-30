@@ -81,6 +81,11 @@ class CHOREOPLATFORMER_API ULevelCompleteUI : public UUserWidget
 {
     GENERATED_BODY()
 public:
-    
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    int GetPerfectSteps();
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    int GetGoodSteps();
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    int GetBadSteps();
 };
 

@@ -55,4 +55,6 @@ public:
 	static float GetHealthDelta(ETempoAccuracy result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FTileInfo CheckPosition(class AActor* ToIgnore, FVector Start);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static class UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
 };

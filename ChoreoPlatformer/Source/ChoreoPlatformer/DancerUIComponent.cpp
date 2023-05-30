@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DancerUIComponent.h"
+#include "DancerHealthComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 UDancerUIComponent::UDancerUIComponent()
@@ -56,4 +58,19 @@ void UDancerUIComponent::ChallengeStarted(EChallengeType ChallengeType)
 void UDancerUIComponent::ChallengeEnded(EChallengeType ChallengeType, bool Success)
 {
     ChallengeUI->ChallengeEnded(ChallengeType, Success);
+}
+
+int ULevelCompleteUI::GetPerfectSteps()
+{
+    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(ETempoAccuracy::Perfect);
+}
+
+int ULevelCompleteUI::GetGoodSteps()
+{
+    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(ETempoAccuracy::Great);
+}
+
+int ULevelCompleteUI::GetBadSteps()
+{
+    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(ETempoAccuracy::Bad);
 }

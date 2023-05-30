@@ -41,4 +41,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float GetCurrentHealth() const { return Health; }
 	float GetMaxHealth() const { return 1; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	int GetStepsByAccuracy(ETempoAccuracy Accuracy) { return Steps[Accuracy]; }
 };

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "DanceUtilsFunctionLibrary.h"
+#include "DancerHealthComponent.h"
 #include "ContextualElement.h"
 
 float UDanceUtilsFunctionLibrary::GetTargetTempo(ETempoTile TileType)
@@ -98,3 +98,9 @@ float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
 
 	return 0;
 }
+
+UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContext)
+{
+	return Cast<UDancerHealthComponent>(WorldContext->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));
+}
+
