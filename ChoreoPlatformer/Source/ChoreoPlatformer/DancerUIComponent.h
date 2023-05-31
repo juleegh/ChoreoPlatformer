@@ -82,10 +82,8 @@ class CHOREOPLATFORMER_API ULevelCompleteUI : public UUserWidget
     GENERATED_BODY()
 public:
     UFUNCTION(BlueprintCallable, BlueprintPure)
-    int GetPerfectSteps();
+    int GetStepsByAccuracy(ETempoAccuracy Accuracy);
     UFUNCTION(BlueprintCallable, BlueprintPure)
-    int GetGoodSteps();
-    UFUNCTION(BlueprintCallable, BlueprintPure)
-    int GetBadSteps();
+       FText GetChallengeResultByType(EChallengeType ChallengeType);
 };
 

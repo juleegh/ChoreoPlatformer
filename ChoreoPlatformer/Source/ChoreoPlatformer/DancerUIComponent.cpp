@@ -4,6 +4,7 @@
 #include "DancerHealthComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "TilemapLevelManager.h"
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -60,17 +61,14 @@ void UDancerUIComponent::ChallengeEnded(EChallengeType ChallengeType, bool Succe
     ChallengeUI->ChallengeEnded(ChallengeType, Success);
 }
 
-int ULevelCompleteUI::GetPerfectSteps()
+int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
 {
-    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(ETempoAccuracy::Perfect);
+    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(Accuracy);
 }
 
-int ULevelCompleteUI::GetGoodSteps()
+FText ULevelCompleteUI::GetChallengeResultByType(EChallengeType ChallengeType)
 {
-    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(ETempoAccuracy::Great);
-}
-
-int ULevelCompleteUI::GetBadSteps()
-{
-    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(ETempoAccuracy::Bad);
+    int Collected = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetCollectedByChallengeType(ChallengeType);
+    int Total = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetTotalByChallengeType(ChallengeType);
+    return FText::Format(FText::FromString(TEXT("{0}/{1}")), FText::AsNumber(Collected), FText::AsNumber(Total));
 }

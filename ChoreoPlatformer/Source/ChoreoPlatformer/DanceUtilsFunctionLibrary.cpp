@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DanceUtilsFunctionLibrary.h"
+#include "TilemapLevelManager.h"
 #include "DancerHealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "ContextualElement.h"
 
 float UDanceUtilsFunctionLibrary::GetTargetTempo(ETempoTile TileType)
@@ -99,8 +101,22 @@ float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
 	return 0;
 }
 
-UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContext)
+UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContextObject)
 {
-	return Cast<UDancerHealthComponent>(WorldContext->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));
+	return Cast<UDancerHealthComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));
 }
+
+ATilemapLevelManager* UDanceUtilsFunctionLibrary::GetTilemapLevelManager(UWorld* WorldContextObject)
+{
+	TArray<AActor*> FoundManagers;
+	UGameplayStatics::GetAllActorsOfClass(WorldContextObject, ATilemapLevelManager::StaticClass(), FoundManagers);
+
+	for (auto Manager : FoundManagers)
+	{
+		return Cast<ATilemapLevelManager>(Manager);
+	}
+
+	return nullptr;
+}
+
 

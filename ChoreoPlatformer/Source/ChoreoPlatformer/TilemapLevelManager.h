@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
+#include "TileChallenge.h"
 #include "TilemapLevelManager.generated.h"
 
 class UPaperTileMap;
@@ -36,12 +37,19 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	UPROPERTY()
+	TMap<EChallengeType, int> TotalChallenges;
+	UPROPERTY()
+	TMap<EChallengeType, int> CollectedChallenges;
 
 public:
 	// Called every frame
 	void LoadMap();
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
+	void CollectChallenge(EChallengeType ChallengeType);
+	int GetTotalByChallengeType(EChallengeType ChallengeType);
+	int GetCollectedByChallengeType(EChallengeType ChallengeType);
 };
 
 UCLASS()

@@ -49,6 +49,7 @@ protected:
 	virtual void PlayerChangedPosition();
 	UFUNCTION(BlueprintCallable)
 	bool IsUndergoing();
+	void EndChallenge(bool bWasSuccessful);
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChallengeStarted(); 
 	UFUNCTION(BlueprintImplementableEvent)

@@ -60,6 +60,42 @@ void ATilemapLevelManager::LoadMap()
 
 		TileMapActor->SetActorLocation(TileMapActor->GetActorLocation() + FVector::DownVector * 50);
 	}
+
+	TotalChallenges.Add(EChallengeType::HalfCoin, 0);
+	TotalChallenges.Add(EChallengeType::CoinTrail, 0);
+	CollectedChallenges.Add(EChallengeType::HalfCoin, 0);
+	CollectedChallenges.Add(EChallengeType::CoinTrail, 0);
+	
+	TArray<AActor*> FoundChallenges;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileChallenge::StaticClass(), FoundChallenges);
+	
+	for (auto Challenge : FoundChallenges)
+	{
+		if (auto TrailChallenge = Cast<ACoinTrail>(Challenge))
+		{
+			TotalChallenges[EChallengeType::CoinTrail]++;
+		}
+		else if (auto HalfChallenge = Cast<AHalfCoin>(Challenge))
+		{
+			TotalChallenges[EChallengeType::HalfCoin]++;
+		}
+	}
+
+}
+
+void ATilemapLevelManager::CollectChallenge(EChallengeType ChallengeType)
+{
+	CollectedChallenges[ChallengeType]++;
+}
+
+int ATilemapLevelManager::GetTotalByChallengeType(EChallengeType ChallengeType)
+{
+	return TotalChallenges[ChallengeType];
+}
+
+int ATilemapLevelManager::GetCollectedByChallengeType(EChallengeType ChallengeType)
+{
+	return CollectedChallenges[ChallengeType];
 }
 
 void ASectionLevelManager::BeginPlay()

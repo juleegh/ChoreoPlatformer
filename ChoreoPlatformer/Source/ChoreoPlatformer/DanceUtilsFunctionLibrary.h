@@ -57,4 +57,6 @@ public:
 	static FTileInfo CheckPosition(class AActor* ToIgnore, FVector Start);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static class UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static class ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject);
 };

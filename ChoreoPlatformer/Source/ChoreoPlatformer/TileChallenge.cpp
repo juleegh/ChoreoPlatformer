@@ -8,6 +8,7 @@
 #include "Components/SplineComponent.h"
 #include "DanceCharacter.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "TilemapLevelManager.h"
 
 ATileChallenge::ATileChallenge()
 {
@@ -71,7 +72,7 @@ void ATileChallenge::PlayerChangedPosition()
 		TemposWithoutMoving--;
 		if (GetPlayerCurrentIndex() == InterestPoints->GetNumberOfSplinePoints() - 1)
 		{
-			ChallengeEnded(true);
+			EndChallenge(true);
 			PlayerUI->ChallengeEnded(ChallengeType, true);
 			bUnderProgress = false;
 			bCompleted = true;
@@ -83,6 +84,16 @@ bool ATileChallenge::IsUndergoing()
 {
 	return bUnderProgress;
 }
+
+void ATileChallenge::EndChallenge(bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->CollectChallenge(ChallengeType);
+	}
+	ChallengeEnded(bWasSuccessful);
+}
+
 
 void AHalfCoin::StartChallenge()
 {
@@ -102,7 +113,7 @@ void AHalfCoin::TempoHasPassed()
 	{
 		bUnderProgress = false;
 		bCompleted = true;
-		ChallengeEnded(false);
+		EndChallenge(false);
 		PlayerUI->ChallengeEnded(ChallengeType, false);
 	}
 }
@@ -119,7 +130,7 @@ void ACoinTrail::TempoHasPassed()
 	if (TemposWithoutMoving >= 2)
 	{
 		bUnderProgress = false;
-		ChallengeEnded(false);
+		EndChallenge(false);
 		PlayerUI->ChallengeEnded(ChallengeType, false);
 	}
 }
@@ -139,7 +150,7 @@ void ACoinTrail::PlayerChangedPosition()
 		{
 			bUnderProgress = false;
 			bCompleted = true;
-			ChallengeEnded(false);
+			EndChallenge(false);
 			PlayerUI->ChallengeEnded(ChallengeType, false);
 		}
 	}
@@ -165,12 +176,12 @@ void ACoinStop::PlayerChangedPosition()
 	{
 		if (TemposWithoutMoving >= TemposInStop - 1 && SongTempo->TempoResult(1))
 		{
-			ChallengeEnded(true);
+			EndChallenge(true);
 			PlayerUI->ChallengeEnded(ChallengeType, true);
 		}
 		else
 		{
-			ChallengeEnded(false);
+			EndChallenge(false);
 			PlayerUI->ChallengeEnded(ChallengeType, false);
 		}
 		bUnderProgress = false;
@@ -189,7 +200,7 @@ void ACoinStop::TempoHasPassed()
 	if (TemposWithoutMoving >= TemposInStop)
 	{
 		bUnderProgress = false;
-		ChallengeEnded(true);
+		EndChallenge(true);
 		PlayerUI->ChallengeEnded(ChallengeType, true);
 		bCompleted = true;
 	}
