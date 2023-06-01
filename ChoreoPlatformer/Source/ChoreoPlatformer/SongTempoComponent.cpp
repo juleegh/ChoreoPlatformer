@@ -98,11 +98,11 @@ void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 void USongTempoComponent::SetupTempo(float Frequency)
 {
 	SongFrequency = Frequency;
+	CurrentTime = 0;
 }
 
 void USongTempoComponent::StartTempoCounting()
 {
-	CurrentTime = 0;
 	bIsCountingTempo = true;
 }
 

@@ -37,10 +37,11 @@ void UCalibrationComponent::ReceiveInput()
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	}
 	float Result = SongTempo->TempoResult(1);
-	if (Result > UDanceUtilsFunctionLibrary::GetAcceptanceRate())
+	float Percentage = SongTempo->TempoPercentage();
+	if ( Percentage < UDanceUtilsFunctionLibrary::GetAcceptanceRate() && Result > UDanceUtilsFunctionLibrary::GetAcceptanceRate())
 	{
 		PostTempos++;
-		PostTempoMargin += Result;
+		PostTempoMargin += Result - UDanceUtilsFunctionLibrary::GetAcceptanceRate();
 	}
 
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());

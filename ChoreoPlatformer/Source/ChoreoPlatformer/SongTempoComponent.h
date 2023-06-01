@@ -35,6 +35,8 @@ protected:
 	UPROPERTY()
 	bool bIsCountingTempo = false;
 public:	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetCalibrationDeficit() { return CalibrationDeficit; }
 	UPROPERTY(BlueprintAssignable)
 	FNewTempoStarted NewTempoStarted;
 	UPROPERTY()

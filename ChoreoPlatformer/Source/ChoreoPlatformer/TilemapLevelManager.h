@@ -20,9 +20,11 @@ struct FSongSectionInfo
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FGameplayTag SectionName;
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	float BeatStart;
+	class USoundWave* Song;
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	float BeatDuration;
+	float SongBPM;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	float BeatStart;
 };
 
 UCLASS(ClassGroup = (Custom))
@@ -61,13 +63,9 @@ public:
 	ASectionLevelManager() {}
 
 protected:
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
-	class USoundWave* Song;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
-	float SongBPM;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
-	int IntroTempos;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level Song")
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
+	FGameplayTag StartSection;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	TMap<FGameplayTag, FSongSectionInfo> Sections;
 	
 	UPROPERTY(BlueprintReadOnly)
@@ -75,7 +73,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	float CurrentSectionStart;
 	UPROPERTY(BlueprintReadOnly)
-	float CurrentSectionDuration;
+	class USoundWave* SectionSong;
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	float CurrentSongBPM;
 	
 	virtual void BeginPlay() override;
 

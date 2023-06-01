@@ -51,7 +51,7 @@ void ATilemapLevelManager::LoadMap()
 
 				auto TileType = TileInfo.PackedTileIndex;
 				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
-				
+
 				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, DeltaPos, GetActorRotation());
 				SpawnedTile->Initialize((ETempoTile)TileType, SectionIdentifier);
 				SpawnedTile->SetOwner(this);
@@ -65,10 +65,10 @@ void ATilemapLevelManager::LoadMap()
 	TotalChallenges.Add(EChallengeType::CoinTrail, 0);
 	CollectedChallenges.Add(EChallengeType::HalfCoin, 0);
 	CollectedChallenges.Add(EChallengeType::CoinTrail, 0);
-	
+
 	TArray<AActor*> FoundChallenges;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileChallenge::StaticClass(), FoundChallenges);
-	
+
 	for (auto Challenge : FoundChallenges)
 	{
 		if (auto TrailChallenge = Cast<ACoinTrail>(Challenge))
@@ -101,16 +101,14 @@ int ATilemapLevelManager::GetCollectedByChallengeType(EChallengeType ChallengeTy
 void ASectionLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
+	SectionChanged(StartSection);
+	
+	auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	DanceCharacter->SetupToLevel();
+	
 	if (auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>())
 	{
-		SongTempo->AddPauseTempos(IntroTempos);
-		SongTempo->SetupTempo(60 / SongBPM);
 		SongTempo->StartTempoCounting();
-
-		auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-		DanceCharacter->SetupToLevel();
-		FTileInfo StartTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
-		SectionChanged(StartTile.Section);
 	}
 }
 
@@ -129,7 +127,10 @@ void ASectionLevelManager::SectionChanged(FGameplayTag NewSection)
 		if (Sections.Contains(CurrentSection))
 		{
 			CurrentSectionStart = Sections[CurrentSection].BeatStart;
-			CurrentSectionDuration = Sections[CurrentSection].BeatDuration;
+			SectionSong = Sections[CurrentSection].Song;
+			auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
+			CurrentSongBPM = Sections[CurrentSection].SongBPM;
+			SongTempo->SetupTempo(60 / Sections[CurrentSection].SongBPM);
 			PlayCurrentSection();
 		}
 	}
