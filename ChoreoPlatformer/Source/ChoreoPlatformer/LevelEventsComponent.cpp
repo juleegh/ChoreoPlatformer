@@ -15,6 +15,11 @@ ULevelEventsComponent::ULevelEventsComponent()
 
 void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 {
+    if (LevelEvents->EndTags.Contains(TriggerTag))
+    {
+        auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
+        SongTempo->StopTempoCounting();
+    }
     if (LevelEvents->WidgetEvents.Contains(TriggerTag))
     {
         HandleWidgetEvent(TriggerTag);

@@ -71,7 +71,7 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (SongTempo->IsOnPause())
+	if (SongTempo->IsOnPause() || SongTempo->IsStopped())
 	{
 		return;
 	}

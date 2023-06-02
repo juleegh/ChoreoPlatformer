@@ -27,6 +27,9 @@ class CHOREOPLATFORMER_API UEventsDataAsset : public UDataAsset
 	
 public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	TArray<FGameplayTag> EndTags;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	TMap<FGameplayTag, FWidgetLevelEvent> WidgetEvents;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
