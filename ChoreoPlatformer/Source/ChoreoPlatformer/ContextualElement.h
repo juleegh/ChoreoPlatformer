@@ -16,12 +16,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UBoxComponent* BoxComponent;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UBoxComponent* BoxComponent;
+	UFUNCTION(BlueprintImplementableEvent)
+	void RefreshState();
 	virtual void TriggerInteraction() {}
 	//virtual void Tick(float DeltaTime) override;
 };

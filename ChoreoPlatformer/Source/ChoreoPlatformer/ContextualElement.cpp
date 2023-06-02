@@ -25,7 +25,7 @@ void ABrickWall::TriggerInteraction()
 	HitsLeft--;
 	if (HitsLeft <= 0)
 	{
-		Destroy();
+		RefreshState();
 	}
 }
 
@@ -33,7 +33,9 @@ void ALever::TriggerInteraction()
 {
 	if (ConnectedDoor)
 	{
-		ConnectedDoor->Destroy();
+		RefreshState();
+		ConnectedDoor->BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		ConnectedDoor->RefreshState();
 		ConnectedDoor = nullptr;
 	}
 }
