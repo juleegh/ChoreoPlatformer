@@ -29,6 +29,12 @@ bool UDancerHealthComponent::ShouldTakeDamage()
 	return true;
 }
 
+float UDancerHealthComponent::GetTotalSteps()
+{
+	return Steps[ETempoAccuracy::Perfect] + Steps[ETempoAccuracy::Great] + Steps[ETempoAccuracy::Bad];
+}
+
+
 void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 {
 	Steps[result]++;

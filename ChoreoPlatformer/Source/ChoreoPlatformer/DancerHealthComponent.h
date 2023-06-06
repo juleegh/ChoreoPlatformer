@@ -28,6 +28,7 @@ protected:
 	TMap<ETempoAccuracy, int> Steps;
 	UPROPERTY()
 	float Health;
+	float GetTotalSteps();
 public:	
 	UPROPERTY()
 	FHealthChanged HealthChanged;
@@ -42,5 +43,5 @@ public:
 	float GetCurrentHealth() const { return Health; }
 	float GetMaxHealth() const { return 1; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int GetStepsByAccuracy(ETempoAccuracy Accuracy) { return Steps[Accuracy]; }
+	float GetStepsByAccuracy(ETempoAccuracy Accuracy) { return (Steps[Accuracy] / GetTotalSteps() * 100); }
 };
