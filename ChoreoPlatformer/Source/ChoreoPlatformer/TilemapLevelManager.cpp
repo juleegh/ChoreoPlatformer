@@ -13,7 +13,6 @@
 #include "ChoreoPlayerController.h"
 #include "LevelEventsComponent.h"
 #include "DanceCharacter.h"
-#include "DanceUtilsFunctionLibrary.h"
 
 void ATilemapLevelManager::BeginPlay()
 {
@@ -52,9 +51,7 @@ void ATilemapLevelManager::LoadMap()
 				auto TileType = TileInfo.PackedTileIndex;
 				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
 
-				auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, DeltaPos, GetActorRotation());
-				SpawnedTile->Initialize((ETempoTile)TileType, SectionIdentifier);
-				SpawnedTile->SetOwner(this);
+				SpawnTile(DeltaPos, (ETempoTile) TileType, SectionIdentifier);
 			}
 		}
 
@@ -82,6 +79,14 @@ void ATilemapLevelManager::LoadMap()
 	}
 
 }
+
+void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
+{
+	auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, GetActorRotation());
+	SpawnedTile->Initialize(TileType, SectionIdentifier);
+	SpawnedTile->SetOwner(this);
+}
+
 
 void ATilemapLevelManager::CollectChallenge(EChallengeType ChallengeType)
 {

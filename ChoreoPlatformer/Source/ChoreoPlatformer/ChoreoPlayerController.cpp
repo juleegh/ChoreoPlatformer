@@ -13,6 +13,7 @@
 #include "TimelineCreatorComponent.h"
 #include "ContextualElement.h"
 #include "LevelEventsComponent.h"
+#include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
@@ -22,6 +23,7 @@ AChoreoPlayerController::AChoreoPlayerController()
 	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
 	DancerUI = CreateDefaultSubobject<UDancerUIComponent>(TEXT("Dancer UI"));
 	LevelEvents = CreateDefaultSubobject<ULevelEventsComponent>(TEXT("Level Events"));
+	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -76,36 +78,26 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	if (!SectionManager)
-	{
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), FoundActors);
+	CheckForTileManager();
 
-		for (auto SectionActor : FoundActors)
-		{
-			SectionManager = Cast<ASectionLevelManager>(SectionActor);
-			break;
-		}
-	}
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
 
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, TargetPosition);
-	if (NextTile.bHitElement)
-	{
-		NextTile.HitElement->TriggerInteraction();
-		DancerUI->PromptTempoResult(Result);
-		return;
-	}
-	else if (NextTile.TileType == ETempoTile::Blocker)
+	if (NextTile.TileType == ETempoTile::Blocker)
 	{
 		return;
 	}
 
-	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
-	DancerUI->PromptTempoResult(Result);
-	SectionManager->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+	TriggerResultFeedback(Result);
+	
+	if (NextTile.bHitElement)
+	{
+		NextTile.HitElement->TriggerInteraction();
+		return;
+	}
+
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo) || !bShouldPunishTempo)
 	{
 		DanceCharacter->MoveInDirection(Direction);
@@ -128,5 +120,29 @@ void AChoreoPlayerController::OnPlayerDied()
 	DanceCharacter->StopMovement();
 	LevelProgress->LoadCheckpoint();
 }
+
+void AChoreoPlayerController::CheckForTileManager()
+{
+	if (!SectionManager)
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), FoundActors);
+
+		for (auto SectionActor : FoundActors)
+		{
+			SectionManager = Cast<ASectionLevelManager>(SectionActor);
+			break;
+		}
+	}
+}
+
+void AChoreoPlayerController::TriggerResultFeedback(float Result)
+{
+	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+	DancerUI->PromptTempoResult(Result);
+	SectionManager->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+}
+
+
 
 

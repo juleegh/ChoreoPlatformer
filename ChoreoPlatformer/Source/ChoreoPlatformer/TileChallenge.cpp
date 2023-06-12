@@ -126,7 +126,10 @@ void ACoinTrail::StartChallenge()
 void ACoinTrail::TempoHasPassed()
 {
 	Super::TempoHasPassed();
-
+	if (!bUnderProgress)
+	{
+		return;
+	}
 	if (TemposWithoutMoving >= 2)
 	{
 		bUnderProgress = false;

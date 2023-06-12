@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "TileChallenge.h"
+#include "DanceUtilsFunctionLibrary.h"
 #include "TilemapLevelManager.generated.h"
 
 class UPaperTileMap;
@@ -52,6 +53,7 @@ public:
 	void CollectChallenge(EChallengeType ChallengeType);
 	int GetTotalByChallengeType(EChallengeType ChallengeType);
 	int GetCollectedByChallengeType(EChallengeType ChallengeType);
+	void SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier);
 };
 
 UCLASS()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "ContextualElement.generated.h"
 
 UCLASS()
@@ -64,4 +65,44 @@ protected:
 public:
 	ALever() {}
 	void TriggerInteraction() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AItem : public AContextualElement
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FGameplayTag ItemType;
+	UPROPERTY()
+	bool bFinished;
+public:
+	void TriggerInteraction() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AItemObstacle : public AContextualElement
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FGameplayTag RequiredItem;
+	UPROPERTY()
+	bool bFinished;
+
+	void RemoveObstacle();
+	virtual void PostObstacleActions() {}
+public:
+	void TriggerInteraction() override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ATileHole : public AItemObstacle
+{
+	GENERATED_BODY()
+
+protected:
+	void PostObstacleActions() override;
 };

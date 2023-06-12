@@ -22,6 +22,8 @@ protected:
 	UPROPERTY()
 	class UDancerUIComponent* DancerUI;
 	UPROPERTY()
+	class UInventoryComponent* Inventory;
+	UPROPERTY()
 	class ULevelEventsComponent* LevelEvents;
 	UPROPERTY()
 	class ASectionLevelManager* SectionManager;
@@ -38,6 +40,8 @@ protected:
 	void OnFinishedMovement();
 	UFUNCTION()
 	void OnPlayerDied();
+	void CheckForTileManager();
+	void TriggerResultFeedback(float Result);
 
 public:
 	AChoreoPlayerController();

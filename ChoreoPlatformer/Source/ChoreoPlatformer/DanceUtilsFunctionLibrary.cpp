@@ -4,6 +4,7 @@
 #include "TilemapLevelManager.h"
 #include "DancerHealthComponent.h"
 #include "SongTempoComponent.h"
+#include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "ContextualElement.h"
 
@@ -105,6 +106,11 @@ float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
 UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContextObject)
 {
 	return Cast<UDancerHealthComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));
+}
+
+UInventoryComponent* UDanceUtilsFunctionLibrary::GetInventoryComponent(UWorld* WorldContextObject)
+{
+	return Cast<UInventoryComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UInventoryComponent::StaticClass()));
 }
 
 USongTempoComponent* UDanceUtilsFunctionLibrary::GetSongTempoComponent(AActor* WorldContextActor)
