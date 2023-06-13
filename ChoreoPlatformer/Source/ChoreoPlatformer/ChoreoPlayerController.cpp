@@ -88,7 +88,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo) || !bShouldPunishTempo)
+	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate()) || !bShouldPunishTempo)
 	{
 		DanceCharacter->MoveInDirection(Direction);
 		SectionManager->SectionChanged(NextTile.Section);

@@ -48,13 +48,13 @@ public:
 	bool IsStopped() { return !bIsCountingTempo; }
 	bool IsOnPause() { return CurrentPauseTempos > 0; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsOnTempo(float target = 1);
+	bool IsOnTempo(float target, float AcceptancePercentage);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float TempoResult(float target);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float TempoPercentage();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool TempoPercentageIsAcceptable(float target = 1);
+	bool TempoPercentageIsAcceptable(float target, float AcceptancePercentage);
 	void AddPauseTempos(int);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float GetFrequency() { return SongFrequency; }

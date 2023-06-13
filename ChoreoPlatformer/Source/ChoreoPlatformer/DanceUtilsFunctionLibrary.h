@@ -49,6 +49,7 @@ class CHOREOPLATFORMER_API UDanceUtilsFunctionLibrary : public UBlueprintFunctio
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static float GetTargetTempo(ETempoTile TileType);
 	static FVector GetTransformedPosition(FVector Origin, FVector Direction);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -62,6 +63,8 @@ public:
 	static float GetHealthDelta(ETempoAccuracy result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FTileInfo CheckPosition(class AActor* ToIgnore, FVector Start);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static bool IsAdjacentToPlayer(class AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static class UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))

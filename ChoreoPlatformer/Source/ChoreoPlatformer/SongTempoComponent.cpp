@@ -27,14 +27,14 @@ float USongTempoComponent::GetAcceptancePercentage()
 	return UDanceUtilsFunctionLibrary::GetAcceptanceRate();
 }
 
-bool USongTempoComponent::IsOnTempo(float target)
+bool USongTempoComponent::IsOnTempo(float target, float AcceptancePercentage)
 {
 	if (CurrentPauseTempos > 0)
 	{
 		return false;
 	}
 	
-	return TempoResult(target) <= GetAcceptancePercentage();
+	return TempoResult(target) <= AcceptancePercentage;
 }
 
 float USongTempoComponent::TempoResult(float target)
@@ -58,10 +58,10 @@ float USongTempoComponent::TempoPercentage()
 	return Residue;
 }
 
-bool USongTempoComponent::TempoPercentageIsAcceptable(float target)
+bool USongTempoComponent::TempoPercentageIsAcceptable(float target, float AcceptancePercentage)
 {
 	float Residue = TempoPercentage();
-	return Residue < GetAcceptancePercentage() * 0.5f || Residue >= (1 - GetAcceptancePercentage() * 0.5f);
+	return Residue < AcceptancePercentage * 0.5f || Residue >= (1 - AcceptancePercentage * 0.5f);
 }
 
 void USongTempoComponent::AddPauseTempos(int TemposToAdd)
@@ -77,7 +77,7 @@ void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		return;
 	}
 	CurrentTime += DeltaTime;
-	if (!InTempo && TempoPercentageIsAcceptable(1))
+	if (!InTempo && TempoPercentageIsAcceptable(1, GetAcceptancePercentage()))
 	{
 		if (CurrentPauseTempos > 0)
 		{
@@ -92,7 +92,7 @@ void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 			NewTempoStarted.Broadcast();
 		}
 	}
-	InTempo = TempoPercentageIsAcceptable(1);
+	InTempo = TempoPercentageIsAcceptable(1, GetAcceptancePercentage());
 }
 
 void USongTempoComponent::SetupTempo(float Frequency)

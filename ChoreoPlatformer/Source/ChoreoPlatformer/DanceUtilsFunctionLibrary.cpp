@@ -12,8 +12,8 @@ float UDanceUtilsFunctionLibrary::GetTargetTempo(ETempoTile TileType)
 {
 	switch (TileType)
 	{
-		case ETempoTile::Half:
-			return 0.5f;
+	case ETempoTile::Half:
+		return 0.5f;
 	}
 
 	return 1;
@@ -92,16 +92,36 @@ float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
 {
 	switch (result)
 	{
-		case ETempoAccuracy::Bad:
-			return -0.25f;
-		case ETempoAccuracy::Great:
-			return 0.05f;
-		case ETempoAccuracy::Perfect:
-			return 0.1f;
+	case ETempoAccuracy::Bad:
+		return -0.25f;
+	case ETempoAccuracy::Great:
+		return 0.05f;
+	case ETempoAccuracy::Perfect:
+		return 0.1f;
 	}
 
 	return 0;
 }
+
+bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor)
+{
+	FVector PlayerPos = WorldActor->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	FVector ActorPos = WorldActor->GetActorLocation();
+
+	if (FVector::Distance(PlayerPos, ActorPos) <= 100)
+		return true;
+	else if (PositionsAreEqual(PlayerPos, ActorPos + FVector::RightVector * 100))
+		return true;
+	else if (PositionsAreEqual(PlayerPos, ActorPos - FVector::RightVector * 100))
+		return true;
+	else if (PositionsAreEqual(PlayerPos, ActorPos + FVector::ForwardVector * 100))
+		return true;
+	else if (PositionsAreEqual(PlayerPos, ActorPos - FVector::ForwardVector * 100))
+		return true;
+
+	return false;
+}
+
 
 UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContextObject)
 {
