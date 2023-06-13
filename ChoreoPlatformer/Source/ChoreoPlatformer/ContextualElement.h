@@ -61,7 +61,7 @@ class CHOREOPLATFORMER_API ALever : public AContextualElement
 
 protected:
 	UPROPERTY(EditInstanceOnly)
-	ADoor* ConnectedDoor;
+	TArray<ADoor*> ConnectedDoors;
 public:
 	ALever() {}
 	void TriggerInteraction() override;

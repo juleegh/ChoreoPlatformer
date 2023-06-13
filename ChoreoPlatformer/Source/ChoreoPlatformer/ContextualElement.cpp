@@ -33,12 +33,15 @@ void ABrickWall::TriggerInteraction()
 
 void ALever::TriggerInteraction()
 {
-	if (ConnectedDoor)
+	if (ConnectedDoors.Num() > 0)
 	{
 		RefreshState();
-		ConnectedDoor->BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		ConnectedDoor->RefreshState();
-		ConnectedDoor = nullptr;
+		for (ADoor* ConnectedDoor : ConnectedDoors)
+		{
+			ConnectedDoor->BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+			ConnectedDoor->RefreshState();
+		}
+		ConnectedDoors.Empty();
 	}
 }
 

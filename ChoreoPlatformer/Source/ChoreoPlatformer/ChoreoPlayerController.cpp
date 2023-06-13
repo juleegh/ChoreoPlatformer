@@ -34,16 +34,6 @@ void AChoreoPlayerController::BeginPlay()
 	DancerHealth->HealthChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateHealth);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
 	DanceCharacter->GetMovementTimeline()->TimelineEnded.AddDynamic(this, &AChoreoPlayerController::OnFinishedMovement);
-
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), FoundActors);
-
-	for (auto SectionActor : FoundActors)
-	{
-		SectionManager = Cast<ASectionLevelManager>(SectionActor);
-		break;
-	}
 }
 
 void AChoreoPlayerController::Tick(float DeltaTime)
@@ -85,7 +75,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, TargetPosition);
-	if (NextTile.TileType == ETempoTile::Blocker)
+	if (NextTile.TileType == ETempoTile::Blocker || (NextTile.bForcesDirection && NextTile.ForcedDirection != Direction))
 	{
 		return;
 	}
@@ -107,12 +97,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 void AChoreoPlayerController::OnFinishedMovement()
 {
-	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
-
-	if (CurrentTile.bForcesDirection)
-	{
-		DanceCharacter->MoveInDirection(CurrentTile.ForcedDirection);
-	}
+	
 }
 
 void AChoreoPlayerController::OnPlayerDied()
