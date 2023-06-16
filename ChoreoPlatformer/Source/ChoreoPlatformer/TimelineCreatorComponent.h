@@ -24,8 +24,8 @@ public:
     bool IsRunning() const;
     UPROPERTY()
     FTimelineEnded TimelineEnded;
-    void MoveToPosition(FVector TargetPosition);
-    void RotateToPosition(FRotator TargetPosition);
+    void MoveToPosition(FVector TargetPosition, float TimelineLength);
+    void RotateToPosition(FRotator TargetPosition, float TimelineLength);
 
 protected:
     UPROPERTY()
@@ -57,8 +57,6 @@ protected:
 
     UPROPERTY()
     TEnumAsByte<ETimelineDirection::Type> TimelineDirection;
-    UPROPERTY()
-    float TimelineLength = 0.15f;
     UPROPERTY()
     float ElapsedTime;
 };

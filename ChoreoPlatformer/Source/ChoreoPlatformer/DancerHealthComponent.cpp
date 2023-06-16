@@ -56,9 +56,9 @@ void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 	{
 		Health = GetMaxHealth();
 	}
-	if (Health <= 0)
+	if (Health < 0)
 	{
-		Restart();
+		Health = 0;
 	}
 	HealthChanged.Broadcast(GetCurrentHealth(), GetMaxHealth());
 }

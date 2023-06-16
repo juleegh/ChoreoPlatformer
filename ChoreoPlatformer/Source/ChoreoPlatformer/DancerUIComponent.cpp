@@ -2,6 +2,7 @@
 
 #include "DancerUIComponent.h"
 #include "DancerHealthComponent.h"
+#include "SongTempoComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "TilemapLevelManager.h"
@@ -28,6 +29,8 @@ void UDancerUIComponent::BeginPlay()
     DancerUI = Cast<UDancerUI>(CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), DancerClass));
     DancerUI->AddToViewport();
     DancerUI->SetVisibility(ESlateVisibility::Visible);
+    DancerUI->TempoComponent = UDanceUtilsFunctionLibrary::GetSongTempoComponent(GetOwner());
+    DancerUI->InitializeEvents();
 
     ChallengeUI = Cast<UChallengeUI>(CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), ChallengeClass));
     ChallengeUI->AddToViewport();
@@ -38,7 +41,7 @@ void UDancerUIComponent::UpdateHealth(float Current, float Max)
 {
     StateUI.CurrentHealth = Current;
     StateUI.MaxHealth = Max;
-    DancerUI->UpdateUIState(StateUI);
+    //DancerUI->UpdateUIState(StateUI);
 }
 
 void UDancerUIComponent::UpdateCountdown(int TemposLeft)
@@ -59,6 +62,11 @@ void UDancerUIComponent::ChallengeStarted(EChallengeType ChallengeType)
 void UDancerUIComponent::ChallengeEnded(EChallengeType ChallengeType, bool Success)
 {
     ChallengeUI->ChallengeEnded(ChallengeType, Success);
+}
+
+USongTempoComponent* UDancerUI::GetTempoComponent()
+{
+    return TempoComponent;
 }
 
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)

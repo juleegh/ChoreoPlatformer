@@ -31,18 +31,18 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Right", IE_Pressed, controller, &AChoreoPlayerController::PressedRight);
 }
 
-void ADanceCharacter::MoveInDirection(FVector direction)
+void ADanceCharacter::MoveInDirection(FVector direction, float Duration)
 {
 	if (MoveTimeline->IsRunning())
 	{
-		return;
+		MoveTimeline->Stop();
 	}
 	PlayerMoved.Broadcast();
 	FVector position = UDanceUtilsFunctionLibrary::GetTransformedPosition(GetActorLocation(), direction);
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	GetController()->SetControlRotation(Rotation);
-	MoveTimeline->MoveToPosition(position);
+	MoveTimeline->MoveToPosition(position, Duration);
 }
 
 void ADanceCharacter::StopMovement()

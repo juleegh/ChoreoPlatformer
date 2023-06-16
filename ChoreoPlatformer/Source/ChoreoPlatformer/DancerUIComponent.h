@@ -25,12 +25,17 @@ class CHOREOPLATFORMER_API UDancerUI : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+    class USongTempoComponent* TempoComponent;
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    class USongTempoComponent* GetTempoComponent();
     UFUNCTION(BlueprintImplementableEvent)
     void UpdateCountdown(int TemposLeft);
     UFUNCTION(BlueprintImplementableEvent)
     void UpdateUIState(FStateUI StateUI);
     UFUNCTION(BlueprintImplementableEvent)
     void PromptTempoResult(float Distance);
+    UFUNCTION(BlueprintImplementableEvent)
+    void InitializeEvents();
 };
 
 UCLASS()
