@@ -7,8 +7,8 @@
 #include "DanceUtilsFunctionLibrary.h"
 #include "DancerHealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHealthChanged, float, Health, float, Max);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChanged, bool, bIsOnCooldown);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAccuracyChanged, float, Accuracy, float, Max);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHealthChanged, bool, bPositiveDelta, bool, bHasHealthItem);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDied);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -25,21 +25,21 @@ protected:
 	UPROPERTY()
 	TMap<ETempoAccuracy, int> Steps;
 	UPROPERTY()
-	float Health;
+	float Accuracy;
 	float GetTotalSteps();
 public:	
 	UPROPERTY()
-	FHealthChanged HealthChanged;
+	FAccuracyChanged AccuracyChanged;
 	UPROPERTY(BlueprintAssignable)
-	FCooldownChanged CooldownChanged;
+	FHealthChanged HealthChanged;
 	UPROPERTY()
 	FPlayerDied PlayerDied;
 	void Restart();
 	void TakeHit(int Damage = 1);
 	void CountStep(ETempoAccuracy result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float GetCurrentHealth() const { return Health; }
-	float GetMaxHealth() const { return 1; }
+	float GetCurrentAccuracy() const { return Accuracy; }
+	float GetMaxAccuracy() const { return 1; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float GetStepsByAccuracy(ETempoAccuracy Accuracy) { return (Steps[Accuracy] / GetTotalSteps() * 100); }
+	float GetStepsByAccuracy(ETempoAccuracy TempoAccuracy) { return (Steps[TempoAccuracy] / GetTotalSteps() * 100); }
 };

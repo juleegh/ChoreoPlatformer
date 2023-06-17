@@ -32,6 +32,7 @@ void AChoreoPlayerController::BeginPlay()
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	DancerHealth->HealthChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateHealth);
+	DancerHealth->AccuracyChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateAccuracy);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
 	DanceCharacter->GetMovementTimeline()->TimelineEnded.AddDynamic(this, &AChoreoPlayerController::OnFinishedMovement);
 }

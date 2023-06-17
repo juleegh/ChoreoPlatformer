@@ -15,7 +15,7 @@ UDancerHealthComponent::UDancerHealthComponent()
 void UDancerHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	Health = GetMaxHealth() / 2;
+	Accuracy = GetMaxAccuracy() / 2;
 	Steps = TMap<ETempoAccuracy, int>();
 	Steps.Add(ETempoAccuracy::Bad, 0);
 	Steps.Add(ETempoAccuracy::Great, 0);
@@ -45,16 +45,16 @@ void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 		return;
 	}
 
-	Health += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
-	if (Health > GetMaxHealth())
+	Accuracy += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
+	if (Accuracy > GetMaxAccuracy())
 	{
-		Health = GetMaxHealth();
+		Accuracy = GetMaxAccuracy();
 	}
-	if (Health < 0)
+	if (Accuracy < 0)
 	{
-		Health = 0;
+		Accuracy = 0;
 	}
-	HealthChanged.Broadcast(GetCurrentHealth(), GetMaxHealth());
+	AccuracyChanged.Broadcast(GetCurrentAccuracy(), GetMaxAccuracy());
 }
 
 void UDancerHealthComponent::TakeHit(int Damage)
@@ -66,15 +66,16 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	if (!UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->LoseHealthItem())
 	{
 		Restart();
+		HealthChanged.Broadcast(false, false);
 	}
 	else
 	{
-		CooldownChanged.Broadcast(true);
+		HealthChanged.Broadcast(false, UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HasHealthItem());
 	}
 }
 
 void UDancerHealthComponent::Restart()
 {
-	Health = GetMaxHealth() / 2;
+	Accuracy = GetMaxAccuracy() / 2;
 	PlayerDied.Broadcast();
 }

@@ -30,5 +30,6 @@ public:
 	bool RemoveItem(FGameplayTag ItemType);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool HasHealthItem();
+	int HealthItemQuantity();
 	bool LoseHealthItem();
 };

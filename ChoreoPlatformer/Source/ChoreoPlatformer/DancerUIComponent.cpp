@@ -2,6 +2,7 @@
 
 #include "DancerUIComponent.h"
 #include "DancerHealthComponent.h"
+#include "InventoryComponent.h"
 #include "SongTempoComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -37,11 +38,16 @@ void UDancerUIComponent::BeginPlay()
     ChallengeUI->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UDancerUIComponent::UpdateHealth(float Current, float Max)
+void UDancerUIComponent::UpdateAccuracy(float Current, float Max)
 {
     StateUI.CurrentHealth = Current;
     StateUI.MaxHealth = Max;
     //DancerUI->UpdateUIState(StateUI);
+}
+
+void UDancerUIComponent::UpdateHealth(bool bPositiveDelta, bool bHasItems)
+{
+    DancerUI->UpdateFruitCounter(UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HealthItemQuantity());
 }
 
 void UDancerUIComponent::UpdateCountdown(int TemposLeft)

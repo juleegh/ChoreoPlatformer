@@ -29,6 +29,8 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure)
     class USongTempoComponent* GetTempoComponent();
     UFUNCTION(BlueprintImplementableEvent)
+    void UpdateFruitCounter(int Fruit);
+    UFUNCTION(BlueprintImplementableEvent)
     void UpdateCountdown(int TemposLeft);
     UFUNCTION(BlueprintImplementableEvent)
     void UpdateUIState(FStateUI StateUI);
@@ -61,7 +63,9 @@ public:
     UFUNCTION()
     void PromptTempoResult(float Distance);
     UFUNCTION()
-    void UpdateHealth(float Current, float Max);
+    void UpdateAccuracy(float Current, float Max);
+    UFUNCTION()
+    void UpdateHealth(bool bPositiveDelta, bool bHasItems);
     UFUNCTION()
     void ChallengeStarted(EChallengeType ChallengeType);
     UFUNCTION()
