@@ -4,6 +4,8 @@
 #include "DancerHealthComponent.h"
 #include "ChoreoPlayerController.h"
 #include "LevelProgressComponent.h"
+#include "InventoryComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 UDancerHealthComponent::UDancerHealthComponent()
 {
@@ -44,14 +46,6 @@ void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 	}
 
 	Health += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
-	if (Cooldown > 0)
-	{
-		Cooldown--;
-		if (Cooldown == 0)
-		{
-			CooldownChanged.Broadcast(false);
-		}
-	}
 	if (Health > GetMaxHealth())
 	{
 		Health = GetMaxHealth();
@@ -69,13 +63,12 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	{
 		return;
 	}
-	if (Cooldown > 0)
+	if (!UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->LoseHealthItem())
 	{
 		Restart();
 	}
 	else
 	{
-		Cooldown = UDanceUtilsFunctionLibrary::GetDamageCooldown();
 		CooldownChanged.Broadcast(true);
 	}
 }
@@ -83,7 +76,5 @@ void UDancerHealthComponent::TakeHit(int Damage)
 void UDancerHealthComponent::Restart()
 {
 	Health = GetMaxHealth() / 2;
-	Cooldown = 0;
 	PlayerDied.Broadcast();
-	CooldownChanged.Broadcast(false);
 }

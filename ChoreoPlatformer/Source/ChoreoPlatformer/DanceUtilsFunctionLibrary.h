@@ -67,8 +67,8 @@ public:
 	static bool IsAdjacentToPlayer(class AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static class UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
-	static class UInventoryComponent* GetInventoryComponent(UWorld* WorldContextObject);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static class UInventoryComponent* GetInventoryComponent(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static class ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))

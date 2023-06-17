@@ -51,14 +51,14 @@ void AItem::TriggerInteraction()
 	{
 		bFinished = true;
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		UDanceUtilsFunctionLibrary::GetInventoryComponent(GetWorld())->AddItem(ItemType);
+		UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->AddItem(ItemType);
 		RefreshState();
 	}
 }
 
 void AItemObstacle::TriggerInteraction()
 {
-	if (UDanceUtilsFunctionLibrary::GetInventoryComponent(GetWorld())->HasItem(RequiredItem) && !bFinished)
+	if (UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->HasItem(RequiredItem) && !bFinished)
 	{
 		bFinished = true;
 		RemoveObstacle();
@@ -67,7 +67,7 @@ void AItemObstacle::TriggerInteraction()
 
 void AItemObstacle::RemoveObstacle()
 {
-	UDanceUtilsFunctionLibrary::GetInventoryComponent(GetWorld())->RemoveItem(RequiredItem);
+	UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->RemoveItem(RequiredItem);
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	PostObstacleActions();
 	RefreshState();

@@ -79,6 +79,7 @@ protected:
 	bool bFinished;
 public:
 	void TriggerInteraction() override;
+	FGameplayTag GetItemType() { return ItemType; }
 };
 
 UCLASS()

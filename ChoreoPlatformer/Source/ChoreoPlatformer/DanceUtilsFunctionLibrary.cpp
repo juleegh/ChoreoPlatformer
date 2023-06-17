@@ -128,9 +128,9 @@ UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWo
 	return Cast<UDancerHealthComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));
 }
 
-UInventoryComponent* UDanceUtilsFunctionLibrary::GetInventoryComponent(UWorld* WorldContextObject)
+UInventoryComponent* UDanceUtilsFunctionLibrary::GetInventoryComponent(AActor* WorldContextActor)
 {
-	return Cast<UInventoryComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UInventoryComponent::StaticClass()));
+	return Cast<UInventoryComponent>(WorldContextActor->GetWorld()->GetFirstPlayerController()->GetComponentByClass(UInventoryComponent::StaticClass()));
 }
 
 USongTempoComponent* UDanceUtilsFunctionLibrary::GetSongTempoComponent(AActor* WorldContextActor)

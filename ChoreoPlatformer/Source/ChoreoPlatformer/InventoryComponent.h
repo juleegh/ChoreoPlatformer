@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 UCLASS()
 class CHOREOPLATFORMER_API UInventoryComponent : public UActorComponent
 {
@@ -20,7 +21,14 @@ protected:
 	TArray<FGameplayTag> Inventory;
 
 public:
+	UPROPERTY(BlueprintAssignable)
+	FInventoryChanged InventoryChanged;
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool HasItem(FGameplayTag ItemType);
 	void AddItem(FGameplayTag ItemType);
 	bool RemoveItem(FGameplayTag ItemType);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool HasHealthItem();
+	bool LoseHealthItem();
 };

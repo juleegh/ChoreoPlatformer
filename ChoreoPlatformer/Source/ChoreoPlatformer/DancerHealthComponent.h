@@ -23,8 +23,6 @@ protected:
 	virtual void BeginPlay() override;
 	bool ShouldTakeDamage();
 	UPROPERTY()
-	int Cooldown;
-	UPROPERTY()
 	TMap<ETempoAccuracy, int> Steps;
 	UPROPERTY()
 	float Health;
