@@ -20,6 +20,8 @@ void USongTempoComponent::BeginPlay()
 void USongTempoComponent::SetupCalibrationDeficit(float Deficit)
 {
 	CalibrationDeficit = Deficit * SongFrequency;
+	UE_LOG(LogTemp, Warning, TEXT("CalibrationDeficit: %f"), Deficit);
+
 }
 
 float USongTempoComponent::GetAcceptancePercentage()
@@ -55,6 +57,13 @@ float USongTempoComponent::TempoPercentage()
 {
 	float Whole = FMath::FloorToInt((CurrentTime + CalibrationDeficit) / SongFrequency);
 	float Residue = ((CurrentTime + CalibrationDeficit) / SongFrequency) - Whole;
+	return Residue;
+}
+
+float USongTempoComponent::TempoPercentageWithoutCalibration()
+{
+	float Whole = FMath::FloorToInt((CurrentTime) / SongFrequency);
+	float Residue = ((CurrentTime) / SongFrequency) - Whole;
 	return Residue;
 }
 

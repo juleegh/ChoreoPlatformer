@@ -3,6 +3,7 @@
 
 #include "ChoreoPlayerController.h"
 #include "SongTempoComponent.h"
+#include "CalibrationComponent.h"
 #include "DanceCharacter.h"
 #include "GridCell.h"
 #include "TilemapLevelManager.h"
@@ -19,6 +20,7 @@
 AChoreoPlayerController::AChoreoPlayerController()
 {
 	SongTempo = CreateDefaultSubobject<USongTempoComponent>(TEXT("Song Tempo"));
+	Calibration = CreateDefaultSubobject<UCalibrationComponent>(TEXT("Controller Calibration"));
 	LevelProgress = CreateDefaultSubobject<ULevelProgressComponent>(TEXT("Level Progress"));
 	DancerHealth = CreateDefaultSubobject<UDancerHealthComponent>(TEXT("Dancer Health"));
 	DancerUI = CreateDefaultSubobject<UDancerUIComponent>(TEXT("Dancer UI"));
@@ -64,6 +66,11 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
+	if (!Calibration->IsCalibrated())
+	{
+		Calibration->ReceiveInput();
+		return;
+	}
 	if (SongTempo->IsOnPause() || SongTempo->IsStopped())
 	{
 		return;

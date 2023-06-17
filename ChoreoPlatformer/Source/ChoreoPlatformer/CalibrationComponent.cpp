@@ -21,7 +21,8 @@ float UCalibrationComponent::GetCalibrationDelta()
 {
 	if (PostTempos == 0)
 		return 0;
-	return (PostTempoMargin / PostTempos);
+	float Tempos = PostTempos;
+	return (PostTempoMargin / Tempos);
 }
 
 
@@ -36,59 +37,16 @@ void UCalibrationComponent::ReceiveInput()
 	{
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	}
-	float Result = SongTempo->TempoResult(1);
-	float Percentage = SongTempo->TempoPercentage();
-	if ( Percentage < UDanceUtilsFunctionLibrary::GetAcceptanceRate() && Result > UDanceUtilsFunctionLibrary::GetAcceptanceRate())
-	{
-		PostTempos++;
-		PostTempoMargin += Result - UDanceUtilsFunctionLibrary::GetAcceptanceRate();
-	}
+	float Percentage = SongTempo->TempoPercentageWithoutCalibration();
+	PostTempos++;
+	PostTempoMargin += UDanceUtilsFunctionLibrary::GetAcceptanceRate() - Percentage;
 
+	Tries++;
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
-	if (Result <= UDanceUtilsFunctionLibrary::GetAcceptanceRate())
-	{
-		Streak++;
-	}
-	else
-	{
-		Streak = 0;
-	}
 
-	if (Streak >= RequiredStreak)
+	UE_LOG(LogTemp, Warning, TEXT("Deviation: %f"), Percentage);
+	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate()) && Tries >= 8)
 	{
 		bIsCalibrated = true;
-	}
-}
-
-void UCalibrationComponent::Setup(int Required)
-{
-	RequiredStreak = Required;
-	PostTempoMargin = 0;
-}
-
-
-ACalibrator::ACalibrator()
-{
-	Calibration = CreateDefaultSubobject<UCalibrationComponent>(TEXT("Calibration"));
-}
-
-void ACalibrator::BeginPlay()
-{
-	Super::BeginPlay();
-	EnableInput(GetWorld()->GetFirstPlayerController());
-	auto PlayerInputComponent = GetWorld()->GetFirstPlayerController()->GetPawn()->InputComponent;
-	PlayerInputComponent->BindAction("Up", IE_Pressed, this, &ACalibrator::KeyPressed);
-	PlayerInputComponent->BindAction("Down", IE_Pressed, this, &ACalibrator::KeyPressed);
-	PlayerInputComponent->BindAction("Left", IE_Pressed, this, &ACalibrator::KeyPressed);
-	PlayerInputComponent->BindAction("Right", IE_Pressed, this, &ACalibrator::KeyPressed);
-	Calibration->Setup(RequiredStreak);
-}
-
-void ACalibrator::KeyPressed()
-{
-	Calibration->ReceiveInput();
-	if (Calibration->IsCalibrated())
-	{
-		DisableInput(GetWorld()->GetFirstPlayerController());
 	}
 }

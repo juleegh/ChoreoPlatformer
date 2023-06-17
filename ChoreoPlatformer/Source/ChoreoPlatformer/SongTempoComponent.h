@@ -54,6 +54,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float TempoPercentage();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float TempoPercentageWithoutCalibration();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool TempoPercentageIsAcceptable(float target, float AcceptancePercentage);
 	void AddPauseTempos(int);
 	UFUNCTION(BlueprintCallable, BlueprintPure)

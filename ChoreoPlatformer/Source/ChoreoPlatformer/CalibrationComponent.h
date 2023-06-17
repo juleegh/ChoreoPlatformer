@@ -25,39 +25,10 @@ protected:
 	UPROPERTY()
 	float PostTempoMargin;
 	UPROPERTY()
-	int Streak;
-	UPROPERTY()
-	int RequiredStreak;
+	int Tries = 0;
 	float GetCalibrationDelta();
 
 public:
 	bool IsCalibrated();
 	void ReceiveInput();
-	void Setup(int Required);
-};
-
-UCLASS(ClassGroup = (Custom))
-class CHOREOPLATFORMER_API ACalibrator : public AActor
-{
-	GENERATED_BODY()
-
-public:
-	ACalibrator();
-
-protected:
-	UPROPERTY()
-	class UCalibrationComponent* Calibration;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
-	int RequiredStreak = 8;
-	virtual void BeginPlay() override;
-	void KeyPressed();
-};
-
-UCLASS()
-class CHOREOPLATFORMER_API USaveData : public USaveGame
-{
-	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere)
-	double CalibrationDelta;
 };
