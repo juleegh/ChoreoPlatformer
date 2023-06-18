@@ -44,6 +44,8 @@ protected:
 	TMap<EChallengeType, int> TotalChallenges;
 	UPROPERTY()
 	TMap<EChallengeType, int> CollectedChallenges;
+	UPROPERTY()
+	int TotalFruit;
 
 public:
 	// Called every frame
@@ -53,6 +55,7 @@ public:
 	void CollectChallenge(EChallengeType ChallengeType);
 	int GetTotalByChallengeType(EChallengeType ChallengeType);
 	int GetCollectedByChallengeType(EChallengeType ChallengeType);
+	int GetTotalFruit();
 	void SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier);
 };
 

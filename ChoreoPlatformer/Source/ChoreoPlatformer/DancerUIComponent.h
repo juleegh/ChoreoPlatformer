@@ -93,6 +93,8 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure)
     int GetStepsByAccuracy(ETempoAccuracy Accuracy);
     UFUNCTION(BlueprintCallable, BlueprintPure)
-       FText GetChallengeResultByType(EChallengeType ChallengeType);
+    FText GetChallengeResultByType(EChallengeType ChallengeType);
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    FText GetFruitCount();
 };
 

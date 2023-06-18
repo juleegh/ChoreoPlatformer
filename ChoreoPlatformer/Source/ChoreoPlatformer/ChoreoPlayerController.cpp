@@ -66,7 +66,7 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (!Calibration->IsCalibrated())
+	if (!Calibration->IsCalibrated() && !bBypassCalibration)
 	{
 		Calibration->ReceiveInput();
 		return;
@@ -98,7 +98,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate()))
 	{
-		DanceCharacter->MoveInDirection(Direction, CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.9f);
+		DanceCharacter->MoveInDirection(Direction, CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f);
 		SectionManager->SectionChanged(NextTile.Section);
 	}
 }

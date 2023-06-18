@@ -86,3 +86,10 @@ FText ULevelCompleteUI::GetChallengeResultByType(EChallengeType ChallengeType)
     int Total = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetTotalByChallengeType(ChallengeType);
     return FText::Format(FText::FromString(TEXT("{0}/{1}")), FText::AsNumber(Collected), FText::AsNumber(Total));
 }
+
+FText ULevelCompleteUI::GetFruitCount()
+{
+    int Collected = UDanceUtilsFunctionLibrary::GetInventoryComponent(GetWorld()->GetFirstPlayerController())->HealthItemQuantity();
+    int Total = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetTotalFruit();
+    return FText::Format(FText::FromString(TEXT("{0}/{1}")), FText::AsNumber(Collected), FText::AsNumber(Total));
+}

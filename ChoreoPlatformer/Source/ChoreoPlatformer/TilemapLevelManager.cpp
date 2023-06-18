@@ -5,6 +5,7 @@
 #include "GridCell.h"
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
+#include "ContextualElement.h"
 #include "PaperTileMap.h"
 #include "PaperTileLayer.h"
 #include "PaperTileSet.h"
@@ -78,6 +79,20 @@ void ATilemapLevelManager::LoadMap()
 		}
 	}
 
+	TArray<AActor*> FoundItems;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AContextualElement::StaticClass(), FoundItems);
+
+	for (auto FoundItem : FoundItems)
+	{
+		if (auto Item = Cast<AItem>(FoundItem))
+		{
+			if (Item->GetItemType().GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
+			{
+				TotalFruit++;
+			}
+		}
+	}
+
 }
 
 void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
@@ -101,6 +116,11 @@ int ATilemapLevelManager::GetTotalByChallengeType(EChallengeType ChallengeType)
 int ATilemapLevelManager::GetCollectedByChallengeType(EChallengeType ChallengeType)
 {
 	return CollectedChallenges[ChallengeType];
+}
+
+int ATilemapLevelManager::GetTotalFruit()
+{
+	return TotalFruit;
 }
 
 void ASectionLevelManager::BeginPlay()
