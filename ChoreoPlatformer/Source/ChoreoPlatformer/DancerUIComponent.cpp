@@ -2,11 +2,13 @@
 
 #include "DancerUIComponent.h"
 #include "DancerHealthComponent.h"
+#include "ChoreoPlayerController.h"
 #include "InventoryComponent.h"
 #include "SongTempoComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "TilemapLevelManager.h"
+#include "LevelEventsComponent.h"
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -27,6 +29,10 @@ UDancerUIComponent::UDancerUIComponent()
 void UDancerUIComponent::BeginPlay()
 {
     Super::BeginPlay();
+
+    auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
+    LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
+
     DancerUI = Cast<UDancerUI>(CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), DancerClass));
     DancerUI->AddToViewport();
     DancerUI->SetVisibility(ESlateVisibility::Visible);
