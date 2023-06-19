@@ -7,6 +7,7 @@
 #include "DanceCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerMoved);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMoveFailed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerNewPosition);
 
 UCLASS()
@@ -29,6 +30,8 @@ private:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FPlayerMoved PlayerMoved;
+	UPROPERTY(BlueprintAssignable)
+	FMoveFailed MoveFailed;
 	UPROPERTY(BlueprintAssignable)
 	FPlayerNewPosition PlayerNewPosition;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

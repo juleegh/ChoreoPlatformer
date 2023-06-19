@@ -37,6 +37,10 @@ void AChoreoPlayerController::BeginPlay()
 	DancerHealth->AccuracyChanged.AddDynamic(DancerUI, &UDancerUIComponent::UpdateAccuracy);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
 	DanceCharacter->GetMovementTimeline()->TimelineEnded.AddDynamic(this, &AChoreoPlayerController::OnFinishedMovement);
+	if (bBypassCalibration)
+	{
+		CalibrationEnded.Broadcast();
+	}
 }
 
 void AChoreoPlayerController::Tick(float DeltaTime)
@@ -69,6 +73,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (!Calibration->IsCalibrated() && !bBypassCalibration)
 	{
 		Calibration->ReceiveInput();
+		Calibrating.Broadcast();
 		return;
 	}
 	if (SongTempo->IsOnPause() || SongTempo->IsStopped())
@@ -100,6 +105,10 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	{
 		DanceCharacter->MoveInDirection(Direction, CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f);
 		SectionManager->SectionChanged(NextTile.Section);
+	}
+	else
+	{
+		DanceCharacter->MoveFailed.Broadcast();
 	}
 }
 

@@ -3,6 +3,7 @@
 
 #include "CalibrationComponent.h"
 #include "SongTempoComponent.h"
+#include "ChoreoPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DanceUtilsFunctionLibrary.h"
@@ -48,5 +49,6 @@ void UCalibrationComponent::ReceiveInput()
 	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate()) && Tries >= 8)
 	{
 		bIsCalibrated = true;
+		Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->CalibrationEnded.Broadcast();
 	}
 }

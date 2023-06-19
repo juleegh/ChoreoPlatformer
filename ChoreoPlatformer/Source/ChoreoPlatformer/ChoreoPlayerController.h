@@ -6,6 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "ChoreoPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrationEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrating);
+
 UCLASS()
 class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 {
@@ -49,6 +52,10 @@ protected:
 
 public:
 	AChoreoPlayerController();
+	UPROPERTY(BlueprintAssignable)
+	FCalibrating Calibrating;
+	UPROPERTY(BlueprintAssignable)
+	FCalibrationEnded CalibrationEnded;
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class USongTempoComponent* GetSongTempoComponent() const { return SongTempo; }
 	class ULevelProgressComponent* GetLevelProgressComponent() const { return LevelProgress; }
