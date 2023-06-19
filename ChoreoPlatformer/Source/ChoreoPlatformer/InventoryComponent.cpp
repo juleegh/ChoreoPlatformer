@@ -21,7 +21,7 @@ bool UInventoryComponent::RemoveItem(FGameplayTag ItemType)
 {
 	if (HasItem(ItemType))
 	{
-		Inventory.Remove(ItemType);
+		Inventory.RemoveSingle(ItemType);
 		InventoryChanged.Broadcast();
 		return true;
 	}
@@ -59,7 +59,7 @@ bool UInventoryComponent::LoseHealthItem()
 	{
 		if (Item.GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
 		{
-			Inventory.Remove(Item);
+			Inventory.RemoveSingle(Item);
 			return true;
 		}
 	}
