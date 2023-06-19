@@ -65,6 +65,11 @@ void AEnemy::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActo
 	if (auto character = Cast<ADanceCharacter>(OtherActor))
 	{
 		PlayerCharacter = character;
+		if (!MoveTimeline->IsRunning())
+		{
+			character->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+			PlayerCharacter = nullptr;
+		}
 	}
 }
 

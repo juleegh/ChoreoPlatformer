@@ -36,6 +36,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bShouldTakeDamage = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	bool bBypassOutOfTempo = true;
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassCalibration = true;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
