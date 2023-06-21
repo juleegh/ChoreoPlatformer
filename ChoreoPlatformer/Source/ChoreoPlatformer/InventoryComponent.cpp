@@ -13,7 +13,7 @@ void UInventoryComponent::AddItem(FGameplayTag ItemType)
 	InventoryChanged.Broadcast();
 	if (ItemType.GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
 	{
-		UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->HealthChanged.Broadcast(true, true);
+		UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->HealthChanged.Broadcast(true, true, false);
 	}
 }
 

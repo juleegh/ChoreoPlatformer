@@ -20,7 +20,8 @@ public:
     void Initialize();
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void PlayTimeline();
-    void Stop();
+    void Reset();
+    void Stop(bool bForceFinishAction);
     bool IsRunning() const;
     UPROPERTY()
     FTimelineEnded TimelineEnded;

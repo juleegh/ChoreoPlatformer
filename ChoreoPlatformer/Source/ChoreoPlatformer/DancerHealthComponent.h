@@ -8,7 +8,7 @@
 #include "DancerHealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAccuracyChanged, float, Accuracy, float, Max);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHealthChanged, bool, bPositiveDelta, bool, bHasHealthItem);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FHealthChanged, bool, bPositiveDelta, bool, bHasHealthItem, bool, bDied);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDied);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )

@@ -97,6 +97,11 @@ void ATileChallenge::EndChallenge(bool bWasSuccessful)
 
 void AHalfCoin::StartChallenge()
 {
+	if (bCompleted)
+	{
+		return;
+	}
+
 	TemposRemaining = TemposBetweenHalfs;
 }
 
@@ -120,13 +125,18 @@ void AHalfCoin::TempoHasPassed()
 
 void ACoinTrail::StartChallenge()
 {
+	if (bCompleted)
+	{
+		return;
+	}
+
 	CurrentCoin = -1;
 }
 
 void ACoinTrail::TempoHasPassed()
 {
 	Super::TempoHasPassed();
-	if (!bUnderProgress)
+	if (!bUnderProgress || bCompleted)
 	{
 		return;
 	}

@@ -55,12 +55,19 @@ void UTimelineCreatorComponent::TimelineFinishedCallback()
     }
 }
 
+void UTimelineCreatorComponent::Reset()
+{
+    TargetLocation = TimelineTarget->GetActorLocation();
+}
 
-void UTimelineCreatorComponent::Stop()
+void UTimelineCreatorComponent::Stop(bool bForceFinishAction)
 {
     if (MyTimeline != NULL)
     {
         MyTimeline->Stop();
+    }
+    if (bForceFinishAction)
+    {
         TimelineTarget->SetActorLocation(TargetLocation);
     }
 }

@@ -51,9 +51,12 @@ void UDancerUIComponent::UpdateAccuracy(float Current, float Max)
     //DancerUI->UpdateUIState(StateUI);
 }
 
-void UDancerUIComponent::UpdateHealth(bool bPositiveDelta, bool bHasItems)
+void UDancerUIComponent::UpdateHealth(bool bPositiveDelta, bool bHasItems, bool bDied)
 {
-    DancerUI->UpdateFruitCounter(UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HealthItemQuantity());
+    if (!bDied)
+    {
+        DancerUI->UpdateFruitCounter(UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HealthItemQuantity(), bPositiveDelta);
+    }
 }
 
 void UDancerUIComponent::UpdateCountdown(int TemposLeft)

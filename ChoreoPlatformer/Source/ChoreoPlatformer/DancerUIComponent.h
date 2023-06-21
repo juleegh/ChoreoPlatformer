@@ -29,7 +29,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure)
     class USongTempoComponent* GetTempoComponent();
     UFUNCTION(BlueprintImplementableEvent)
-    void UpdateFruitCounter(int Fruit);
+    void UpdateFruitCounter(int Fruit, bool DeltaType);
     UFUNCTION(BlueprintImplementableEvent)
     void UpdateCountdown(int TemposLeft);
     UFUNCTION(BlueprintImplementableEvent)
@@ -65,7 +65,7 @@ public:
     UFUNCTION()
     void UpdateAccuracy(float Current, float Max);
     UFUNCTION()
-    void UpdateHealth(bool bPositiveDelta, bool bHasItems);
+    void UpdateHealth(bool bPositiveDelta, bool bHasItems, bool bDied);
     UFUNCTION()
     void ChallengeStarted(EChallengeType ChallengeType);
     UFUNCTION()

@@ -35,7 +35,7 @@ void ADanceCharacter::MoveInDirection(FVector direction, float Duration)
 {
 	if (MoveTimeline->IsRunning())
 	{
-		MoveTimeline->Stop();
+		MoveTimeline->Stop(true);
 	}
 	PlayerMoved.Broadcast();
 	FVector position = UDanceUtilsFunctionLibrary::GetTransformedPosition(GetActorLocation(), direction);
@@ -47,7 +47,8 @@ void ADanceCharacter::MoveInDirection(FVector direction, float Duration)
 
 void ADanceCharacter::StopMovement()
 {
-	MoveTimeline->Stop();
+	MoveTimeline->Reset();
+	MoveTimeline->Stop(true);
 }
 
 void ADanceCharacter::ReachedNextTile()

@@ -66,11 +66,11 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	if (!UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->LoseHealthItem())
 	{
 		Restart();
-		HealthChanged.Broadcast(false, false);
+		HealthChanged.Broadcast(false, false, true);
 	}
 	else
 	{
-		HealthChanged.Broadcast(false, UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HasHealthItem());
+		HealthChanged.Broadcast(false, UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HasHealthItem(), false);
 	}
 }
 

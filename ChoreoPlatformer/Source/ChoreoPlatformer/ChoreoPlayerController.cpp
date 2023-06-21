@@ -119,8 +119,8 @@ void AChoreoPlayerController::OnFinishedMovement()
 
 void AChoreoPlayerController::OnPlayerDied()
 {
-	DanceCharacter->StopMovement();
 	LevelProgress->LoadCheckpoint();
+	DanceCharacter->StopMovement();
 }
 
 void AChoreoPlayerController::CheckForTileManager()
