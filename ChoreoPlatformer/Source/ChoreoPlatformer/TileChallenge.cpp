@@ -145,6 +145,7 @@ void ACoinTrail::TempoHasPassed()
 		bUnderProgress = false;
 		EndChallenge(false);
 		PlayerUI->ChallengeEnded(ChallengeType, false);
+		bCompleted = true;
 	}
 }
 

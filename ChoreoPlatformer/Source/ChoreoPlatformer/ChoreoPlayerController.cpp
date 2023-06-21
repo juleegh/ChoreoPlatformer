@@ -16,6 +16,7 @@
 #include "LevelEventsComponent.h"
 #include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "LevelEventsComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -40,6 +41,7 @@ void AChoreoPlayerController::BeginPlay()
 	if (bBypassCalibration)
 	{
 		CalibrationEnded.Broadcast();
+		LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
 	}
 }
 
@@ -84,7 +86,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	CheckForTileManager();
 
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, DanceCharacter->GetActorLocation());
-	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
+	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
 
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(DanceCharacter, TargetPosition);
@@ -101,7 +103,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate()) || bBypassOutOfTempo)
+	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) || bBypassOutOfTempo)
 	{
 		DanceCharacter->MoveInDirection(Direction, CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f);
 		SectionManager->SectionChanged(NextTile.Section);

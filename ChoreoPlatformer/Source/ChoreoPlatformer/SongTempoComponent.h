@@ -47,14 +47,14 @@ public:
 
 	bool IsStopped() { return !bIsCountingTempo; }
 	bool IsOnPause() { return CurrentPauseTempos > 0; }
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsOnTempo(float target, float AcceptancePercentage);
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float TempoResult(float target);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (IncludeCalibration = "false"))
+	bool IsOnTempo(float target, float AcceptancePercentage, bool IncludeCalibration = false);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (IncludeCalibration = "false"))
+	float TempoResult(float target, bool IncludeCalibration = false);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	float TempoPercentage();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float TempoPercentageWithoutCalibration();
+	float TempoPercentageWithCalibration();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool TempoPercentageIsAcceptable(float target, float AcceptancePercentage);
 	void AddPauseTempos(int);

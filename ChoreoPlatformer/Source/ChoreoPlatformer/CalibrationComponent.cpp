@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "LevelEventsComponent.h"
 
 UCalibrationComponent::UCalibrationComponent()
 {
@@ -38,17 +39,26 @@ void UCalibrationComponent::ReceiveInput()
 	{
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	}
-	float Percentage = SongTempo->TempoPercentageWithoutCalibration();
+	float Percentage = SongTempo->TempoPercentage();
 	PostTempos++;
-	PostTempoMargin += UDanceUtilsFunctionLibrary::GetAcceptanceRate() - Percentage;
+	if (Percentage > 0.5f)
+	{
+		PostTempoMargin += 1 - Percentage;
+	}
+	else
+	{
+		PostTempoMargin -= Percentage;
+	}
 
 	Tries++;
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
 
 	UE_LOG(LogTemp, Warning, TEXT("Deviation: %f"), Percentage);
-	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate()) && Tries >= 8)
+	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) && Tries >= 8)
 	{
 		bIsCalibrated = true;
 		Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->CalibrationEnded.Broadcast();
+		auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
+		LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
 	}
 }

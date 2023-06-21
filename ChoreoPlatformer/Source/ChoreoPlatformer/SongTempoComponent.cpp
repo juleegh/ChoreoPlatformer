@@ -29,19 +29,19 @@ float USongTempoComponent::GetAcceptancePercentage()
 	return UDanceUtilsFunctionLibrary::GetAcceptanceRate();
 }
 
-bool USongTempoComponent::IsOnTempo(float target, float AcceptancePercentage)
+bool USongTempoComponent::IsOnTempo(float target, float AcceptancePercentage, bool IncludeCalibration)
 {
 	if (CurrentPauseTempos > 0)
 	{
 		return false;
 	}
 	
-	return TempoResult(target) <= AcceptancePercentage;
+	return TempoResult(target, IncludeCalibration) <= AcceptancePercentage;
 }
 
-float USongTempoComponent::TempoResult(float target)
+float USongTempoComponent::TempoResult(float target, bool IncludeCalibration)
 {
-	float Distance = TempoPercentage();
+	float Distance = IncludeCalibration ? TempoPercentageWithCalibration() : TempoPercentage();
 	float MinDistance = Distance;
 	for (float step = 0; step <= 1; step += target)
 	{
@@ -53,14 +53,14 @@ float USongTempoComponent::TempoResult(float target)
 	return MinDistance;
 }
 
-float USongTempoComponent::TempoPercentage()
+float USongTempoComponent::TempoPercentageWithCalibration()
 {
 	float Whole = FMath::FloorToInt((CurrentTime + CalibrationDeficit) / SongFrequency);
 	float Residue = ((CurrentTime + CalibrationDeficit) / SongFrequency) - Whole;
 	return Residue;
 }
 
-float USongTempoComponent::TempoPercentageWithoutCalibration()
+float USongTempoComponent::TempoPercentage()
 {
 	float Whole = FMath::FloorToInt((CurrentTime) / SongFrequency);
 	float Residue = ((CurrentTime) / SongFrequency) - Whole;
