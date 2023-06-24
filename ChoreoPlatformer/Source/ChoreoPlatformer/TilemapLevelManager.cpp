@@ -56,7 +56,7 @@ void ATilemapLevelManager::LoadMap()
 			}
 		}
 
-		TileMapActor->SetActorLocation(TileMapActor->GetActorLocation() + FVector::DownVector * 50);
+		TileMapActor->SetActorHiddenInGame(true);
 	}
 
 	TotalChallenges.Add(EChallengeType::HalfCoin, 0);
