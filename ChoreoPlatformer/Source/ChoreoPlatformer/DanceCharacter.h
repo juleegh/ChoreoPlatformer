@@ -35,7 +35,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FPlayerNewPosition PlayerNewPosition;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void MoveInDirection(FVector direction, float Duration);
+	void MoveTo(FVector position, float Duration);
 	void StopMovement();
 	class AChoreoPlayerController* GetChoreoController() const;
 	class UTimelineCreatorComponent* GetMovementTimeline() { return MoveTimeline; }

@@ -28,11 +28,13 @@ struct FTileInfo
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	bool bHitElement;
+	bool bHitElement = false;
 	UPROPERTY(BlueprintReadOnly)
 	class AContextualElement* HitElement;
 	UPROPERTY(BlueprintReadOnly)
 	ETempoTile TileType;
+	UPROPERTY(BlueprintReadOnly)
+	FVector Position; 
 	UPROPERTY(BlueprintReadOnly)
 	float TargetTempo = 1;
 	UPROPERTY(BlueprintReadOnly)

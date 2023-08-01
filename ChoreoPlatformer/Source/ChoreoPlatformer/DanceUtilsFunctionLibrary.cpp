@@ -39,40 +39,38 @@ ETempoAccuracy UDanceUtilsFunctionLibrary::GetTempoResult(float Distance)
 
 FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(AActor* ToIgnore, FVector Start)
 {
-	FHitResult OutHit;
+	TArray<struct FHitResult> OutHits = {};
 	FTileInfo DetectedInfo;
 
-	Start.Z -= 50.f;
+	Start.Z = 500.f;
 
-	FVector DownVector = -FVector::ZAxisVector;
-	FVector End = ((DownVector * 100) + Start);
+	FVector End = ((-FVector::ZAxisVector * 510) + Start);
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(ToIgnore);
 
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0, 5);
+	//DrawDebugLine(ToIgnore->GetWorld(), Start, End, FColor::Red, false, 1, 0, 5);
 
-	if (ToIgnore->GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldDynamic, CollisionParams))
+	if (ToIgnore->GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_WorldDynamic, CollisionParams))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetActor()->GetName()));
-		if (auto actor = Cast<AGridCell>(OutHit.GetActor()))
+		for (auto hit : OutHits)
 		{
-			DetectedInfo.TileType = actor->GetTileType();
-			DetectedInfo.TargetTempo = UDanceUtilsFunctionLibrary::GetTargetTempo(actor->GetTileType());
-			DetectedInfo.bForcesDirection = actor->ForcesPlayerPosition();
-			DetectedInfo.ForcedDirection = actor->ForcedDirection();
-			DetectedInfo.Section = actor->GetSection();
-		}
-	}
-
-	Start.Z += 50.f;
-
-	DetectedInfo.bHitElement = false;
-	if (ToIgnore->GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_WorldDynamic, CollisionParams))
-	{
-		if (auto element = Cast<AContextualElement>(OutHit.GetActor()))
-		{
-			DetectedInfo.bHitElement = true;
-			DetectedInfo.HitElement = element;
+			if (auto element = Cast<AContextualElement>(hit.GetActor()))
+			{
+				DetectedInfo.bHitElement = true;
+				DetectedInfo.Position = element->GetActorLocation();
+				DetectedInfo.HitElement = element;
+			}
+			
+			if (auto gridCell = Cast<AGridCell>(hit.GetActor()))
+			{
+				DetectedInfo.TileType = gridCell->GetTileType();
+				DetectedInfo.Position = gridCell->GetActorLocation() + FVector::ZAxisVector * 100;
+				DetectedInfo.TargetTempo = UDanceUtilsFunctionLibrary::GetTargetTempo(gridCell->GetTileType());
+				DetectedInfo.bForcesDirection = gridCell->ForcesPlayerPosition();
+				DetectedInfo.ForcedDirection = gridCell->ForcedDirection();
+				DetectedInfo.Section = gridCell->GetSection();
+			}
 		}
 	}
 

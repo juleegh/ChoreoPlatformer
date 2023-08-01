@@ -132,13 +132,12 @@ void AWalkingEnemy::DoTempoAction()
 		PatrolIndex = 0;
 	}
 	FVector Position = GetWorldLocationByIndex(PatrolIndex);
-	Position.Z = GetActorLocation().Z;
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(PatrolIndex));
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	SetActorRotation(Rotation);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(this, GetActorLocation());
 	float Speed = NextTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
-	MoveTimeline->MoveToPosition(Position, 0.25f);
+	MoveTimeline->MoveToPosition(NextTile.Position, 0.25f);
 	StartedWalking();
 }
 

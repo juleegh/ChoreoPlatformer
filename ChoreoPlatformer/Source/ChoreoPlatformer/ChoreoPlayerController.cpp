@@ -105,7 +105,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) || bBypassOutOfTempo)
 	{
-		DanceCharacter->MoveInDirection(Direction, CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f);
+		DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f);
 		SectionManager->SectionChanged(NextTile.Section);
 	}
 	else

@@ -29,31 +29,36 @@ void ATilemapLevelManager::LoadMap()
 	for (auto TileMapActor : FoundActors)
 	{
 		auto TileMap = Cast<APaperTileMapActor>(TileMapActor)->GetRenderComponent()->TileMap;
-		auto LayerInfo = TileMap->TileLayers[0];
-		auto LayerName = FName(LayerInfo->LayerName.ToString());
+		auto FirstLayer = TileMap->TileLayers.Last();
+		auto LayerName = FName(FirstLayer->LayerName.ToString());
 		FGameplayTag SectionIdentifier = FGameplayTag::RequestGameplayTag(LayerName, false);
 		if (!SectionIdentifier.IsValid())
 		{
 			continue;
 		}
-		auto LayerWidth = LayerInfo->GetLayerWidth();
-		auto LayerHeight = LayerInfo->GetLayerHeight();
+		auto LayerWidth = FirstLayer->GetLayerWidth();
+		auto LayerHeight = FirstLayer->GetLayerHeight();
 
-		for (int column = 0; column < LayerWidth; column++)
+		float LayerPos = 0;
+		for (auto LayerInfo : TileMap->TileLayers)
 		{
-			for (int row = 0; row < LayerHeight; row++)
+			for (int column = 0; column < LayerWidth; column++)
 			{
-				FString TypeT = "";
-				auto TileInfo = LayerInfo->GetCell(column, row);
+				for (int row = 0; row < LayerHeight; row++)
+				{
+					FString TypeT = "";
+					auto TileInfo = LayerInfo->GetCell(column, row);
 
-				if (TileInfo.TileSet == nullptr)
-					continue;
+					if (TileInfo.TileSet == nullptr)
+						continue;
 
-				auto TileType = TileInfo.PackedTileIndex;
-				const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y;
+					auto TileType = TileInfo.PackedTileIndex;
+					const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y + GetActorUpVector() * LayerPos;
 
-				SpawnTile(DeltaPos, (ETempoTile) TileType, SectionIdentifier);
+					SpawnTile(DeltaPos, (ETempoTile)TileType, SectionIdentifier);
+				}
 			}
+			LayerPos -= 50.f;
 		}
 
 		TileMapActor->SetActorHiddenInGame(true);
