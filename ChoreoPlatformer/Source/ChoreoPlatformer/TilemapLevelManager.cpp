@@ -18,6 +18,18 @@
 void ATilemapLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<AActor*> LevelManager;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), LevelManager);
+
+	for (auto Manager : LevelManager)
+	{
+		if (auto Level = Cast<ASectionLevelManager>(Manager))
+		{
+			Level->Initialize();
+			break;
+		}
+	}
 	LoadMap();
 }
 
@@ -131,11 +143,15 @@ int ATilemapLevelManager::GetTotalFruit()
 void ASectionLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ASectionLevelManager::Initialize()
+{
 	SectionChanged(StartSection);
-	
+
 	auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	DanceCharacter->SetupToLevel();
-	
+
 	if (auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>())
 	{
 		SongTempo->StartTempoCounting();
