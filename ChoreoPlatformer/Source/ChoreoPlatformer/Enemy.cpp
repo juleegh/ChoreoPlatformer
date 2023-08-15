@@ -135,7 +135,7 @@ void AWalkingEnemy::DoTempoAction()
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetWorldLocationByIndex(PatrolIndex));
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	SetActorRotation(Rotation);
-	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(this, GetActorLocation());
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition(this, Position);
 	float Speed = NextTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->MoveToPosition(NextTile.Position, 0.25f);
 	StartedWalking();
