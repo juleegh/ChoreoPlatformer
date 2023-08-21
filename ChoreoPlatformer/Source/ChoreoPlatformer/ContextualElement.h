@@ -68,21 +68,6 @@ public:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API AItem : public AContextualElement
-{
-	GENERATED_BODY()
-
-protected:
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	FGameplayTag ItemType;
-	UPROPERTY()
-	bool bFinished;
-public:
-	void TriggerInteraction() override;
-	FGameplayTag GetItemType() { return ItemType; }
-};
-
-UCLASS()
 class CHOREOPLATFORMER_API AItemObstacle : public AContextualElement
 {
 	GENERATED_BODY()

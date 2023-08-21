@@ -2,6 +2,7 @@
 
 #include "DanceUtilsFunctionLibrary.h"
 #include "TilemapLevelManager.h"
+#include "DanceCharacter.h"
 #include "DancerHealthComponent.h"
 #include "SongTempoComponent.h"
 #include "InventoryComponent.h"
@@ -120,6 +121,11 @@ bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor)
 	return false;
 }
 
+ADanceCharacter* UDanceUtilsFunctionLibrary::GetDanceCharacter(AActor* WorldContextActor)
+{
+	auto DanceController = WorldContextActor->GetWorld()->GetFirstPlayerController();
+	return Cast<ADanceCharacter>(DanceController->GetPawn());
+}
 
 UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContextObject)
 {

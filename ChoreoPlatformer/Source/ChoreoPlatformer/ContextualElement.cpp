@@ -45,17 +45,6 @@ void ALever::TriggerInteraction()
 	}
 }
 
-void AItem::TriggerInteraction()
-{
-	if (!bFinished)
-	{
-		bFinished = true;
-		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->AddItem(ItemType);
-		RefreshState();
-	}
-}
-
 void AItemObstacle::TriggerInteraction()
 {
 	if (UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->HasItem(RequiredItem) && !bFinished)

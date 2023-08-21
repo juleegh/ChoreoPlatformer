@@ -3,21 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DanceDefinitions.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "GridCell.generated.h"
-
-UENUM(BlueprintType)
-enum class ETempoTile : uint8
-{
-	Black,
-	Half,
-	Blocker,
-	ForceUp,
-	ForceDown,
-	ForceLeft,
-	ForceRight,
-};
 
 UCLASS()
 class CHOREOPLATFORMER_API AGridCell : public AActor

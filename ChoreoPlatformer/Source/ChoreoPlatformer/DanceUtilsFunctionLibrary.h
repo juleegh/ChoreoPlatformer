@@ -4,46 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GridCell.h"
+#include "DanceDefinitions.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "DanceUtilsFunctionLibrary.generated.h"
-
-UENUM(BlueprintType)
-enum class ETempoAccuracy : uint8
-{
-	Bad,
-	Great,
-	Perfect,
-};
-
-UENUM(BlueprintType)
-enum class EItemType : uint8
-{
-	OneTempoBlock,
-	Fruit,
-};
-
-USTRUCT(BlueprintType)
-struct FTileInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bHitElement = false;
-	UPROPERTY(BlueprintReadOnly)
-	class AContextualElement* HitElement;
-	UPROPERTY(BlueprintReadOnly)
-	ETempoTile TileType;
-	UPROPERTY(BlueprintReadOnly)
-	FVector Position; 
-	UPROPERTY(BlueprintReadOnly)
-	float TargetTempo = 1;
-	UPROPERTY(BlueprintReadOnly)
-	bool bForcesDirection;
-	UPROPERTY(BlueprintReadOnly)
-	FVector ForcedDirection;
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayTag Section;
-};
 
 UCLASS()
 class CHOREOPLATFORMER_API UDanceUtilsFunctionLibrary : public UBlueprintFunctionLibrary
@@ -65,6 +28,8 @@ public:
 	static float GetHealthDelta(ETempoAccuracy result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FTileInfo CheckPosition(class AActor* ToIgnore, FVector Start);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static class ADanceCharacter* GetDanceCharacter(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static bool IsAdjacentToPlayer(class AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))

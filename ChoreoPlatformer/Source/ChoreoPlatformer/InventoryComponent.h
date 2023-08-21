@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "ClothingItem.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
@@ -15,10 +16,17 @@ class CHOREOPLATFORMER_API UInventoryComponent : public UActorComponent
 
 public:
 	// Sets default values for this component's properties
-	UInventoryComponent() {}
+	UInventoryComponent();
 
 protected:
+	UPROPERTY()
+	TArray<AClothingItem*> Outfit;
+	UPROPERTY()
 	TArray<FGameplayTag> Inventory;
+	UPROPERTY()
+	class UDataTable* ItemsData;
+
+	FName GetBodySection(FGameplayTag ItemType);
 
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -26,7 +34,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool HasItem(FGameplayTag ItemType);
-	void AddItem(FGameplayTag ItemType);
+	void AddItem(AClothingItem* Item);
 	bool RemoveItem(FGameplayTag ItemType);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool HasHealthItem();

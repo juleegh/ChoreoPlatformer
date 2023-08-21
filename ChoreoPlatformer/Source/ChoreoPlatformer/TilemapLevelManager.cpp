@@ -98,18 +98,6 @@ void ATilemapLevelManager::LoadMap()
 
 	TArray<AActor*> FoundItems;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AContextualElement::StaticClass(), FoundItems);
-
-	for (auto FoundItem : FoundItems)
-	{
-		if (auto Item = Cast<AItem>(FoundItem))
-		{
-			if (Item->GetItemType().GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
-			{
-				TotalFruit++;
-			}
-		}
-	}
-
 }
 
 void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)

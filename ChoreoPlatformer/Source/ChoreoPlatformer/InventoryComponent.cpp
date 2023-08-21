@@ -1,20 +1,33 @@
 #include "InventoryComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "Engine/DataTable.h"
+#include "DanceCharacter.h"
 #include "DancerHealthComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+
+UInventoryComponent::UInventoryComponent()
+{
+	ItemsData = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("DataTable'/Game/TileElements/ItemDataTable.ItemDataTable'")));
+}
 
 bool UInventoryComponent::HasItem(FGameplayTag ItemType)
 {
 	return Inventory.Contains(ItemType);
 }
 
-void UInventoryComponent::AddItem(FGameplayTag ItemType)
+void UInventoryComponent::AddItem(AClothingItem* Item)
 {
-	Inventory.Add(ItemType);
+	Inventory.Add(Item->GetItemType());
+	Outfit.Add(Item);
 	InventoryChanged.Broadcast();
-	if (ItemType.GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
+	if (Item->GetItemType().GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
 	{
 		UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->HealthChanged.Broadcast(true, true, false);
 	}
+	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(UDanceUtilsFunctionLibrary::GetDanceCharacter(GetOwner())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
+	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
+	Item->AttachToComponent(SkeletalMesh, TransformRules, GetBodySection(Item->GetItemType()));
 }
 
 bool UInventoryComponent::RemoveItem(FGameplayTag ItemType)
@@ -30,38 +43,37 @@ bool UInventoryComponent::RemoveItem(FGameplayTag ItemType)
 
 bool UInventoryComponent::HasHealthItem()
 {
-	for (FGameplayTag Item : Inventory)
-	{
-		if (Item.GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
-		{
-			return true;
-		}
-	}
-	return false;
+	return !Outfit.IsEmpty();
 }
 
 int UInventoryComponent::HealthItemQuantity()
 {
-	int count = 0;
-	for (FGameplayTag Item : Inventory)
-	{
-		if (Item.GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
-		{
-			count++;
-		}
-	}
-	return count;
+	return Outfit.Num();
 }
 
 bool UInventoryComponent::LoseHealthItem()
 {
-	for (FGameplayTag Item : Inventory)
+	if (!HasHealthItem())
 	{
-		if (Item.GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
+		return false;
+	}
+	auto Last = Outfit.Last();
+	Outfit.Remove(Last);
+	Last->Destroy();
+	return true;
+}
+
+FName UInventoryComponent::GetBodySection(FGameplayTag ItemType)
+{
+	TArray<FClothingItemInfo*> Items;
+	ItemsData->GetAllRows<FClothingItemInfo>(TEXT("ContextString"), Items);
+
+	for (auto ItemInfo : Items)
+	{
+		if (ItemInfo->Identifier == ItemType)
 		{
-			Inventory.RemoveSingle(Item);
-			return true;
+			return ItemInfo->BodySection.GetTagName();
 		}
 	}
-	return false;
+	return {};
 }
