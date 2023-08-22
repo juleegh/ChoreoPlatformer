@@ -40,21 +40,6 @@ void UDancerUIComponent::BeginPlay()
     ChallengeUI->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UDancerUIComponent::UpdateAccuracy(float Current, float Max)
-{
-    StateUI.CurrentHealth = Current;
-    StateUI.MaxHealth = Max;
-    //DancerUI->UpdateUIState(StateUI);
-}
-
-void UDancerUIComponent::UpdateHealth(bool bPositiveDelta, bool bHasItems, bool bDied)
-{
-    if (!bDied)
-    {
-        DancerUI->UpdateFruitCounter(UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HealthItemQuantity(), bPositiveDelta);
-    }
-}
-
 void UDancerUIComponent::UpdateCountdown(int TemposLeft)
 {
     DancerUI->UpdateCountdown(TemposLeft);
@@ -89,12 +74,5 @@ FText ULevelCompleteUI::GetChallengeResultByType(EChallengeType ChallengeType)
 {
     int Collected = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetCollectedByChallengeType(ChallengeType);
     int Total = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetTotalByChallengeType(ChallengeType);
-    return FText::Format(FText::FromString(TEXT("{0}/{1}")), FText::AsNumber(Collected), FText::AsNumber(Total));
-}
-
-FText ULevelCompleteUI::GetFruitCount()
-{
-    int Collected = UDanceUtilsFunctionLibrary::GetInventoryComponent(GetWorld()->GetFirstPlayerController())->HealthItemQuantity();
-    int Total = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetTotalFruit();
     return FText::Format(FText::FromString(TEXT("{0}/{1}")), FText::AsNumber(Collected), FText::AsNumber(Total));
 }

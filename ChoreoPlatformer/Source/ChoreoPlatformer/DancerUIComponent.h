@@ -8,18 +8,6 @@
 #include "TileChallenge.h"
 #include "DancerUIComponent.generated.h"
 
-USTRUCT(BlueprintType)
-struct FStateUI
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(BlueprintReadOnly)
-    float CurrentHealth;
-    UPROPERTY(BlueprintReadOnly)
-    float MaxHealth;
-};
-
 UCLASS()
 class CHOREOPLATFORMER_API UDancerUI : public UUserWidget
 {
@@ -29,11 +17,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure)
     class USongTempoComponent* GetTempoComponent();
     UFUNCTION(BlueprintImplementableEvent)
-    void UpdateFruitCounter(int Fruit, bool DeltaType);
-    UFUNCTION(BlueprintImplementableEvent)
     void UpdateCountdown(int TemposLeft);
-    UFUNCTION(BlueprintImplementableEvent)
-    void UpdateUIState(FStateUI StateUI);
     UFUNCTION(BlueprintImplementableEvent)
     void PromptTempoResult(float Distance);
     UFUNCTION(BlueprintImplementableEvent)
@@ -63,10 +47,6 @@ public:
     UFUNCTION()
     void PromptTempoResult(float Distance);
     UFUNCTION()
-    void UpdateAccuracy(float Current, float Max);
-    UFUNCTION()
-    void UpdateHealth(bool bPositiveDelta, bool bHasItems, bool bDied);
-    UFUNCTION()
     void ChallengeStarted(EChallengeType ChallengeType);
     UFUNCTION()
     void ChallengeEnded(EChallengeType ChallengeType, bool Success);
@@ -80,8 +60,6 @@ protected:
     UDancerUI* DancerUI;
     UPROPERTY()
     UChallengeUI* ChallengeUI;
-    UPROPERTY()
-    FStateUI StateUI;
     virtual void BeginPlay() override;
 };
 
@@ -94,7 +72,5 @@ public:
     int GetStepsByAccuracy(ETempoAccuracy Accuracy);
     UFUNCTION(BlueprintCallable, BlueprintPure)
     FText GetChallengeResultByType(EChallengeType ChallengeType);
-    UFUNCTION(BlueprintCallable, BlueprintPure)
-    FText GetFruitCount();
 };
 
