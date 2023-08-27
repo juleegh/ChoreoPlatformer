@@ -7,26 +7,12 @@
 #include "GameFramework/Actor.h"
 #include "TileChallenge.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "Components/ActorComponent.h"
+#include "EventsDataAsset.h"
 #include "TilemapLevelManager.generated.h"
 
 class UPaperTileMap;
 class AGridCell;
-
-
-USTRUCT(BlueprintType)
-struct FSongSectionInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	FGameplayTag SectionName;
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	class USoundWave* Song;
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	float SongBPM;
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	float BeatStart;
-};
 
 UCLASS(ClassGroup = (Custom))
 class CHOREOPLATFORMER_API ATilemapLevelManager : public AActor
@@ -34,11 +20,9 @@ class CHOREOPLATFORMER_API ATilemapLevelManager : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	ATilemapLevelManager() {}
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 	UPROPERTY()
 	TMap<EChallengeType, int> TotalChallenges;
@@ -71,18 +55,14 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	FGameplayTag StartSection;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
-	TMap<FGameplayTag, FSongSectionInfo> Sections;
-	
+	class USoundWave* SectionSong;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
+	float SongBPM;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
+	float CurrentSectionStart;
+
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag CurrentSection;
-	UPROPERTY(BlueprintReadOnly)
-	float CurrentSectionStart;
-	UPROPERTY(BlueprintReadOnly)
-	class USoundWave* SectionSong;
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
-	float CurrentSongBPM;
-	
-	virtual void BeginPlay() override;
 
 public:
 	void Initialize();
@@ -92,4 +72,65 @@ public:
 	void PlayCurrentSection();
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayTempoResult(ETempoAccuracy Result);
+};
+
+UCLASS(ClassGroup = (Custom))
+class CHOREOPLATFORMER_API ULevelEventsComponent : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:
+	ULevelEventsComponent();
+
+protected:
+
+	UPROPERTY()
+	UEventsDataAsset* LevelEvents;
+	UPROPERTY()
+	TMap<TSubclassOf<UUserWidget>, UUserWidget*> Widgets;
+	UPROPERTY()
+	TMap<FGameplayTag, int> Countdowns;
+	UPROPERTY()
+	TArray<FGameplayTag> Sections;
+
+	void HandleWidgetEvent(FGameplayTag TriggerTag);
+	void HandleCountdownEvent(FGameplayTag TriggerTag);
+	void HandleSectionEvent(FGameplayTag TriggerTag);
+
+public:
+	void ActivateTrigger(FGameplayTag TriggerTag);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AEventTrigger : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	AEventTrigger();
+
+protected:
+	virtual void BeginPlay() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		class UBoxComponent* BoxComponent;
+	UPROPERTY(EditInstanceOnly)
+		FGameplayTag ActorTrigger;
+	UFUNCTION()
+		void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ASectionStart : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ASectionStart() {}
+
+protected:
+	UPROPERTY(EditInstanceOnly)
+	FGameplayTag SectionIdentifier;
+
+public:
+	FGameplayTag GetSectionIdentifier() { return SectionIdentifier; }
 };
