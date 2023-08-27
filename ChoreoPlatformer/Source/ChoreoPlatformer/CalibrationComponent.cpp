@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DanceUtilsFunctionLibrary.h"
-#include "LevelEventsComponent.h"
+#include "TilemapLevelManager.h"
 
 UCalibrationComponent::UCalibrationComponent()
 {

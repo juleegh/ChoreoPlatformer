@@ -13,10 +13,8 @@
 #include "DanceUtilsFunctionLibrary.h"
 #include "TimelineCreatorComponent.h"
 #include "ContextualElement.h"
-#include "LevelEventsComponent.h"
 #include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "LevelEventsComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
