@@ -8,6 +8,7 @@
 #include "TileChallenge.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Components/ActorComponent.h"
+#include "GridElement.h"
 #include "EventsDataAsset.h"
 #include "TilemapLevelManager.generated.h"
 
@@ -120,7 +121,7 @@ protected:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API ASectionStart : public AActor
+class CHOREOPLATFORMER_API ASectionStart : public ACheckpoint
 {
 	GENERATED_BODY()
 
