@@ -49,12 +49,15 @@ public:
 	ASplinedEnemy();
 
 protected:
+	void BeginPlay() override;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	class USplineComponent* PatrolRoad;
 	FVector GetWorldLocationByIndex(int Index) const;
 	int GetLastIndex() const;
 	UPROPERTY(BlueprintReadOnly)
 	int PatrolIndex = -1;
+	UPROPERTY()
+	TArray<FVector> PatrolPoints;
 }; 
 
 UCLASS()

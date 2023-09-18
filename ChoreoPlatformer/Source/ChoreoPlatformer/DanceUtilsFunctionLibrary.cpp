@@ -38,7 +38,7 @@ ETempoAccuracy UDanceUtilsFunctionLibrary::GetTempoResult(float Distance)
 	return ETempoAccuracy::Bad;
 }
 
-FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(AActor* ToIgnore, FVector Start)
+FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FVector Start)
 {
 	TArray<struct FHitResult> OutHits = {};
 	FTileInfo DetectedInfo;
@@ -47,11 +47,14 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(AActor* ToIgnore, FVector St
 
 	FVector End = ((-FVector::ZAxisVector * 510) + Start);
 	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(ToIgnore);
+	for (auto ignore : ToIgnore)
+	{
+		CollisionParams.AddIgnoredActor(ignore);
+	}
 
 	//DrawDebugLine(ToIgnore->GetWorld(), Start, End, FColor::Red, false, 1, 0, 5);
 
-	if (ToIgnore->GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_WorldDynamic, CollisionParams))
+	if (ToIgnore[0]->GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_WorldDynamic, CollisionParams))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetActor()->GetName()));
 		for (auto hit : OutHits)
