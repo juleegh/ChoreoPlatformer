@@ -250,7 +250,9 @@ void ULevelEventsComponent::HandleSectionEvent(FGameplayTag TriggerTag)
 				
 				auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 				DanceCharacter->SetActorLocation(LevelSection->GetActorLocation());
-				
+
+				auto SectionManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
+				SectionManager->SectionChanged(LevelSection->GetSectionIdentifier());
 				return;
 			}
 		}
