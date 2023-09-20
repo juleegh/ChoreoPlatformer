@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
 
@@ -23,9 +24,14 @@ protected:
 	class ADanceCharacter* PlayerCharacter;
 	UPROPERTY()
 	class UTimelineCreatorComponent* MoveTimeline;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	FGameplayTag Section;
+	UPROPERTY()
+	class ASectionLevelManager* SectionLevelManager;
 
 	bool hasDoneTempoAction;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
 	void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
@@ -35,9 +41,6 @@ protected:
 	void StartedWalking();
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartedRotating();
-
-public:
-	virtual void Tick(float DeltaTime) override;
 };
 
 UCLASS()

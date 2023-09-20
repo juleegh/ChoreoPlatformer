@@ -78,6 +78,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayTempoResult(ETempoAccuracy Result);
 	const FGameplayTag& GetStartSection() { return StartSection; };
+	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
 };
 
 UCLASS(ClassGroup = (Custom))

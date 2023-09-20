@@ -3,6 +3,7 @@
 #include "TilemapLevelManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "GridCell.h"
+#include "Enemy.h"
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "ContextualElement.h"

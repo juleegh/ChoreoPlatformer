@@ -158,4 +158,17 @@ ATilemapLevelManager* UDanceUtilsFunctionLibrary::GetTilemapLevelManager(UWorld*
 	return nullptr;
 }
 
+ASectionLevelManager* UDanceUtilsFunctionLibrary::GetSectionLevelManager(UWorld* WorldContextObject)
+{
+	TArray<AActor*> FoundManagers;
+	UGameplayStatics::GetAllActorsOfClass(WorldContextObject, ASectionLevelManager::StaticClass(), FoundManagers);
+
+	for (auto Manager : FoundManagers)
+	{
+		return Cast<ASectionLevelManager>(Manager);
+	}
+
+	return nullptr;
+}
+
 
