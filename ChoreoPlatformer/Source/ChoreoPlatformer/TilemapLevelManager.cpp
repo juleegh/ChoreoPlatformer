@@ -27,14 +27,16 @@ void ATilemapLevelManager::BeginPlay()
 		if (auto Level = Cast<ASectionLevelManager>(Manager))
 		{
 			Level->Initialize();
+			LoadMap(Level->GetStartSection());
 			break;
 		}
 	}
-	LoadMap();
 }
 
-void ATilemapLevelManager::LoadMap()
+void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
+	TilePool.Append(WorldTiles);
+	WorldTiles.Empty();
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperTileMapActor::StaticClass(), FoundActors);
 
@@ -44,10 +46,11 @@ void ATilemapLevelManager::LoadMap()
 		auto FirstLayer = TileMap->TileLayers.Last();
 		auto LayerName = FName(FirstLayer->LayerName.ToString());
 		FGameplayTag SectionIdentifier = FGameplayTag::RequestGameplayTag(LayerName, false);
-		if (!SectionIdentifier.IsValid())
+		if (!SectionIdentifier.IsValid() || SectionIdentifier != Level)
 		{
 			continue;
 		}
+
 		auto LayerWidth = FirstLayer->GetLayerWidth();
 		auto LayerHeight = FirstLayer->GetLayerHeight();
 
@@ -99,9 +102,21 @@ void ATilemapLevelManager::LoadMap()
 
 void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
 {
-	auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, GetActorRotation());
-	SpawnedTile->Initialize(TileType, SectionIdentifier);
-	SpawnedTile->SetOwner(this);
+	AGridCell* Current;
+	if (TilePool.Num() == 0)
+	{
+		auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, GetActorRotation());
+		SpawnedTile->SetOwner(this);
+		Current = SpawnedTile;
+	}
+	else
+	{
+		Current = TilePool[0];
+		Current->SetActorLocation(Position);
+		TilePool.RemoveAt(0);
+	}
+	Current->Initialize(TileType, SectionIdentifier);
+	WorldTiles.Add(Current);
 }
 
 
@@ -228,9 +243,13 @@ void ULevelEventsComponent::HandleSectionEvent(FGameplayTag TriggerTag)
 				{
 					continue;
 				}
-
+				
+				auto TilemapLevelManager = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld());
+				TilemapLevelManager->LoadMap(LevelSection->GetSectionIdentifier());
+				
 				auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 				DanceCharacter->SetActorLocation(LevelSection->GetActorLocation());
+				
 				return;
 			}
 		}

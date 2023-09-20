@@ -31,10 +31,14 @@ protected:
 	TMap<EChallengeType, int> CollectedChallenges;
 	UPROPERTY()
 	int TotalFruit;
+	UPROPERTY()
+	TArray<class AGridCell*> TilePool;
+	UPROPERTY()
+	TArray<class AGridCell*> WorldTiles;
 
 public:
 	// Called every frame
-	void LoadMap();
+	void LoadMap(const FGameplayTag& Level);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
 	void CollectChallenge(EChallengeType ChallengeType);
@@ -73,6 +77,7 @@ public:
 	void PlayCurrentSection();
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayTempoResult(ETempoAccuracy Result);
+	const FGameplayTag& GetStartSection() { return StartSection; };
 };
 
 UCLASS(ClassGroup = (Custom))
