@@ -65,20 +65,23 @@ protected:
 	float SongBPM;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	float CurrentSectionStart;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
+	FGameplayTag SectionEndTrigger;
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag CurrentSection;
 
 public:
 	void Initialize();
-	UFUNCTION(BlueprintCallable)
-	void SectionChanged(FGameplayTag NewSection);
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCurrentSection();
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayTempoResult(ETempoAccuracy Result);
 	const FGameplayTag& GetStartSection() { return StartSection; };
 	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
+	void CurrentSectionEnd(const FGameplayTag& NextSection);
+	UFUNCTION(BlueprintCallable)
+	void NextSectionStart();
 };
 
 UCLASS(ClassGroup = (Custom))
