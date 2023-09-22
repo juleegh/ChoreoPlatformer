@@ -64,12 +64,12 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	float SongBPM;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
-	float CurrentSectionStart;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	FGameplayTag SectionEndTrigger;
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag CurrentSection;
+	UPROPERTY()
+	class ASectionStart* CurrentSectionStart;
 
 public:
 	void Initialize();
@@ -79,7 +79,7 @@ public:
 	void PlayTempoResult(ETempoAccuracy Result);
 	const FGameplayTag& GetStartSection() { return StartSection; };
 	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
-	void CurrentSectionEnd(const FGameplayTag& NextSection);
+	void CurrentSectionEnd(class ASectionStart* NextSection);
 	UFUNCTION(BlueprintCallable)
 	void NextSectionStart();
 };
@@ -100,8 +100,6 @@ protected:
 	TMap<TSubclassOf<UUserWidget>, UUserWidget*> Widgets;
 	UPROPERTY()
 	TMap<FGameplayTag, int> Countdowns;
-	UPROPERTY()
-	TArray<FGameplayTag> Sections;
 
 	void HandleWidgetEvent(FGameplayTag TriggerTag);
 	void HandleCountdownEvent(FGameplayTag TriggerTag);

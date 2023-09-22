@@ -144,45 +144,36 @@ int ATilemapLevelManager::GetTotalFruit()
 void ASectionLevelManager::Initialize()
 {
 	CurrentSection = StartSection;
-	auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
-	LevelEvents->ActivateTrigger(CurrentSection);
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(CurrentSection);
 
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
 	PlayCurrentSection();
 
-	auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	DanceCharacter->SetupToLevel();
+	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	SongTempo->StartTempoCounting();
 }
 
-void ASectionLevelManager::CurrentSectionEnd(const FGameplayTag& NextSection)
+void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 {
-	if (!NextSection.IsValid())
+	if (!NextSection->GetSectionIdentifier().IsValid())
 	{
 		return;
 	}
+	CurrentSection = NextSection->GetSectionIdentifier();
+	CurrentSectionStart = NextSection;
 
-	if (!CurrentSection.IsValid() || CurrentSection != NextSection)
-	{
-		CurrentSection = NextSection;
-		auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
-		SongTempo->StopTempoCounting();
-
-		auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
-		LevelEvents->ActivateTrigger(SectionEndTrigger);
-	}
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent()->StopTempoCounting();
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(SectionEndTrigger);
 }
 
 void ASectionLevelManager::NextSectionStart()
 {
 	if (CurrentSection.IsValid())
 	{
-		auto TilemapLevelManager = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld());
-		TilemapLevelManager->LoadMap(CurrentSection);
-
-		auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
-		SongTempo->StartTempoCounting();
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
+		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+		UDanceUtilsFunctionLibrary::GetSongTempoComponent(this)->StartTempoCounting();
 	}
 }
 
@@ -237,35 +228,26 @@ void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)
 {
 	if (!Countdowns.Contains(TriggerTag))
 	{
-		auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
-		SongTempo->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
+		UDanceUtilsFunctionLibrary::GetSongTempoComponent(GetOwner())->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
 	}
 }
 
 void ULevelEventsComponent::HandleSectionEvent(FGameplayTag TriggerTag)
 {
-	if (!Sections.Contains(TriggerTag))
+	TArray<AActor*> FoundSections;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
+
+	for (auto Section : FoundSections)
 	{
-		TArray<AActor*> FoundSections;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
-
-		for (auto Section : FoundSections)
+		if (auto LevelSection = Cast<ASectionStart>(Section))
 		{
-			if (auto LevelSection = Cast<ASectionStart>(Section))
+			if (LevelSection->GetSectionIdentifier() != TriggerTag)
 			{
-				if (LevelSection->GetSectionIdentifier() != TriggerTag)
-				{
-					continue;
-				}
-				
-				auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-				DanceCharacter->SetActorLocation(LevelSection->GetActorLocation());
-
-				auto SectionManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
-				SectionManager->CurrentSectionEnd(LevelSection->GetSectionIdentifier());
-
-				return;
+				continue;
 			}
+
+			UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CurrentSectionEnd(LevelSection);
+			return;
 		}
 	}
 }
