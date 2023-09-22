@@ -76,3 +76,13 @@ FText ULevelCompleteUI::GetChallengeResultByType(EChallengeType ChallengeType)
     int Total = UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->GetTotalByChallengeType(ChallengeType);
     return FText::Format(FText::FromString(TEXT("{0}/{1}")), FText::AsNumber(Collected), FText::AsNumber(Total));
 }
+
+void ULevelCompleteUI::GoToNextSection()
+{
+    auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
+    LevelEvents->ActivateTrigger(LevelEndTrigger);
+
+    auto SectionManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
+    SectionManager->NextSectionStart();
+}
+

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "TileChallenge.h"
@@ -68,9 +69,13 @@ class CHOREOPLATFORMER_API ULevelCompleteUI : public UUserWidget
 {
     GENERATED_BODY()
 public:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    FGameplayTag LevelEndTrigger;
     UFUNCTION(BlueprintCallable, BlueprintPure)
     int GetStepsByAccuracy(ETempoAccuracy Accuracy);
     UFUNCTION(BlueprintCallable, BlueprintPure)
     FText GetChallengeResultByType(EChallengeType ChallengeType);
+    UFUNCTION(BlueprintCallable)
+    void GoToNextSection();
 };
 

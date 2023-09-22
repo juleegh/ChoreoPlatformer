@@ -31,10 +31,14 @@ protected:
 	TMap<EChallengeType, int> CollectedChallenges;
 	UPROPERTY()
 	int TotalFruit;
+	UPROPERTY()
+	TArray<class AGridCell*> TilePool;
+	UPROPERTY()
+	TArray<class AGridCell*> WorldTiles;
 
 public:
 	// Called every frame
-	void LoadMap();
+	void LoadMap(const FGameplayTag& Level);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
 	void CollectChallenge(EChallengeType ChallengeType);
@@ -60,19 +64,24 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	float SongBPM;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
-	float CurrentSectionStart;
+	FGameplayTag SectionEndTrigger;
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag CurrentSection;
+	UPROPERTY()
+	class ASectionStart* CurrentSectionStart;
 
 public:
 	void Initialize();
-	UFUNCTION(BlueprintCallable)
-	void SectionChanged(FGameplayTag NewSection);
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCurrentSection();
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayTempoResult(ETempoAccuracy Result);
+	const FGameplayTag& GetStartSection() { return StartSection; };
+	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
+	void CurrentSectionEnd(class ASectionStart* NextSection);
+	UFUNCTION(BlueprintCallable)
+	void NextSectionStart();
 };
 
 UCLASS(ClassGroup = (Custom))
@@ -91,8 +100,6 @@ protected:
 	TMap<TSubclassOf<UUserWidget>, UUserWidget*> Widgets;
 	UPROPERTY()
 	TMap<FGameplayTag, int> Countdowns;
-	UPROPERTY()
-	TArray<FGameplayTag> Sections;
 
 	void HandleWidgetEvent(FGameplayTag TriggerTag);
 	void HandleCountdownEvent(FGameplayTag TriggerTag);

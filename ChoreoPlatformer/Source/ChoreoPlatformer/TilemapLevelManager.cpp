@@ -3,6 +3,7 @@
 #include "TilemapLevelManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "GridCell.h"
+#include "Enemy.h"
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "ContextualElement.h"
@@ -27,14 +28,16 @@ void ATilemapLevelManager::BeginPlay()
 		if (auto Level = Cast<ASectionLevelManager>(Manager))
 		{
 			Level->Initialize();
+			LoadMap(Level->GetStartSection());
 			break;
 		}
 	}
-	LoadMap();
 }
 
-void ATilemapLevelManager::LoadMap()
+void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
+	TilePool.Append(WorldTiles);
+	WorldTiles.Empty();
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperTileMapActor::StaticClass(), FoundActors);
 
@@ -44,10 +47,11 @@ void ATilemapLevelManager::LoadMap()
 		auto FirstLayer = TileMap->TileLayers.Last();
 		auto LayerName = FName(FirstLayer->LayerName.ToString());
 		FGameplayTag SectionIdentifier = FGameplayTag::RequestGameplayTag(LayerName, false);
-		if (!SectionIdentifier.IsValid())
+		if (!SectionIdentifier.IsValid() || SectionIdentifier != Level)
 		{
 			continue;
 		}
+
 		auto LayerWidth = FirstLayer->GetLayerWidth();
 		auto LayerHeight = FirstLayer->GetLayerHeight();
 
@@ -99,9 +103,21 @@ void ATilemapLevelManager::LoadMap()
 
 void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
 {
-	auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, GetActorRotation());
-	SpawnedTile->Initialize(TileType, SectionIdentifier);
-	SpawnedTile->SetOwner(this);
+	AGridCell* Current;
+	if (TilePool.Num() == 0)
+	{
+		auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, GetActorRotation());
+		SpawnedTile->SetOwner(this);
+		Current = SpawnedTile;
+	}
+	else
+	{
+		Current = TilePool[0];
+		Current->SetActorLocation(Position);
+		TilePool.RemoveAt(0);
+	}
+	Current->Initialize(TileType, SectionIdentifier);
+	WorldTiles.Add(Current);
 }
 
 
@@ -127,28 +143,37 @@ int ATilemapLevelManager::GetTotalFruit()
 
 void ASectionLevelManager::Initialize()
 {
-	SectionChanged(StartSection);
+	CurrentSection = StartSection;
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(CurrentSection);
+
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
 	PlayCurrentSection();
 
-	auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	DanceCharacter->SetupToLevel();
+	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	SongTempo->StartTempoCounting();
 }
 
-void ASectionLevelManager::SectionChanged(FGameplayTag NewSection)
+void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 {
-	if (!NewSection.IsValid())
+	if (!NextSection->GetSectionIdentifier().IsValid())
 	{
 		return;
 	}
+	CurrentSection = NextSection->GetSectionIdentifier();
+	CurrentSectionStart = NextSection;
 
-	if (!CurrentSection.IsValid() || CurrentSection != NewSection)
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent()->StopTempoCounting();
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(SectionEndTrigger);
+}
+
+void ASectionLevelManager::NextSectionStart()
+{
+	if (CurrentSection.IsValid())
 	{
-		CurrentSection = NewSection;
-		auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
-		LevelEvents->ActivateTrigger(NewSection);
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
+		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+		UDanceUtilsFunctionLibrary::GetSongTempoComponent(this)->StartTempoCounting();
 	}
 }
 
@@ -163,11 +188,6 @@ ULevelEventsComponent::ULevelEventsComponent()
 
 void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 {
-	if (LevelEvents->EndTags.Contains(TriggerTag))
-	{
-		auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
-		SongTempo->StopTempoCounting();
-	}
 	if (LevelEvents->WidgetEvents.Contains(TriggerTag))
 	{
 		HandleWidgetEvent(TriggerTag);
@@ -208,31 +228,26 @@ void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)
 {
 	if (!Countdowns.Contains(TriggerTag))
 	{
-		auto SongTempo = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent();
-		SongTempo->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
+		UDanceUtilsFunctionLibrary::GetSongTempoComponent(GetOwner())->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
 	}
 }
 
 void ULevelEventsComponent::HandleSectionEvent(FGameplayTag TriggerTag)
 {
-	if (!Sections.Contains(TriggerTag))
+	TArray<AActor*> FoundSections;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
+
+	for (auto Section : FoundSections)
 	{
-		TArray<AActor*> FoundSections;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
-
-		for (auto Section : FoundSections)
+		if (auto LevelSection = Cast<ASectionStart>(Section))
 		{
-			if (auto LevelSection = Cast<ASectionStart>(Section))
+			if (LevelSection->GetSectionIdentifier() != TriggerTag)
 			{
-				if (LevelSection->GetSectionIdentifier() != TriggerTag)
-				{
-					continue;
-				}
-
-				auto DanceCharacter = Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-				DanceCharacter->SetActorLocation(LevelSection->GetActorLocation());
-				return;
+				continue;
 			}
+
+			UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CurrentSectionEnd(LevelSection);
+			return;
 		}
 	}
 }

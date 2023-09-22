@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "TimelineCreatorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "TilemapLevelManager.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 AEnemy::AEnemy()
@@ -35,11 +36,16 @@ void AEnemy::BeginPlay()
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
 	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 	SongTempo = PlayerController->GetSongTempoComponent();
+	SectionLevelManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
 }
 
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (Section != SectionLevelManager->GetCurrentSection())
+	{
+		return;
+	}
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
 

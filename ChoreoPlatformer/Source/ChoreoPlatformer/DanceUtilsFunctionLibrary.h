@@ -37,6 +37,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static class UInventoryComponent* GetInventoryComponent(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
+	static class ASectionLevelManager* GetSectionLevelManager(UWorld* WorldContextObject);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static class ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static class USongTempoComponent* GetSongTempoComponent(AActor* WorldContextActor);
