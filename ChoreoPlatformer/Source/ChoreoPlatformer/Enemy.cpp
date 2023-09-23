@@ -42,7 +42,7 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (Section != SectionLevelManager->GetCurrentSection())
+	if (SectionLevelManager == nullptr || Section != SectionLevelManager->GetCurrentSection())
 	{
 		return;
 	}

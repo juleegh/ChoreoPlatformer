@@ -163,7 +163,6 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 	CurrentSection = NextSection->GetSectionIdentifier();
 	CurrentSectionStart = NextSection;
 
-	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetSongTempoComponent()->StopTempoCounting();
 	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(SectionEndTrigger);
 }
 
@@ -173,7 +172,6 @@ void ASectionLevelManager::NextSectionStart()
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
-		UDanceUtilsFunctionLibrary::GetSongTempoComponent(this)->StartTempoCounting();
 	}
 }
 

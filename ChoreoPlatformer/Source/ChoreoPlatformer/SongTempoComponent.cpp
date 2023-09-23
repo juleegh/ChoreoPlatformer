@@ -112,6 +112,7 @@ void USongTempoComponent::SetupTempo(float Frequency)
 
 void USongTempoComponent::StartTempoCounting()
 {
+	CurrentTime = 0;
 	bIsCountingTempo = true;
 }
 
