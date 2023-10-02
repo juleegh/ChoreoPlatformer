@@ -20,7 +20,7 @@ public:
 
 protected:
 	UPROPERTY()
-	class UTimelineCreatorComponent* MoveTimeline;
+	class UMovementTimelineComponent* MoveTimeline;
 	virtual void BeginPlay() override;
 	UFUNCTION()
 	void ReachedNextTile();
@@ -38,7 +38,7 @@ public:
 	void MoveTo(FVector position, float Duration);
 	void StopMovement();
 	class AChoreoPlayerController* GetChoreoController() const;
-	class UTimelineCreatorComponent* GetMovementTimeline() { return MoveTimeline; }
+	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetupToLevel();
 };

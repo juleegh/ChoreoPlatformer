@@ -8,6 +8,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "TimelineCreatorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TilemapLevelManager.h"
@@ -26,7 +27,15 @@ AEnemy::AEnemy()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
-	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
+	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
+	ColorTimeline = CreateDefaultSubobject<UColorTimelineComponent>("Color Timeline");
+}
+
+ARotatingEnemy::ARotatingEnemy()
+{
+	HitBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hit Box"));
+	HitBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HitBox->SetupAttachment(RootComponent);
 }
 
 void AEnemy::BeginPlay()
@@ -134,6 +143,8 @@ void AWalkingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
+	ColorTimeline->Initialize();
+	ColorTimeline->AddMesh(GetMesh());
 	//MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
 }
 
@@ -154,6 +165,7 @@ void AWalkingEnemy::DoTempoAction()
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->MoveToPosition(NextTile.Position, Speed);
+	ColorTimeline->Blink(3, Speed);
 	StartedWalking();
 }
 
@@ -173,6 +185,8 @@ void ARotatingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
+	ColorTimeline->Initialize();
+	ColorTimeline->AddMesh(HitBox);
 }
 
 void ARotatingEnemy::DoTempoAction()
@@ -189,6 +203,7 @@ void ARotatingEnemy::DoTempoAction()
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->RotateToPosition(Rotation, Speed);
+	ColorTimeline->Blink(3, Speed);
 	StartedRotating();
 }
 

@@ -10,6 +10,13 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTimelineEnded);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FTimelineTick, float, val);
 
+UENUM(BlueprintType)
+enum class ETimelineType : uint8
+{
+    Linear,
+    Curve,
+};
+
 UCLASS()
 class CHOREOPLATFORMER_API UTimelineCreatorComponent : public UActorComponent
 {
@@ -18,15 +25,12 @@ class CHOREOPLATFORMER_API UTimelineCreatorComponent : public UActorComponent
 public:
 	UTimelineCreatorComponent();
     void Initialize();
-    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void PlayTimeline();
-    void Reset();
     void Stop(bool bForceFinishAction);
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     bool IsRunning() const;
     UPROPERTY()
     FTimelineEnded TimelineEnded;
-    void MoveToPosition(FVector TargetPosition, float TimelineLength);
-    void RotateToPosition(FRotator TargetPosition, float TimelineLength);
 
 protected:
     UPROPERTY()
@@ -34,30 +38,75 @@ protected:
     UPROPERTY()
     UTimelineComponent* MyTimeline;
     UPROPERTY()
-    class UCurveFloat* FloatCurve;
+    class UCurveFloat* TimelineCurve;
 
-    UPROPERTY()
-    FVector OriginLocation;
-    UPROPERTY()
-    FVector TargetLocation;
-    UPROPERTY()
-    FRotator OriginRotation;
-    UPROPERTY()
-    FRotator TargetRotation;
     UPROPERTY()
     FTimelineTick TimelineTick;
 
     UFUNCTION()
     void TimelineCallback(float val);
     UFUNCTION()
-    void MoveCallback(float val);
-    UFUNCTION()
-    void RotateCallback(float val);
-    UFUNCTION()
     void TimelineFinishedCallback();
+    virtual void Reset() {}
+    virtual void ForceStopTimeline() {}
 
     UPROPERTY()
     TEnumAsByte<ETimelineDirection::Type> TimelineDirection;
     UPROPERTY()
     float ElapsedTime;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UMovementTimelineComponent : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UMovementTimelineComponent();
+    void Reset() override;
+    void ForceStopTimeline() override;
+
+    void MoveToPosition(FVector TargetPosition, float TimelineLength);
+    void RotateToPosition(FRotator TargetPosition, float TimelineLength);
+
+protected:
+
+    UPROPERTY()
+        FVector OriginLocation;
+    UPROPERTY()
+        FVector TargetLocation;
+    UPROPERTY()
+        FRotator OriginRotation;
+    UPROPERTY()
+        FRotator TargetRotation;
+
+    UFUNCTION()
+        void MoveCallback(float val);
+    UFUNCTION()
+        void RotateCallback(float val);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UColorTimelineComponent : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UColorTimelineComponent();
+    void AddMesh(class UMeshComponent*);
+    void Reset() override;
+    void ForceStopTimeline() override;
+
+    void Blink(float Intensity, float Duration);
+    UFUNCTION()
+    void BlinkCallback(float val);
+
+protected:
+
+    UPROPERTY()
+    float OriginBrightness;
+    UPROPERTY()
+    float TargetBrightness;
+    UPROPERTY()
+    class UMaterialInstanceDynamic* ShineMat;
 };

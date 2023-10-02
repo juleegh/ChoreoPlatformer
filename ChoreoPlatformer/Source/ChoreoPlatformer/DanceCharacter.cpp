@@ -10,7 +10,7 @@
 ADanceCharacter::ADanceCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	MoveTimeline = CreateDefaultSubobject<UTimelineCreatorComponent>("Move Timeline");
+	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
 }
 
 void ADanceCharacter::BeginPlay()

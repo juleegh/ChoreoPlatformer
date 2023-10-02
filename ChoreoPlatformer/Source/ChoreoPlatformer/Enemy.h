@@ -23,7 +23,9 @@ protected:
 	UPROPERTY()
 	class ADanceCharacter* PlayerCharacter;
 	UPROPERTY()
-	class UTimelineCreatorComponent* MoveTimeline;
+	class UMovementTimelineComponent* MoveTimeline;
+	UPROPERTY()
+	class UColorTimelineComponent* ColorTimeline;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
 	FGameplayTag Section;
 	UPROPERTY()
@@ -79,8 +81,11 @@ UCLASS()
 class CHOREOPLATFORMER_API ARotatingEnemy : public ASplinedEnemy
 {
 	GENERATED_BODY()
-
+public:
+	ARotatingEnemy();
 protected:
 	void BeginPlay() override;
 	void DoTempoAction() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UStaticMeshComponent* HitBox;
 };
