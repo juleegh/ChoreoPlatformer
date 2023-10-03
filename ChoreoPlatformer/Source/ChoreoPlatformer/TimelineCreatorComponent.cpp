@@ -162,13 +162,17 @@ void UColorTimelineComponent::AddMesh(UMeshComponent* Mesh)
 	ShineMat = Mesh->CreateDynamicMaterialInstance(0, Mesh->GetMaterial(0));
 }
 
-void UColorTimelineComponent::Blink(float Intensity, float Duration)
+void UColorTimelineComponent::Blink(float Intensity)
 {
 	OriginBrightness = 0;
 	TargetBrightness = Intensity;
-	//MyTimeline->SetTimelineLength(Duration);
 	TimelineTick.BindDynamic(this, &UColorTimelineComponent::BlinkCallback);
 	PlayTimeline();
+}
+
+void UColorTimelineComponent::ChangeColor(FColor newColor)
+{
+	ShineMat->SetVectorParameterValue(FName("LightColor"), newColor);
 }
 
 void UColorTimelineComponent::BlinkCallback(float interpolatedVal)

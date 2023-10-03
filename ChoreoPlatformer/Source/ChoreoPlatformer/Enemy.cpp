@@ -169,7 +169,7 @@ void AWalkingEnemy::DoTempoAction()
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->MoveToPosition(NextTile.Position, Speed);
-	ColorTimeline->Blink(3, Speed);
+	ColorTimeline->Blink(3);
 	if (CurrentTile.HitCell)
 	{
 		CurrentTile.HitCell->PromptDamage();
@@ -216,7 +216,7 @@ void ARotatingEnemy::DoTempoAction()
 	FTileInfo HitTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, PatrolPoints[PatrolIndex]);
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->RotateToPosition(Rotation, Speed);
-	ColorTimeline->Blink(3, Speed);
+	ColorTimeline->Blink(3);
 	if (HitTile.HitCell)
 	{
 		HitTile.HitCell->PromptDamage();

@@ -34,6 +34,10 @@ protected:
 	class UStaticMeshComponent* Base;
 	UPROPERTY(BlueprintReadOnly)
 	class UColorTimelineComponent* ColorTimeline;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	FColor DamageColor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	FColor TriggerColor;
 
 public:	
 	// Called every frame
@@ -45,5 +49,6 @@ public:
 	bool ForcesPlayerPosition();
 	FVector ForcedDirection();
 	FGameplayTag& GetSection();
+	void PromptTrigger();
 	void PromptDamage();
 };

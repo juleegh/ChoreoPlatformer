@@ -40,6 +40,11 @@ void ALever::TriggerInteraction()
 		{
 			ConnectedDoor->BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 			ConnectedDoor->RefreshState();
+			auto DoorTile = UDanceUtilsFunctionLibrary::CheckPosition({ ConnectedDoor }, ConnectedDoor->GetActorLocation());
+			if (DoorTile.HitCell)
+			{
+				DoorTile.HitCell->PromptTrigger();
+			}
 		}
 		ConnectedDoors.Empty();
 	}
