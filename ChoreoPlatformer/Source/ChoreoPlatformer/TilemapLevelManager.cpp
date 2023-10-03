@@ -152,6 +152,7 @@ void ASectionLevelManager::Initialize()
 
 	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	SongTempo->StartTempoCounting();
+	bIsPlaying = true;
 }
 
 void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
@@ -164,6 +165,7 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 	CurrentSectionStart = NextSection;
 
 	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(SectionEndTrigger);
+	bIsPlaying = false;
 }
 
 void ASectionLevelManager::NextSectionStart()
@@ -172,6 +174,7 @@ void ASectionLevelManager::NextSectionStart()
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+		bIsPlaying = true;
 	}
 }
 

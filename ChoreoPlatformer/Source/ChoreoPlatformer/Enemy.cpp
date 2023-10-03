@@ -151,6 +151,10 @@ void AWalkingEnemy::BeginPlay()
 void AWalkingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
+	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove())
+	{
+		return;
+	}
 
 	PatrolIndex++;
 	if (PatrolIndex == GetLastIndex())
@@ -166,6 +170,10 @@ void AWalkingEnemy::DoTempoAction()
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->MoveToPosition(NextTile.Position, Speed);
 	ColorTimeline->Blink(3, Speed);
+	if (CurrentTile.HitCell)
+	{
+		CurrentTile.HitCell->PromptDamage();
+	}
 	StartedWalking();
 }
 
@@ -192,6 +200,10 @@ void ARotatingEnemy::BeginPlay()
 void ARotatingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
+	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove())
+	{
+		return;
+	}
 
 	PatrolIndex++;
 	if (PatrolIndex == GetLastIndex())
@@ -201,9 +213,14 @@ void ARotatingEnemy::DoTempoAction()
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), PatrolPoints[PatrolIndex]);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+	FTileInfo HitTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, PatrolPoints[PatrolIndex]);
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
 	MoveTimeline->RotateToPosition(Rotation, Speed);
 	ColorTimeline->Blink(3, Speed);
+	if (HitTile.HitCell)
+	{
+		HitTile.HitCell->PromptDamage();
+	}
 	StartedRotating();
 }
 

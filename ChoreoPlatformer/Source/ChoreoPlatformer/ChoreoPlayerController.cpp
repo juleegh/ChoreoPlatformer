@@ -68,6 +68,11 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
+	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove())
+	{
+		return;
+	}
+
 	if (!Calibration->IsCalibrated() && !bBypassCalibration)
 	{
 		Calibration->ReceiveInput();

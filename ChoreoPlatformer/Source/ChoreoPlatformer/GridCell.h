@@ -24,8 +24,16 @@ protected:
 	FGameplayTag Section;
 	UPROPERTY(BlueprintReadOnly)
 	ETempoTile TileType;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UPaperFlipbookComponent* Flipbook;
 	UPROPERTY(BlueprintReadOnly)
 	class USongTempoComponent* SongTempo;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UStaticMeshComponent* HitBox;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UStaticMeshComponent* Base;
+	UPROPERTY(BlueprintReadOnly)
+	class UColorTimelineComponent* ColorTimeline;
 
 public:	
 	// Called every frame
@@ -37,4 +45,5 @@ public:
 	bool ForcesPlayerPosition();
 	FVector ForcedDirection();
 	FGameplayTag& GetSection();
+	void PromptDamage();
 };

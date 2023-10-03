@@ -69,6 +69,7 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 			
 			if (auto gridCell = Cast<AGridCell>(hit.GetActor()))
 			{
+				DetectedInfo.HitCell = gridCell;
 				DetectedInfo.TileType = gridCell->GetTileType();
 				DetectedInfo.Position = gridCell->GetActorLocation() + FVector::ZAxisVector * 100;
 				DetectedInfo.TargetTempo = UDanceUtilsFunctionLibrary::GetTargetTempo(gridCell->GetTileType());

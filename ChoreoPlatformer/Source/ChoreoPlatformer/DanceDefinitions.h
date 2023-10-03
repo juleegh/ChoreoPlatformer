@@ -37,22 +37,24 @@ struct FTileInfo
 {
 	GENERATED_BODY()
 
-		UPROPERTY(BlueprintReadOnly)
-		bool bHitElement = false;
 	UPROPERTY(BlueprintReadOnly)
-		class AContextualElement* HitElement;
+	bool bHitElement = false;
 	UPROPERTY(BlueprintReadOnly)
-		ETempoTile TileType;
+	class AContextualElement* HitElement;
 	UPROPERTY(BlueprintReadOnly)
-		FVector Position;
+	class AGridCell* HitCell;
 	UPROPERTY(BlueprintReadOnly)
-		float TargetTempo = 1;
+	ETempoTile TileType;
 	UPROPERTY(BlueprintReadOnly)
-		bool bForcesDirection;
+	FVector Position;
 	UPROPERTY(BlueprintReadOnly)
-		FVector ForcedDirection;
+	float TargetTempo = 1;
 	UPROPERTY(BlueprintReadOnly)
-		FGameplayTag Section;
+	bool bForcesDirection;
+	UPROPERTY(BlueprintReadOnly)
+	FVector ForcedDirection;
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayTag Section;
 };
 
 USTRUCT(BlueprintType)

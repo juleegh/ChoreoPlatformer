@@ -7,12 +7,29 @@
 #include "ChoreoPlayerController.h"
 #include "SongTempoComponent.h"
 #include "Paper2D/Classes/PaperSpriteComponent.h"
+#include "Paper2D/Classes/PaperFlipbookComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "TimelineCreatorComponent.h"
 
 // Sets default values
 AGridCell::AGridCell()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	Base = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base"));
+	Base->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RootComponent = Base;
+
+	Flipbook = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Flipbook"));
+	Flipbook->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Flipbook->SetupAttachment(RootComponent);
+
+	HitBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hit Box"));
+	HitBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HitBox->SetupAttachment(RootComponent);
+
+	ColorTimeline = CreateDefaultSubobject<UColorTimelineComponent>("Color Timeline");
 }
 
 void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection)
@@ -29,6 +46,8 @@ void AGridCell::BeginPlay()
 	Super::BeginPlay();
 	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 	SongTempo = PlayerController->GetSongTempoComponent();
+	ColorTimeline->Initialize();
+	ColorTimeline->AddMesh(HitBox);
 }
 
 // Called every frame
@@ -68,5 +87,9 @@ FGameplayTag& AGridCell::GetSection()
 	return Section;
 }
 
+void AGridCell::PromptDamage()
+{
+	ColorTimeline->Blink(2, 0);
+}
 
 
