@@ -11,7 +11,7 @@ AClothingItem::AClothingItem()
 	ItemMesh->SetupAttachment(BoxComponent);
 }
 
-void AClothingItem::TriggerInteraction()
+void AClothingItem::OnEnterRange()
 {
 	if (!bFinished)
 	{

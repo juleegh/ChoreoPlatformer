@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayTagContainer.h"
-#include "ContextualElement.h"
+#include "GridElement.h"
 #include "ClothingItem.generated.h"
 
 UCLASS()
-class CHOREOPLATFORMER_API AClothingItem : public AContextualElement
+class CHOREOPLATFORMER_API AClothingItem : public AGridElement
 {
 	GENERATED_BODY()
 
@@ -21,8 +21,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	class UStaticMeshComponent* ItemMesh;
 	UPROPERTY()
-	bool bFinished;
+	bool bFinished = false;
+	UFUNCTION(BlueprintImplementableEvent)
+	void RefreshState();
 public:
-	void TriggerInteraction() override;
+	void OnEnterRange() override;
 	FGameplayTag GetItemType() { return ItemType; }
 };
