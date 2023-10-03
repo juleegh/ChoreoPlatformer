@@ -15,6 +15,7 @@
 #include "ContextualElement.h"
 #include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -68,7 +69,7 @@ void AChoreoPlayerController::PressedRight()
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove())
+	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
 	{
 		return;
 	}
@@ -121,8 +122,19 @@ void AChoreoPlayerController::OnFinishedMovement()
 
 void AChoreoPlayerController::OnPlayerDied()
 {
-	LevelProgress->LoadCheckpoint();
 	DanceCharacter->StopMovement();
+	
+	float DelayDuration = 1.0f;
+	FTimerDelegate TimerCallback;
+	TimerCallback.BindUFunction(this, FName("RespawnPlayer"));
+	bIsDead = true;
+	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
+	LevelProgress->LoadCheckpoint();
+}
+
+void AChoreoPlayerController::RespawnPlayer()
+{
+	bIsDead = false;
 }
 
 void AChoreoPlayerController::CheckForTileManager()

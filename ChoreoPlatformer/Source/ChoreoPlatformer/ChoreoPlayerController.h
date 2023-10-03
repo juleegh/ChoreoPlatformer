@@ -40,13 +40,18 @@ protected:
 	bool bShouldTakeDamage = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassOutOfTempo = true;
-	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	UPROPERTY()
+	bool bIsDead = false;
+	UPROPERTY()
+	FTimerHandle DelayTimerHandle;
 	bool bBypassCalibration = true;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
 	void OnFinishedMovement();
 	UFUNCTION()
 	void OnPlayerDied();
+	UFUNCTION()
+	void RespawnPlayer();
 	void CheckForTileManager();
 	void TriggerResultFeedback(float Result);
 
