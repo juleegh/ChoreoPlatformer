@@ -162,10 +162,10 @@ void UColorTimelineComponent::AddMesh(UMeshComponent* Mesh)
 	ShineMat = Mesh->CreateDynamicMaterialInstance(0, Mesh->GetMaterial(0));
 }
 
-void UColorTimelineComponent::Blink(float Intensity)
+void UColorTimelineComponent::Blink()
 {
 	OriginBrightness = 0;
-	TargetBrightness = Intensity;
+	TargetBrightness = 0.5f;
 	TimelineTick.BindDynamic(this, &UColorTimelineComponent::BlinkCallback);
 	PlayTimeline();
 }

@@ -97,7 +97,7 @@ public:
     void Reset() override;
     void ForceStopTimeline() override;
 
-    void Blink(float Intensity);
+    void Blink();
     void ChangeColor(FColor newColor);
     UFUNCTION()
     void BlinkCallback(float val);
