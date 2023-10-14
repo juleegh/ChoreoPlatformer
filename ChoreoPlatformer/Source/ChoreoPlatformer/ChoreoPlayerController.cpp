@@ -92,6 +92,10 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
+	if (!NextTile.HitCell)
+	{
+		return;
+	}
 	if (NextTile.TileType == ETempoTile::Blocker || (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction))
 	{
 		return;

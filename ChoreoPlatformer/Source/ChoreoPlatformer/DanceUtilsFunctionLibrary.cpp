@@ -107,23 +107,13 @@ float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
 	return 0;
 }
 
-bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor)
+bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor, int TilesAway)
 {
-	FVector PlayerPos = WorldActor->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	FVector ActorPos = WorldActor->GetActorLocation();
+	auto Player = WorldActor->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	auto Actor = WorldActor->GetActorLocation();
+	float Distance = TilesAway * 100;
 
-	if (FVector::Distance(PlayerPos, ActorPos) <= 100)
-		return true;
-	else if (PositionsAreEqual(PlayerPos, ActorPos + FVector::RightVector * 100))
-		return true;
-	else if (PositionsAreEqual(PlayerPos, ActorPos - FVector::RightVector * 100))
-		return true;
-	else if (PositionsAreEqual(PlayerPos, ActorPos + FVector::ForwardVector * 100))
-		return true;
-	else if (PositionsAreEqual(PlayerPos, ActorPos - FVector::ForwardVector * 100))
-		return true;
-
-	return false;
+	return Player.X <= Actor.X + Distance && Player.X >= Actor.X - Distance && Player.Y <= Actor.Y + Distance && Player.Y >= Actor.Y - Distance;
 }
 
 ADanceCharacter* UDanceUtilsFunctionLibrary::GetDanceCharacter(AActor* WorldContextActor)

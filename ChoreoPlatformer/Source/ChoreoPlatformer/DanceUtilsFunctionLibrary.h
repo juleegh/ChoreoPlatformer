@@ -20,10 +20,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static ETempoAccuracy GetTempoResult(float Distance);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static float GetAcceptanceRate() { return 0.18; }
+	static float GetAcceptanceRate() { return 0.25; }
 	static int GetDamageCooldown() { return 5; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static float GetPerfectAcceptanceRate() { return 0.1; }
+	static float GetPerfectAcceptanceRate() { return 0.15; }
 	static bool PositionsAreEqual(FVector pos1, FVector pos2);
 	static float GetHealthDelta(ETempoAccuracy result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -31,7 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static class ADanceCharacter* GetDanceCharacter(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
-	static bool IsAdjacentToPlayer(class AActor* WorldContextActor);
+	static bool IsAdjacentToPlayer(class AActor* WorldContextActor, int TilesAway);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
 	static class UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
