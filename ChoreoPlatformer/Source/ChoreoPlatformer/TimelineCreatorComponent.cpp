@@ -165,7 +165,7 @@ void UColorTimelineComponent::AddMesh(UMeshComponent* Mesh)
 void UColorTimelineComponent::Blink()
 {
 	OriginBrightness = 0;
-	TargetBrightness = 0.5f;
+	TargetBrightness = 0.25f;
 	TimelineTick.BindDynamic(this, &UColorTimelineComponent::BlinkCallback);
 	PlayTimeline();
 }
