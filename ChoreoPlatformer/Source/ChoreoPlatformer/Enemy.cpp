@@ -48,6 +48,17 @@ void AEnemy::BeginPlay()
 	SectionLevelManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
 }
 
+void AEnemy::SetupSection()
+{
+	Section = FGameplayTag::EmptyTag;
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+	if (CurrentTile.HitCell)
+	{
+		Section = CurrentTile.HitCell->GetSection();
+	}
+}
+
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

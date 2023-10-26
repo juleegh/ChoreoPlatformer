@@ -19,7 +19,7 @@
 void ATilemapLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	TArray<AActor*> LevelManager;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), LevelManager);
 
@@ -78,6 +78,16 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 		}
 
 		TileMapActor->SetActorHiddenInGame(true);
+	}
+	
+	TArray<AActor*> Enemies;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy::StaticClass(), Enemies);
+	for (auto Actor : Enemies)
+	{
+		if (auto Enemy = Cast<AEnemy>(Actor))
+		{
+			Enemy->SetupSection();
+		}
 	}
 
 	TotalChallenges.Add(EChallengeType::HalfCoin, 0);

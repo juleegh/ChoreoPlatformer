@@ -14,6 +14,7 @@ class CHOREOPLATFORMER_API AEnemy : public ACharacter
 
 public:
 	AEnemy();
+	void SetupSection();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -26,8 +27,8 @@ protected:
 	class UMovementTimelineComponent* MoveTimeline;
 	UPROPERTY()
 	class UColorTimelineComponent* ColorTimeline;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
-	FGameplayTag Section;
+	UPROPERTY()
+	FGameplayTag Section = FGameplayTag::EmptyTag;
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
 

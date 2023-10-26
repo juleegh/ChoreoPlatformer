@@ -40,9 +40,9 @@ struct FTileInfo
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitElement = false;
 	UPROPERTY(BlueprintReadOnly)
-	class AContextualElement* HitElement;
+	class AContextualElement* HitElement = nullptr;
 	UPROPERTY(BlueprintReadOnly)
-	class AGridCell* HitCell;
+	class AGridCell* HitCell = nullptr;
 	UPROPERTY(BlueprintReadOnly)
 	ETempoTile TileType;
 	UPROPERTY(BlueprintReadOnly)

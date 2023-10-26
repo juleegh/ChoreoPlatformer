@@ -92,22 +92,30 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
+
+	if (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction)
+	{
+		return;
+	}
+	
+	if (NextTile.bHitElement)
+	{
+		NextTile.HitElement->TriggerInteraction();
+		TriggerResultFeedback(Result);
+		return;
+	}
+
 	if (!NextTile.HitCell)
 	{
 		return;
 	}
+
 	if (NextTile.TileType == ETempoTile::Blocker || (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction))
 	{
 		return;
 	}
 
 	TriggerResultFeedback(Result);
-	
-	if (NextTile.bHitElement)
-	{
-		NextTile.HitElement->TriggerInteraction();
-		return;
-	}
 
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) || bBypassOutOfTempo)
 	{
