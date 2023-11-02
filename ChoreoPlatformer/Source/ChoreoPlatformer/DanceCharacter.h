@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "DanceCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerMoved);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerMoved, float, Tempo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMoveFailed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerNewPosition);
 
