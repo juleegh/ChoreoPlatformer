@@ -38,6 +38,15 @@ void ADanceCharacter::MoveTo(FVector position, float Duration)
 	{
 		MoveTimeline->Stop(true);
 	}
+	for (AActor* Adjacent : UDanceUtilsFunctionLibrary::GetAdjacent(this, GetActorLocation(), 1))
+	{
+		UDanceUtilsFunctionLibrary::ToggleHighlight(Adjacent, false);
+	}
+	for (AActor* Adjacent : UDanceUtilsFunctionLibrary::GetAdjacent(this, position, 1))
+	{
+		UDanceUtilsFunctionLibrary::ToggleHighlight(Adjacent, true);
+	}
+
 	PlayerMoved.Broadcast(Duration);
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);

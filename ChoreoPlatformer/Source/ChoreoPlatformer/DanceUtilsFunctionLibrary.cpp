@@ -2,7 +2,9 @@
 
 #include "DanceUtilsFunctionLibrary.h"
 #include "TilemapLevelManager.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "DanceCharacter.h"
+#include "Interface_Highlighter.h"
 #include "DancerHealthComponent.h"
 #include "SongTempoComponent.h"
 #include "InventoryComponent.h"
@@ -36,6 +38,14 @@ ETempoAccuracy UDanceUtilsFunctionLibrary::GetTempoResult(float Distance)
 		return ETempoAccuracy::Great;
 	}
 	return ETempoAccuracy::Bad;
+}
+
+void UDanceUtilsFunctionLibrary::ToggleHighlight(AActor* Target, bool Highlighted)
+{
+	if (IInterface_Highlighter* Mesh = Cast<IInterface_Highlighter>(Target))
+	{
+		Mesh->ToggleHighlight(Highlighted);
+	}
 }
 
 FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FVector Start)
@@ -81,6 +91,33 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 	}
 
 	return DetectedInfo;
+}
+
+TArray<AActor*> UDanceUtilsFunctionLibrary::GetAdjacent(AActor* ToIgnore, FVector Position, int Radius)
+{
+	TArray<AActor*> Elements = {};
+	TArray<struct FHitResult> OutHits = {};
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(ToIgnore);
+
+	if (ToIgnore->GetWorld()->SweepMultiByChannel(OutHits, Position, Position, FQuat::Identity, ECC_WorldDynamic, FCollisionShape::MakeBox(FVector(Radius * 100)), CollisionParams))
+	{
+		for (auto hit : OutHits)
+		{
+			if (auto element = Cast<AContextualElement>(hit.GetActor()))
+			{
+				Elements.Add(hit.GetActor());
+			}
+
+			if (auto element = Cast<AClothingItem>(hit.GetActor()))
+			{
+				Elements.Add(hit.GetActor());
+			}
+		}
+	}
+
+	return Elements;
 }
 
 bool UDanceUtilsFunctionLibrary::PositionsAreEqual(FVector pos1, FVector pos2)

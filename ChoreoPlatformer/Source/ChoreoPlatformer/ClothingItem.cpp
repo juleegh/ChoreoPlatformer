@@ -11,6 +11,12 @@ AClothingItem::AClothingItem()
 	ItemMesh->SetupAttachment(BoxComponent);
 }
 
+void AClothingItem::BeginPlay()
+{
+	Super::BeginPlay();
+	ToggleHighlight(false);
+}
+
 void AClothingItem::OnEnterRange()
 {
 	if (!bFinished)
@@ -21,5 +27,11 @@ void AClothingItem::OnEnterRange()
 		RefreshState();
 	}
 }
+
+void AClothingItem::ToggleHighlight(bool activated)
+{
+	ItemMesh->SetRenderCustomDepth(activated);
+}
+
 
 

@@ -19,7 +19,18 @@ AContextualElement::AContextualElement()
 void AContextualElement::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	ToggleHighlight(false);
+}
+
+void AContextualElement::ToggleHighlight(bool activated)
+{
+	for (UActorComponent* ActorComponent : GetComponents())
+	{
+		if(UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(ActorComponent))
+		{
+			MeshComponent->SetRenderCustomDepth(activated);
+		}
+	}
 }
 
 void ABrickWall::TriggerInteraction()
@@ -63,6 +74,7 @@ void AItemObstacle::RemoveObstacle()
 {
 	UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->RemoveItem(RequiredItem);
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ToggleHighlight(false);
 	PostObstacleActions();
 	RefreshState();
 }

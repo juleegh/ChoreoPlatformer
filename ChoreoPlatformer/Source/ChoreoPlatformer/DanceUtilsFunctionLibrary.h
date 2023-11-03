@@ -26,8 +26,12 @@ public:
 	static float GetPerfectAcceptanceRate() { return 0.15; }
 	static bool PositionsAreEqual(FVector pos1, FVector pos2);
 	static float GetHealthDelta(ETempoAccuracy result);
+	UFUNCTION(BlueprintCallable)
+	static void ToggleHighlight(AActor* Target, bool Highlighted);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FTileInfo CheckPosition(TArray<class AActor*> ToIgnore, FVector Start);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static TArray<AActor*> GetAdjacent(class AActor* ToIgnore, FVector Position, int Radius);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static class ADanceCharacter* GetDanceCharacter(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))

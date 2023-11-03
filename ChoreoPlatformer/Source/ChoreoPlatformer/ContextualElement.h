@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface_Highlighter.h"
 #include "GameplayTagContainer.h"
 #include "ContextualElement.generated.h"
 
 UCLASS()
-class CHOREOPLATFORMER_API AContextualElement : public AActor
+class CHOREOPLATFORMER_API AContextualElement : public AActor, public IInterface_Highlighter
 {
 	GENERATED_BODY()
 
@@ -25,6 +26,7 @@ public:
 	class UBoxComponent* BoxComponent;
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
+	void ToggleHighlight(bool activated) override;
 	virtual void TriggerInteraction() {}
 	//virtual void Tick(float DeltaTime) override;
 };
