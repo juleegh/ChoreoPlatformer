@@ -41,6 +41,8 @@ public:
 	ACheckpoint() {}
 
 protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void CheckpointReached();
 	void OnEnterRange() override;
 };
 

@@ -45,6 +45,7 @@ void AGridElement::OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, A
 void ACheckpoint::OnEnterRange()
 {
 	DanceCharacter->GetChoreoController()->GetLevelProgressComponent()->ToggleCheckpoint(this);
+	CheckpointReached();
 }
 
 void AMine::OnEnterRange()
