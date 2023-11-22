@@ -53,9 +53,9 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 	TArray<struct FHitResult> OutHits = {};
 	FTileInfo DetectedInfo;
 
-	Start.Z = 500.f;
+	Start.Z = 1000.f;
 
-	FVector End = ((-FVector::ZAxisVector * 510) + Start);
+	FVector End = ((-FVector::ZAxisVector * 1010) + Start);
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(GetDanceCharacter(ToIgnore[0]));
 	for (auto ignore : ToIgnore)
