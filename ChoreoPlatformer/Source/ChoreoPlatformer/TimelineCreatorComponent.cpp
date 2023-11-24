@@ -127,9 +127,7 @@ void UMovementTimelineComponent::MoveToPosition(FVector TargetPosition, float Ti
 
 void UMovementTimelineComponent::MoveCallback(float interpolatedVal)
 {
-	double Progress = MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength();
-	FVector Pos = UKismetMathLibrary::VLerp(OriginLocation, TargetLocation, Progress);
-	TimelineTarget->SetActorLocation(Pos);
+	TimelineTarget->SetActorLocation(UKismetMathLibrary::VLerp(OriginLocation, TargetLocation, MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength()));
 }
 
 void UMovementTimelineComponent::RotateToPosition(FRotator TargetPosition, float TimelineLength)
@@ -143,8 +141,7 @@ void UMovementTimelineComponent::RotateToPosition(FRotator TargetPosition, float
 
 void UMovementTimelineComponent::RotateCallback(float interpolatedVal)
 {
-	FRotator Rot = UKismetMathLibrary::RLerp(OriginRotation, TargetRotation, MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength(), false);
-	TimelineTarget->SetActorRotation(Rot);
+	TimelineTarget->SetActorRotation(UKismetMathLibrary::RLerp(OriginRotation, TargetRotation, MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength(), true));
 }
 
 void UMovementTimelineComponent::Reset()
