@@ -20,10 +20,6 @@ void UInventoryComponent::AddItem(AClothingItem* Item)
 	Inventory.Add(Item->GetItemType());
 	Outfit.Add(Item);
 	InventoryChanged.Broadcast();
-	if (Item->GetItemType().GetGameplayTagParents().HasTag(FGameplayTag::RequestGameplayTag(FName("Item.Health"))))
-	{
-		UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->HealthChanged.Broadcast(true, true, false);
-	}
 	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(UDanceUtilsFunctionLibrary::GetDanceCharacter(GetOwner())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;

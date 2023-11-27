@@ -89,26 +89,6 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 			Enemy->SetupSection();
 		}
 	}
-
-	TotalChallenges.Add(EChallengeType::HalfCoin, 0);
-	TotalChallenges.Add(EChallengeType::CoinTrail, 0);
-	CollectedChallenges.Add(EChallengeType::HalfCoin, 0);
-	CollectedChallenges.Add(EChallengeType::CoinTrail, 0);
-
-	TArray<AActor*> FoundChallenges;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileChallenge::StaticClass(), FoundChallenges);
-
-	for (auto Challenge : FoundChallenges)
-	{
-		if (auto TrailChallenge = Cast<ACoinTrail>(Challenge))
-		{
-			TotalChallenges[EChallengeType::CoinTrail]++;
-		}
-		else if (auto HalfChallenge = Cast<AHalfCoin>(Challenge))
-		{
-			TotalChallenges[EChallengeType::HalfCoin]++;
-		}
-	}
 }
 
 void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
@@ -128,27 +108,6 @@ void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGam
 	}
 	Current->Initialize(TileType, SectionIdentifier);
 	WorldTiles.Add(Current);
-}
-
-
-void ATilemapLevelManager::CollectChallenge(EChallengeType ChallengeType)
-{
-	CollectedChallenges[ChallengeType]++;
-}
-
-int ATilemapLevelManager::GetTotalByChallengeType(EChallengeType ChallengeType)
-{
-	return TotalChallenges[ChallengeType];
-}
-
-int ATilemapLevelManager::GetCollectedByChallengeType(EChallengeType ChallengeType)
-{
-	return CollectedChallenges[ChallengeType];
-}
-
-int ATilemapLevelManager::GetTotalFruit()
-{
-	return TotalFruit;
 }
 
 void ASectionLevelManager::Initialize()
