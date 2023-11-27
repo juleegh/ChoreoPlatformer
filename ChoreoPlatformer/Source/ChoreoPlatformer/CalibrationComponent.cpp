@@ -23,8 +23,7 @@ float UCalibrationComponent::GetCalibrationDelta()
 {
 	if (PostTempos == 0)
 		return 0;
-	float Tempos = PostTempos;
-	return (PostTempoMargin / Tempos);
+	return (PostTempoMargin / PostTempos);
 }
 
 

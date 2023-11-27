@@ -40,20 +40,8 @@ float UDancerHealthComponent::GetTotalSteps()
 void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 {
 	Steps[result]++;
-	if (!ShouldTakeDamage())
-	{
-		return;
-	}
-
 	Accuracy += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
-	if (Accuracy > GetMaxAccuracy())
-	{
-		Accuracy = GetMaxAccuracy();
-	}
-	if (Accuracy < 0)
-	{
-		Accuracy = 0;
-	}
+	Accuracy = FMath::Clamp(Accuracy, 0, GetMaxAccuracy());
 	AccuracyChanged.Broadcast(GetCurrentAccuracy(), GetMaxAccuracy());
 }
 

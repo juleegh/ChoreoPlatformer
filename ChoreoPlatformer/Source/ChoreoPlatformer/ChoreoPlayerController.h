@@ -31,8 +31,6 @@ protected:
 	UPROPERTY()
 	class ULevelEventsComponent* LevelEvents;
 	UPROPERTY()
-	class ASectionLevelManager* SectionManager;
-	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	int IntroductionTempos = 4;
@@ -48,12 +46,9 @@ protected:
 	FTimerHandle DelayTimerHandle;
 	void CheckMovement(FVector Direction);
 	UFUNCTION()
-	void OnFinishedMovement();
-	UFUNCTION()
 	void OnPlayerDied();
 	UFUNCTION()
 	void RespawnPlayer();
-	void CheckForTileManager();
 	void TriggerResultFeedback(float Result);
 
 public:
@@ -74,5 +69,4 @@ public:
 	void PressedLeft();
 	void PressedRight();
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
-	virtual void Tick(float DeltaTime) override;
 };

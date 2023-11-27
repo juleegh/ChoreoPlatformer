@@ -34,17 +34,11 @@ void AChoreoPlayerController::BeginPlay()
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
-	DanceCharacter->GetMovementTimeline()->TimelineEnded.AddDynamic(this, &AChoreoPlayerController::OnFinishedMovement);
 	if (bBypassCalibration)
 	{
 		CalibrationEnded.Broadcast();
 		LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
 	}
-}
-
-void AChoreoPlayerController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AChoreoPlayerController::PressedUp()
@@ -85,8 +79,6 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	CheckForTileManager();
-
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
 
@@ -105,12 +97,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	if (!NextTile.HitCell)
-	{
-		return;
-	}
-
-	if (NextTile.TileType == ETempoTile::Blocker || (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction))
+	if (!NextTile.HitCell || NextTile.TileType == ETempoTile::Blocker)
 	{
 		return;
 	}
@@ -125,11 +112,6 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	{
 		DanceCharacter->MoveFailed.Broadcast();
 	}
-}
-
-void AChoreoPlayerController::OnFinishedMovement()
-{
-	
 }
 
 void AChoreoPlayerController::OnPlayerDied()
@@ -149,28 +131,9 @@ void AChoreoPlayerController::RespawnPlayer()
 	bIsDead = false;
 }
 
-void AChoreoPlayerController::CheckForTileManager()
-{
-	if (!SectionManager)
-	{
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), FoundActors);
-
-		for (auto SectionActor : FoundActors)
-		{
-			SectionManager = Cast<ASectionLevelManager>(SectionActor);
-			break;
-		}
-	}
-}
-
 void AChoreoPlayerController::TriggerResultFeedback(float Result)
 {
 	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 	DancerUI->PromptTempoResult(Result);
-	SectionManager->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+	UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 }
-
-
-
-
