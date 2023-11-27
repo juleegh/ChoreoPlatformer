@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
-#include "TileChallenge.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Components/ActorComponent.h"
 #include "GridElement.h"
@@ -26,12 +25,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY()
-	TMap<EChallengeType, int> TotalChallenges;
-	UPROPERTY()
-	TMap<EChallengeType, int> CollectedChallenges;
-	UPROPERTY()
-	int TotalFruit;
-	UPROPERTY()
 	TArray<class AGridCell*> TilePool;
 	UPROPERTY()
 	TArray<class AGridCell*> WorldTiles;
@@ -41,10 +34,6 @@ public:
 	void LoadMap(const FGameplayTag& Level);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
-	void CollectChallenge(EChallengeType ChallengeType);
-	int GetTotalByChallengeType(EChallengeType ChallengeType);
-	int GetCollectedByChallengeType(EChallengeType ChallengeType);
-	int GetTotalFruit();
 	void SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier);
 };
 
