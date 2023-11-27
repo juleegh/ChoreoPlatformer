@@ -27,7 +27,7 @@ void UInventoryComponent::AddItem(AClothingItem* Item)
 	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(UDanceUtilsFunctionLibrary::GetDanceCharacter(GetOwner())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
-	Item->AttachToComponent(SkeletalMesh, TransformRules, GetBodySection(Item->GetItemType()));
+	Item->AttachToComponent(SkeletalMesh, TransformRules, Item->GetBodySocket().GetTagName());
 }
 
 bool UInventoryComponent::RemoveItem(FGameplayTag ItemType)
@@ -61,19 +61,4 @@ bool UInventoryComponent::LoseHealthItem()
 	Outfit.Remove(Last);
 	Last->Destroy();
 	return true;
-}
-
-FName UInventoryComponent::GetBodySection(FGameplayTag ItemType)
-{
-	TArray<FClothingItemInfo*> Items;
-	ItemsData->GetAllRows<FClothingItemInfo>(TEXT("ContextString"), Items);
-
-	for (auto ItemInfo : Items)
-	{
-		if (ItemInfo->Identifier == ItemType)
-		{
-			return ItemInfo->BodySection.GetTagName();
-		}
-	}
-	return {};
 }

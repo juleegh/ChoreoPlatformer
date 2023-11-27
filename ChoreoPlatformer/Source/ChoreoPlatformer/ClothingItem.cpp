@@ -9,6 +9,8 @@ AClothingItem::AClothingItem()
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ItemMesh->SetupAttachment(BoxComponent);
+
+	BodySocket = FGameplayTag::RequestGameplayTag(TEXT("BodySocket.Hat"));
 }
 
 void AClothingItem::BeginPlay()

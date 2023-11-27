@@ -65,7 +65,5 @@ struct CHOREOPLATFORMER_API FClothingItemInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag Identifier;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FGameplayTag BodySection;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMesh* Mesh;
 };

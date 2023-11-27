@@ -18,8 +18,10 @@ public:
 	AClothingItem();
 protected:
 	virtual void BeginPlay() override;
-	UPROPERTY(BlueprintReadOnly, EditInstanceOnly)
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Meta = (Category = "ClothingItem"))
 	FGameplayTag ItemType;
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Meta = (Category = "BodySocket"))
+	FGameplayTag BodySocket;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	class UStaticMeshComponent* ItemMesh;
 	UPROPERTY()
@@ -29,5 +31,6 @@ protected:
 public:
 	void OnEnterRange() override;
 	FGameplayTag GetItemType() { return ItemType; }
+	FGameplayTag GetBodySocket() { return BodySocket; }
 	void ToggleHighlight(bool activated) override;
 };

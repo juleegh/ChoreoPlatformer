@@ -26,8 +26,6 @@ protected:
 	UPROPERTY()
 	class UDataTable* ItemsData;
 
-	FName GetBodySection(FGameplayTag ItemType);
-
 public:
 	UPROPERTY(BlueprintAssignable)
 	FInventoryChanged InventoryChanged;
