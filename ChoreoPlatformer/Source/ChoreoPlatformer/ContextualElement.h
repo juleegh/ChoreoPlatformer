@@ -17,6 +17,8 @@ public:
 	AContextualElement();
 
 protected:
+	UPROPERTY()
+	bool bFinished = false;
 	virtual void BeginPlay() override;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
@@ -27,7 +29,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
 	void ToggleHighlight(bool activated) override;
-	virtual void TriggerInteraction() {}
+	virtual void TriggerInteraction();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool CanInteract() { return !bFinished; }
 	//virtual void Tick(float DeltaTime) override;
 };
 
@@ -77,8 +81,6 @@ class CHOREOPLATFORMER_API AItemObstacle : public AContextualElement
 protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	FGameplayTag RequiredItem;
-	UPROPERTY()
-	bool bFinished;
 
 	void RemoveObstacle();
 	virtual void PostObstacleActions() {}
