@@ -22,12 +22,6 @@ void AContextualElement::BeginPlay()
 	ToggleHighlight(false);
 }
 
-void AContextualElement::TriggerInteraction()
-{
-	bFinished = true;
-	RefreshState();
-}
-
 void AContextualElement::ToggleHighlight(bool activated)
 {
 	for (UActorComponent* ActorComponent : GetComponents())
@@ -49,6 +43,13 @@ void ABrickWall::TriggerInteraction()
 	}
 }
 
+void ADoor::Open()
+{
+	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	bFinished = true;
+	RefreshState();
+}
+
 void ALever::TriggerInteraction()
 {
 	if (ConnectedDoors.Num() > 0)
@@ -56,8 +57,7 @@ void ALever::TriggerInteraction()
 		RefreshState();
 		for (ADoor* ConnectedDoor : ConnectedDoors)
 		{
-			ConnectedDoor->BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-			ConnectedDoor->TriggerInteraction();
+			ConnectedDoor->Open();
 			auto DoorTile = UDanceUtilsFunctionLibrary::CheckPosition({ ConnectedDoor }, ConnectedDoor->GetActorLocation());
 			if (DoorTile.HitCell)
 			{

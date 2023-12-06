@@ -29,7 +29,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
 	void ToggleHighlight(bool activated) override;
-	virtual void TriggerInteraction();
+	virtual void TriggerInteraction() {}
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanInteract() { return !bFinished; }
 	//virtual void Tick(float DeltaTime) override;
@@ -56,6 +56,7 @@ class CHOREOPLATFORMER_API ADoor : public AContextualElement
 
 public:
 	ADoor() {}
+	void Open();
 
 protected:
 };
