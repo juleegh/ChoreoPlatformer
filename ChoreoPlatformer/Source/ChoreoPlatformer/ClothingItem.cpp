@@ -9,8 +9,6 @@ AClothingItem::AClothingItem()
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ItemMesh->SetupAttachment(BoxComponent);
-
-	BodySocket = FGameplayTag::RequestGameplayTag(TEXT("BodySocket.Hat"));
 }
 
 void AClothingItem::BeginPlay()
@@ -33,6 +31,22 @@ void AClothingItem::OnEnterRange()
 void AClothingItem::ToggleHighlight(bool activated)
 {
 	ItemMesh->SetRenderCustomDepth(activated);
+}
+
+void AClothingItem::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	TArray<FClothingItemInfo*> Items;
+	ItemsData->GetAllRows<FClothingItemInfo>(TEXT("ContextString"), Items);
+	for (auto ItemInfo : Items)
+	{
+		if (ItemInfo->Identifier.MatchesTag(ItemType) && ItemInfo->Mesh)
+		{
+			ItemMesh->SetStaticMesh(ItemInfo->Mesh);
+			BodySocket = ItemInfo->BodySocket;
+			return;
+		}
+	}
 }
 
 

@@ -20,17 +20,19 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Meta = (Category = "ClothingItem"))
 	FGameplayTag ItemType;
-	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Meta = (Category = "BodySocket"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (Category = "ClothingItem"))
 	FGameplayTag BodySocket;
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	class UDataTable* ItemsData;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Meta = (Category = "ClothingItem"))
 	class UStaticMeshComponent* ItemMesh;
 	UPROPERTY()
 	bool bFinished = false;
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
+	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 public:
 	void OnEnterRange() override;
 	FGameplayTag GetItemType() { return ItemType; }
-	FGameplayTag GetBodySocket() { return BodySocket; }
 	void ToggleHighlight(bool activated) override;
 };

@@ -10,31 +10,24 @@ UInventoryComponent::UInventoryComponent()
 	ItemsData = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("DataTable'/Game/TileElements/ItemDataTable.ItemDataTable'")));
 }
 
-bool UInventoryComponent::HasItem(FGameplayTag ItemType)
+void UInventoryComponent::LoadCollectables()
 {
-	return Inventory.Contains(ItemType);
+	TArray<FClothingItemInfo*> Items;
+	ItemsData->GetAllRows<FClothingItemInfo>(TEXT("ContextString"), Items);
+	for (auto ItemInfo : Items)
+	{
+		ClothingInfo.Add(ItemInfo->Identifier, *ItemInfo);
+	}
 }
 
 void UInventoryComponent::AddItem(AClothingItem* Item)
 {
-	Inventory.Add(Item->GetItemType());
 	Outfit.Add(Item);
 	InventoryChanged.Broadcast();
 	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(UDanceUtilsFunctionLibrary::GetDanceCharacter(GetOwner())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
-	Item->AttachToComponent(SkeletalMesh, TransformRules, Item->GetBodySocket().GetTagName());
-}
-
-bool UInventoryComponent::RemoveItem(FGameplayTag ItemType)
-{
-	if (HasItem(ItemType))
-	{
-		Inventory.RemoveSingle(ItemType);
-		InventoryChanged.Broadcast();
-		return true;
-	}
-	return false;
+	Item->AttachToComponent(SkeletalMesh, TransformRules, GetBodySection(Item->GetItemType()));
 }
 
 bool UInventoryComponent::HasHealthItem()
@@ -57,4 +50,35 @@ bool UInventoryComponent::LoseHealthItem()
 	Outfit.Remove(Last);
 	Last->Destroy();
 	return true;
+}
+
+void UInventoryComponent::ClearItemsEndOfLevel()
+{
+	for (auto ClothingItem : Outfit)
+	{
+		if (!Inventory.Contains(ClothingItem->GetItemType()))
+		{
+			Inventory.Add(ClothingItem->GetItemType());
+		}
+	}
+
+	while (Outfit.Num() > 0)
+	{
+		auto Last = Outfit.Last();
+		Outfit.Remove(Last);
+		Last->Destroy();
+	}
+}
+
+FName UInventoryComponent::GetBodySection(FGameplayTag ItemType)
+{
+	if (ClothingInfo.IsEmpty())
+	{
+		LoadCollectables();
+	}
+	if (ClothingInfo.Contains(ItemType))
+	{
+		return ClothingInfo[ItemType].BodySocket.GetTagName();
+	}
+	return {};
 }

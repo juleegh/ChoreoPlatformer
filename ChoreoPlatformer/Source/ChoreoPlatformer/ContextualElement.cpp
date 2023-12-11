@@ -71,7 +71,7 @@ void ALever::TriggerInteraction()
 
 void AItemObstacle::TriggerInteraction()
 {
-	if (UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->HasItem(RequiredItem) && !bFinished)
+	//if (UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->HasItem(RequiredItem) && !bFinished)
 	{
 		bFinished = true;
 		RemoveObstacle();
@@ -80,7 +80,7 @@ void AItemObstacle::TriggerInteraction()
 
 void AItemObstacle::RemoveObstacle()
 {
-	UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->RemoveItem(RequiredItem);
+	//UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->RemoveItem(RequiredItem);
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ToggleHighlight(false);
 	PostObstacleActions();

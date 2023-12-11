@@ -12,6 +12,7 @@
 #include "PaperTileSet.h"
 #include "GameplayTagContainer.h"
 #include "SongTempoComponent.h"
+#include "InventoryComponent.h"
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
 #include "Components/BoxComponent.h"
@@ -143,6 +144,7 @@ void ASectionLevelManager::NextSectionStart()
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+		UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->ClearItemsEndOfLevel();
 		bIsPlaying = true;
 	}
 }

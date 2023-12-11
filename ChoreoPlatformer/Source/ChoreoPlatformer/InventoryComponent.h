@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "ClothingItem.h"
+#include "DanceDefinitions.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
 UCLASS()
@@ -25,17 +27,20 @@ protected:
 	TArray<FGameplayTag> Inventory;
 	UPROPERTY()
 	class UDataTable* ItemsData;
+	UPROPERTY()
+	TMap<FGameplayTag, FClothingItemInfo> ClothingInfo;
+
+	void LoadCollectables();
 
 public:
 	UPROPERTY(BlueprintAssignable)
 	FInventoryChanged InventoryChanged;
 	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool HasItem(FGameplayTag ItemType);
 	void AddItem(AClothingItem* Item);
-	bool RemoveItem(FGameplayTag ItemType);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool HasHealthItem();
 	int HealthItemQuantity();
 	bool LoseHealthItem();
+	void ClearItemsEndOfLevel();
+	FName GetBodySection(FGameplayTag ItemType);
 };

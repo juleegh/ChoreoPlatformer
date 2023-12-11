@@ -62,8 +62,10 @@ struct CHOREOPLATFORMER_API FClothingItemInfo : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "ClothingItem"))
 	FGameplayTag Identifier;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "BodySocket"))
+	FGameplayTag BodySocket;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMesh* Mesh;
 };
