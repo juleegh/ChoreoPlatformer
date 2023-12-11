@@ -34,11 +34,13 @@ void AChoreoPlayerController::BeginPlay()
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
+	/*
 	if (bBypassCalibration)
 	{
 		CalibrationEnded.Broadcast();
 		LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
 	}
+	*/
 }
 
 void AChoreoPlayerController::PressedUp()

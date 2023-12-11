@@ -11,17 +11,33 @@
 UCLASS()
 class CHOREOPLATFORMER_API UDancerUI : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
     class USongTempoComponent* TempoComponent;
     UFUNCTION(BlueprintCallable, BlueprintPure)
     class USongTempoComponent* GetTempoComponent();
     UFUNCTION(BlueprintImplementableEvent)
+    void InitializeScreen();
+}; 
+
+UCLASS()
+class CHOREOPLATFORMER_API UDancerStats : public UDancerUI
+{
+	GENERATED_BODY()
+public:
+    UFUNCTION(BlueprintImplementableEvent)
     void UpdateCountdown(int TemposLeft);
     UFUNCTION(BlueprintImplementableEvent)
     void PromptTempoResult(float Distance);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UCalibrationScreen : public UDancerUI
+{
+    GENERATED_BODY()
+public:
     UFUNCTION(BlueprintImplementableEvent)
-    void InitializeEvents();
+    void CalibrationEnded();
 };
 
 UCLASS()
@@ -38,9 +54,13 @@ public:
 
 protected:
     UPROPERTY()
-    TSubclassOf<UUserWidget> DancerClass;
+    TSubclassOf<UUserWidget> StatsClass;
     UPROPERTY()
-    UDancerUI* DancerUI;
+    TSubclassOf<UUserWidget> CalibrationClass;
+    UPROPERTY()
+    UDancerStats* DancerStats;
+    UPROPERTY()
+    UCalibrationScreen* CalibrationScreen;
     virtual void BeginPlay() override;
 };
 

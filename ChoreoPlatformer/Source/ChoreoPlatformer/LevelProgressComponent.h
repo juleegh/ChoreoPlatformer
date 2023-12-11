@@ -17,7 +17,6 @@ public:
 	ULevelProgressComponent();
 
 protected:
-	virtual void BeginPlay() override;
 	UPROPERTY()
 	ACheckpoint* CurrentCheckpoint;
 

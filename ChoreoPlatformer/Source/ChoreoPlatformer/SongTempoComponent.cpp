@@ -12,11 +12,6 @@ USongTempoComponent::USongTempoComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void USongTempoComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void USongTempoComponent::SetupCalibrationDeficit(float Deficit)
 {
 	CalibrationDeficit = Deficit * SongFrequency;

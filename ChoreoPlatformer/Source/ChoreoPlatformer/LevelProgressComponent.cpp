@@ -11,12 +11,6 @@ ULevelProgressComponent::ULevelProgressComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
-void ULevelProgressComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ULevelProgressComponent::ToggleCheckpoint(ACheckpoint* NewCheckpoint)
 {
 	CurrentCheckpoint = NewCheckpoint;
