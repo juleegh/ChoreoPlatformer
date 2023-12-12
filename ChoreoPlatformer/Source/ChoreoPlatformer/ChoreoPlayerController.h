@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/PlayerController.h"
 #include "ChoreoPlayerController.generated.h"
 
@@ -16,6 +17,7 @@ class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 
 protected:
 	virtual void BeginPlay() override;
+
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()
@@ -64,9 +66,6 @@ public:
 	class UDancerHealthComponent* GetDancerHealthComponent() const { return DancerHealth; }
 	class UDancerUIComponent* GetDancerUIComponent() const { return DancerUI; }
 	class ULevelEventsComponent* GetEventsComponent() const { return LevelEvents; }
-	void PressedUp();
-	void PressedDown();
-	void PressedLeft();
-	void PressedRight();
+	void Move(const FInputActionValue& Value);
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
 };

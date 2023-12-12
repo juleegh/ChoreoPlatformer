@@ -19,6 +19,10 @@ public:
 	ADanceCharacter();
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputMappingContext* ChoreoIMC;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* MoveAction;
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;
 	virtual void BeginPlay() override;

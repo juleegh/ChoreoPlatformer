@@ -43,28 +43,17 @@ void AChoreoPlayerController::BeginPlay()
 	*/
 }
 
-void AChoreoPlayerController::PressedUp()
+void AChoreoPlayerController::Move(const FInputActionValue& Value)
 {
-	CheckMovement(-FVector::RightVector);
-}
-
-void AChoreoPlayerController::PressedDown()
-{
-	CheckMovement(FVector::RightVector);
-}
-
-void AChoreoPlayerController::PressedLeft()
-{
-	CheckMovement(-FVector::ForwardVector);
-}
-
-void AChoreoPlayerController::PressedRight()
-{
-	CheckMovement(FVector::ForwardVector);
+	CheckMovement(Value.Get<FVector>());
 }
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
+	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld()))
+	{
+		return;
+	}
 	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
 	{
 		return;

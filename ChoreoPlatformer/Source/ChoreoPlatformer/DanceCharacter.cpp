@@ -5,6 +5,8 @@
 #include "ChoreoPlayerController.h"
 #include "SongTempoComponent.h"
 #include "TimelineCreatorComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -19,17 +21,25 @@ void ADanceCharacter::BeginPlay()
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
 	MoveTimeline->TimelineEnded.AddDynamic(this, &ADanceCharacter::ReachedNextTile);
+
+	if (APlayerController* ChoreoController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* SubSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(ChoreoController->GetLocalPlayer()))
+		{
+			SubSystem->AddMappingContext(ChoreoIMC, 0);
+		}
+	}
 }
 
 void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	auto controller = GetChoreoController();
+	if (auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, controller, &AChoreoPlayerController::Move);
+	}
 
-	PlayerInputComponent->BindAction("Up", IE_Pressed, controller, &AChoreoPlayerController::PressedUp);
-	PlayerInputComponent->BindAction("Down", IE_Pressed, controller, &AChoreoPlayerController::PressedDown);
-	PlayerInputComponent->BindAction("Left", IE_Pressed, controller, &AChoreoPlayerController::PressedLeft);
-	PlayerInputComponent->BindAction("Right", IE_Pressed, controller, &AChoreoPlayerController::PressedRight);
 }
 
 void ADanceCharacter::MoveTo(FVector position, float Duration)
