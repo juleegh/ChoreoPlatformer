@@ -33,7 +33,16 @@ void AChoreoPlayerController::BeginPlay()
 	Super::BeginPlay();
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
-	SongTempo->TempoCountdown.AddDynamic(DancerUI,&UDancerUIComponent::UpdateCountdown);
+	SongTempo->TempoCountdown.AddDynamic(DancerUI->GetGameUI(), &UGameUI::UpdateCountdown);
+
+	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld()))
+	{
+		DancerUI->GetGameUI()->LoadMenu();
+	}
+	else
+	{
+		DancerUI->GetGameUI()->LoadGame();
+	}
 	/*
 	if (bBypassCalibration)
 	{
@@ -125,6 +134,6 @@ void AChoreoPlayerController::RespawnPlayer()
 void AChoreoPlayerController::TriggerResultFeedback(float Result)
 {
 	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
-	DancerUI->PromptTempoResult(Result);
+	DancerUI->GetGameUI()->PromptTempoResult(Result);
 	UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 }

@@ -43,8 +43,7 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
-	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
-	SongTempo = PlayerController->GetSongTempoComponent();
+	SongTempo = UDanceUtilsFunctionLibrary::GetSongTempoComponent(this);
 	SectionLevelManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
 }
 

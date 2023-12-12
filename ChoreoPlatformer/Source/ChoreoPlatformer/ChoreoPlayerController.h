@@ -64,6 +64,7 @@ public:
 	class ULevelProgressComponent* GetLevelProgressComponent() const { return LevelProgress; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class UDancerHealthComponent* GetDancerHealthComponent() const { return DancerHealth; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class UDancerUIComponent* GetDancerUIComponent() const { return DancerUI; }
 	class ULevelEventsComponent* GetEventsComponent() const { return LevelEvents; }
 	void Move(const FInputActionValue& Value);

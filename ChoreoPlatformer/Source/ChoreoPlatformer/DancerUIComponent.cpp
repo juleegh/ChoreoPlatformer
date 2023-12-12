@@ -7,20 +7,18 @@
 #include "SongTempoComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
 #include "TilemapLevelManager.h"
+
+const FGameplayTag UGameUI::LevelSelection = FGameplayTag::RequestGameplayTag("GameUI.LevelSelection");
+const FGameplayTag UGameUI::GameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
 
 UDancerUIComponent::UDancerUIComponent()
 {
-    static ConstructorHelpers::FClassFinder<UUserWidget> Stats(TEXT("/Game/Widgets/C_MainStats"));
-    if (Stats.Succeeded())
+    static ConstructorHelpers::FClassFinder<UCommonActivatableWidget> DanceWidget(TEXT("/Game/GameScreen/C_GameScreen"));
+    if (DanceWidget.Succeeded())
     {
-        StatsClass = Stats.Class;
-    }
-
-    static ConstructorHelpers::FClassFinder<UUserWidget> Calibration(TEXT("/Game/Widgets/C_CalibrationScreen"));
-    if (Calibration.Succeeded())
-    {
-        CalibrationClass = Calibration.Class;
+        GameUIClass = DanceWidget.Class;
     }
 
     PrimaryComponentTick.bCanEverTick = false;
@@ -30,32 +28,39 @@ void UDancerUIComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    DancerStats = Cast<UDancerStats>(CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), StatsClass));
-    DancerStats->AddToViewport();
-    DancerStats->SetVisibility(ESlateVisibility::Visible);
-    DancerStats->TempoComponent = UDanceUtilsFunctionLibrary::GetSongTempoComponent(GetOwner());
-    DancerStats->InitializeScreen();
-
-    CalibrationScreen = Cast<UCalibrationScreen>(CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), CalibrationClass));
-    CalibrationScreen->AddToViewport();
-    CalibrationScreen->SetVisibility(ESlateVisibility::Visible);
-    CalibrationScreen->TempoComponent = UDanceUtilsFunctionLibrary::GetSongTempoComponent(GetOwner());
-    CalibrationScreen->InitializeScreen();
+    GameUI = Cast<UGameUI>(CreateWidget<UCommonUserWidget>(GetWorld()->GetFirstPlayerController(), GameUIClass));
+    GameUI->AddToViewport();
+    GameUI->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UDancerUIComponent::UpdateCountdown(int TemposLeft)
+void UGameUI::LoadMenu()
 {
-    DancerStats->UpdateCountdown(TemposLeft);
+    ClearGameWidgets();
+    PushMenuWidget(LevelSelectionClass, LevelSelection);
 }
 
-void UDancerUIComponent::PromptTempoResult(float Distance)
+void UGameUI::LoadGame()
 {
-    DancerStats->PromptTempoResult(Distance);
+    ClearMenuWidgets();
+    PushGameWidget(StatsClass, GameStats);
 }
 
-USongTempoComponent* UDancerUI::GetTempoComponent()
+void UGameUI::UpdateCountdown(int TemposLeft)
 {
-    return TempoComponent;
+    if (GameWidgets.Contains(GameStats))
+    {
+        auto DancerStats = Cast<UDancerStats>(GameWidgets[GameStats]);
+        DancerStats->UpdateCountdown(TemposLeft);
+    }
+}
+
+void UGameUI::PromptTempoResult(float Distance)
+{
+    if (GameWidgets.Contains(GameStats))
+    {
+        auto DancerStats = Cast<UDancerStats>(GameWidgets[GameStats]);
+        DancerStats->PromptTempoResult(Distance);
+    }
 }
 
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
