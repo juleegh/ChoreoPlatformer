@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "ChoreoPlayerController.generated.h"
 
@@ -52,6 +53,8 @@ protected:
 	UFUNCTION()
 	void RespawnPlayer();
 	void TriggerResultFeedback(float Result);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool InGame();
 
 public:
 	AChoreoPlayerController();
@@ -60,5 +63,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FCalibrationEnded CalibrationEnded;
 	void Move(const FInputActionValue& Value);
+	void GoToLevel(const FGameplayTag Level);
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
 };

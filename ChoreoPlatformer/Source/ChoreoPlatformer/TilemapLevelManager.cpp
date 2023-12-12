@@ -147,6 +147,28 @@ void ASectionLevelManager::NextSectionStart()
 	}
 }
 
+void ASectionLevelManager::StartFromSection(const FGameplayTag SectionIdentifier)
+{
+	TArray<AActor*> FoundSections;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
+
+	for (auto Section : FoundSections)
+	{
+		if (auto LevelSection = Cast<ASectionStart>(Section))
+		{
+			if (LevelSection->GetSectionIdentifier() != SectionIdentifier)
+			{
+				continue;
+			}
+
+			CurrentSection = LevelSection->GetSectionIdentifier();
+			CurrentSectionStart = LevelSection;
+			NextSectionStart();
+			return;
+		}
+	}
+}
+
 ULevelEventsComponent::ULevelEventsComponent()
 {
 	static ConstructorHelpers::FObjectFinder<UEventsDataAsset>DataAsset(TEXT("/Game/Events/LevelEvents"));

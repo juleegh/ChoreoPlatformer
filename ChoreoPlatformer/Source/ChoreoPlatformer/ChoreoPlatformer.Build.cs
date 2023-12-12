@@ -8,7 +8,7 @@ public class ChoreoPlatformer : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "GameplayTags" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "GameplayTags", "MoviePlayer" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "CommonUI", "EnhancedInput" });
 

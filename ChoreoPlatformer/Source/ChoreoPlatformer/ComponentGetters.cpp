@@ -34,6 +34,11 @@ namespace ComponentGetters
 		return Cast<ULevelProgressComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(ULevelProgressComponent::StaticClass()));
 	}
 
+	UDancerUIComponent* GetDancerUIComponent(UWorld* WorldContextObject)
+	{
+		return Cast<UDancerUIComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerUIComponent::StaticClass()));
+	}
+
 	ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject)
 	{
 		TArray<AActor*> FoundManagers;

@@ -71,6 +71,7 @@ public:
 	void CurrentSectionEnd(class ASectionStart* NextSection);
 	UFUNCTION(BlueprintCallable)
 	void NextSectionStart();
+	void StartFromSection(const FGameplayTag SectionIdentifier);
 	bool CanMove() { return bIsPlaying; }
 };
 

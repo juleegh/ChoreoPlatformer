@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "ChoreoGameInstance.h"
 #include "ComponentGetters.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
@@ -23,6 +24,11 @@ AChoreoPlayerController::AChoreoPlayerController()
 	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 }
 
+bool AChoreoPlayerController::InGame()
+{
+	return ComponentGetters::GetSectionLevelManager(GetWorld()) != nullptr;
+}
+
 void AChoreoPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -30,39 +36,51 @@ void AChoreoPlayerController::BeginPlay()
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI->GetGameUI(), &UGameUI::UpdateCountdown);
 
-	if (!ComponentGetters::GetSectionLevelManager(GetWorld()))
+	if (!InGame())
 	{
 		DancerUI->GetGameUI()->LoadMenu();
 	}
 	else
 	{
 		DancerUI->GetGameUI()->LoadGame();
+		/*
+		if (bBypassCalibration)
+		{
+			CalibrationEnded.Broadcast();
+			LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
+		}
+		*/
 	}
-	/*
-	if (bBypassCalibration)
+}
+
+void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
+{
+	UWorld* World = GetWorld();
+
+	if (World)
 	{
-		CalibrationEnded.Broadcast();
-		LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
+		FString LevelName = "C1_AncientCity";
+		if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
+		{
+			GameInstance->CurrentLevel = Level;
+		}
+
+		UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
 	}
-	*/
 }
 
 void AChoreoPlayerController::Move(const FInputActionValue& Value)
 {
+	if (!InGame() || !ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
+	{
+		return;
+	}
+
 	CheckMovement(Value.Get<FVector>());
 }
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (!ComponentGetters::GetSectionLevelManager(GetWorld()))
-	{
-		return;
-	}
-	if (!ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
-	{
-		return;
-	}
-
 	if (!Calibration->IsCalibrated() && !bBypassCalibration)
 	{
 		Calibration->ReceiveInput();
@@ -84,7 +102,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	{
 		return;
 	}
-	
+
 	if (NextTile.bHitElement)
 	{
 		NextTile.HitElement->TriggerInteraction();
@@ -112,7 +130,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 void AChoreoPlayerController::OnPlayerDied()
 {
 	DanceCharacter->StopMovement();
-	
+
 	float DelayDuration = 1.0f;
 	FTimerDelegate TimerCallback;
 	TimerCallback.BindUFunction(this, FName("RespawnPlayer"));

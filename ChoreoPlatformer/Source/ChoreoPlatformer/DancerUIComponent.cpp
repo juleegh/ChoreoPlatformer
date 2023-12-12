@@ -66,7 +66,8 @@ void ULevelSelectionUI::ChangedLevelSelected(int index)
 
 void ULevelSelectionUI::LoadSelected()
 {
-
+    FName LevelName = FName("Level.AncientCity." + FString::FromInt(LevelIndex));
+    Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GoToLevel(FGameplayTag::RequestGameplayTag(LevelName));
 }
 
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
