@@ -1,15 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DanceUtilsFunctionLibrary.h"
-#include "TilemapLevelManager.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "DanceCharacter.h"
 #include "Interface_Highlighter.h"
-#include "DancerHealthComponent.h"
-#include "SongTempoComponent.h"
-#include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "ContextualElement.h"
+#include "ComponentGetters.h"
 
 float UDanceUtilsFunctionLibrary::GetTargetTempo(ETempoTile TileType)
 {
@@ -57,7 +53,7 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 
 	FVector End = ((-FVector::ZAxisVector * 1010) + Start);
 	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(GetDanceCharacter(ToIgnore[0]));
+	CollisionParams.AddIgnoredActor(ComponentGetters::GetDanceCharacter(ToIgnore[0]->GetWorld()));
 	for (auto ignore : ToIgnore)
 	{
 		CollisionParams.AddIgnoredActor(ignore);
@@ -151,53 +147,6 @@ bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor, int Tile
 	float Distance = TilesAway * 100;
 
 	return Player.X <= Actor.X + Distance && Player.X >= Actor.X - Distance && Player.Y <= Actor.Y + Distance && Player.Y >= Actor.Y - Distance;
-}
-
-ADanceCharacter* UDanceUtilsFunctionLibrary::GetDanceCharacter(AActor* WorldContextActor)
-{
-	auto DanceController = WorldContextActor->GetWorld()->GetFirstPlayerController();
-	return Cast<ADanceCharacter>(DanceController->GetPawn());
-}
-
-UDancerHealthComponent* UDanceUtilsFunctionLibrary::GetDancerHealthComponent(UWorld* WorldContextObject)
-{
-	return Cast<UDancerHealthComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));
-}
-
-UInventoryComponent* UDanceUtilsFunctionLibrary::GetInventoryComponent(AActor* WorldContextActor)
-{
-	return Cast<UInventoryComponent>(WorldContextActor->GetWorld()->GetFirstPlayerController()->GetComponentByClass(UInventoryComponent::StaticClass()));
-}
-
-USongTempoComponent* UDanceUtilsFunctionLibrary::GetSongTempoComponent(AActor* WorldContextActor)
-{
-	return Cast<USongTempoComponent>(WorldContextActor->GetWorld()->GetFirstPlayerController()->GetComponentByClass(USongTempoComponent::StaticClass()));
-}
-
-ATilemapLevelManager* UDanceUtilsFunctionLibrary::GetTilemapLevelManager(UWorld* WorldContextObject)
-{
-	TArray<AActor*> FoundManagers;
-	UGameplayStatics::GetAllActorsOfClass(WorldContextObject, ATilemapLevelManager::StaticClass(), FoundManagers);
-
-	for (auto Manager : FoundManagers)
-	{
-		return Cast<ATilemapLevelManager>(Manager);
-	}
-
-	return nullptr;
-}
-
-ASectionLevelManager* UDanceUtilsFunctionLibrary::GetSectionLevelManager(UWorld* WorldContextObject)
-{
-	TArray<AActor*> FoundManagers;
-	UGameplayStatics::GetAllActorsOfClass(WorldContextObject, ASectionLevelManager::StaticClass(), FoundManagers);
-
-	for (auto Manager : FoundManagers)
-	{
-		return Cast<ASectionLevelManager>(Manager);
-	}
-
-	return nullptr;
 }
 
 

@@ -2,12 +2,11 @@
 
 
 #include "CalibrationComponent.h"
-#include "SongTempoComponent.h"
 #include "ChoreoPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DanceUtilsFunctionLibrary.h"
-#include "TilemapLevelManager.h"
+#include "ComponentGetters.h"
 
 UCalibrationComponent::UCalibrationComponent()
 {
@@ -57,7 +56,6 @@ void UCalibrationComponent::ReceiveInput()
 	{
 		bIsCalibrated = true;
 		Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->CalibrationEnded.Broadcast();
-		auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
-		LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
+		ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
 	}
 }

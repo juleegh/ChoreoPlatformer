@@ -1,8 +1,7 @@
 #include "ClothingItem.h"
-#include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "InventoryComponent.h"
 
 AClothingItem::AClothingItem()
 {
@@ -23,7 +22,7 @@ void AClothingItem::OnEnterRange()
 	{
 		bFinished = true;
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->AddItem(this);
+		ComponentGetters::GetInventoryComponent(GetWorld())->AddItem(this);
 		RefreshState();
 	}
 }

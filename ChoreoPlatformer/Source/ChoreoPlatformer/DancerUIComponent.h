@@ -9,8 +9,6 @@
 #include "CommonActivatableWidget.h"
 #include "DancerUIComponent.generated.h"
 
-class UCommonActivatableWidgetStack;
-
 UCLASS()
 class CHOREOPLATFORMER_API UDancerStats : public UCommonActivatableWidget
 {
@@ -98,6 +96,19 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void CalibrationEnded();
 };
+
+UCLASS()
+class CHOREOPLATFORMER_API ULevelSelectionUI : public UCommonActivatableWidget
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable)
+	void ChangedLevelSelected(int index);
+	UFUNCTION(BlueprintCallable)
+	void LoadSelected();
+protected:
+	int LevelIndex = 1;
+}; 
 
 UCLASS()
 class CHOREOPLATFORMER_API ULevelCompleteUI : public UCommonActivatableWidget

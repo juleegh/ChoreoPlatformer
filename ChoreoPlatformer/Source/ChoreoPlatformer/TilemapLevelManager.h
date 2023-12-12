@@ -30,7 +30,6 @@ protected:
 	TArray<class AGridCell*> WorldTiles;
 
 public:
-	// Called every frame
 	void LoadMap(const FGameplayTag& Level);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;

@@ -2,20 +2,15 @@
 
 
 #include "ChoreoPlayerController.h"
-#include "SongTempoComponent.h"
 #include "CalibrationComponent.h"
-#include "DanceCharacter.h"
 #include "GridCell.h"
-#include "TilemapLevelManager.h"
-#include "LevelProgressComponent.h"
-#include "DancerHealthComponent.h"
-#include "DancerUIComponent.h"
-#include "DanceUtilsFunctionLibrary.h"
 #include "TimelineCreatorComponent.h"
+#include "DancerUIComponent.h"
 #include "ContextualElement.h"
-#include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -35,7 +30,7 @@ void AChoreoPlayerController::BeginPlay()
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI->GetGameUI(), &UGameUI::UpdateCountdown);
 
-	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld()))
+	if (!ComponentGetters::GetSectionLevelManager(GetWorld()))
 	{
 		DancerUI->GetGameUI()->LoadMenu();
 	}
@@ -59,11 +54,11 @@ void AChoreoPlayerController::Move(const FInputActionValue& Value)
 
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld()))
+	if (!ComponentGetters::GetSectionLevelManager(GetWorld()))
 	{
 		return;
 	}
-	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
+	if (!ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
 	{
 		return;
 	}
@@ -135,5 +130,5 @@ void AChoreoPlayerController::TriggerResultFeedback(float Result)
 {
 	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 	DancerUI->GetGameUI()->PromptTempoResult(Result);
-	UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+	ComponentGetters::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 }

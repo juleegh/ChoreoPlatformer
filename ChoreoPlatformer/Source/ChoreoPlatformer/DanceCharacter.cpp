@@ -3,11 +3,11 @@
 
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
-#include "SongTempoComponent.h"
 #include "TimelineCreatorComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ADanceCharacter::ADanceCharacter()
@@ -61,7 +61,7 @@ void ADanceCharacter::MoveTo(FVector position, float Duration)
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	GetController()->SetControlRotation(Rotation);
-	MoveTimeline->MoveToPosition(position, Duration * UDanceUtilsFunctionLibrary::GetSongTempoComponent(this)->GetFrequency() * 0.95f);
+	MoveTimeline->MoveToPosition(position, Duration * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
 }
 
 void ADanceCharacter::StopMovement()

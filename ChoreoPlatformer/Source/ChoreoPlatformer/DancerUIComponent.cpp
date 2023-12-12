@@ -1,24 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DancerUIComponent.h"
-#include "DancerHealthComponent.h"
 #include "ChoreoPlayerController.h"
-#include "InventoryComponent.h"
-#include "SongTempoComponent.h"
-#include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-#include "TilemapLevelManager.h"
 
 const FGameplayTag UGameUI::LevelSelection = FGameplayTag::RequestGameplayTag("GameUI.LevelSelection");
 const FGameplayTag UGameUI::GameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
 
 UDancerUIComponent::UDancerUIComponent()
 {
-    static ConstructorHelpers::FClassFinder<UCommonActivatableWidget> DanceWidget(TEXT("/Game/GameScreen/C_GameScreen"));
-    if (DanceWidget.Succeeded())
+    static ConstructorHelpers::FClassFinder<UCommonActivatableWidget> DanceWidgetClass(TEXT("/Game/Widgets/C_GameScreen"));
+    if (DanceWidgetClass.Succeeded())
     {
-        GameUIClass = DanceWidget.Class;
+        GameUIClass = DanceWidgetClass.Class;
     }
 
     PrimaryComponentTick.bCanEverTick = false;
@@ -63,17 +59,24 @@ void UGameUI::PromptTempoResult(float Distance)
     }
 }
 
+void ULevelSelectionUI::ChangedLevelSelected(int index)
+{
+    LevelIndex = index;
+}
+
+void ULevelSelectionUI::LoadSelected()
+{
+
+}
+
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
 {
-    return UDanceUtilsFunctionLibrary::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(Accuracy);
+    return ComponentGetters::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(Accuracy);
 }
 
 void ULevelCompleteUI::GoToNextSection()
 {
-    auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
-    LevelEvents->ActivateTrigger(LevelEndTrigger);
-
-    auto SectionManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
-    SectionManager->NextSectionStart();
+    ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(LevelEndTrigger);
+    ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
 }
 

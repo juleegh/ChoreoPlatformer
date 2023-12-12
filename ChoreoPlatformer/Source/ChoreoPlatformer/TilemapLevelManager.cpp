@@ -11,11 +11,9 @@
 #include "PaperTileLayer.h"
 #include "PaperTileSet.h"
 #include "GameplayTagContainer.h"
-#include "SongTempoComponent.h"
-#include "InventoryComponent.h"
-#include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
 #include "Components/BoxComponent.h"
+#include "ComponentGetters.h"
 
 void ATilemapLevelManager::BeginPlay()
 {
@@ -114,7 +112,7 @@ void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGam
 void ASectionLevelManager::Initialize()
 {
 	CurrentSection = StartSection;
-	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(CurrentSection);
+	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(CurrentSection);
 
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
@@ -134,7 +132,7 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 	CurrentSection = NextSection->GetSectionIdentifier();
 	CurrentSectionStart = NextSection;
 
-	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent()->ActivateTrigger(SectionEndTrigger);
+	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(SectionEndTrigger);
 	bIsPlaying = false;
 }
 
@@ -143,8 +141,8 @@ void ASectionLevelManager::NextSectionStart()
 	if (CurrentSection.IsValid())
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
-		UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
-		UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->ClearItemsEndOfLevel();
+		ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+		ComponentGetters::GetInventoryComponent(GetWorld())->ClearItemsEndOfLevel();
 		bIsPlaying = true;
 	}
 }
@@ -200,7 +198,7 @@ void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)
 {
 	if (!Countdowns.Contains(TriggerTag))
 	{
-		UDanceUtilsFunctionLibrary::GetSongTempoComponent(GetOwner())->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
+		ComponentGetters::GetSongTempoComponent(GetWorld())->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
 	}
 }
 
@@ -218,7 +216,7 @@ void ULevelEventsComponent::HandleSectionEvent(FGameplayTag TriggerTag)
 				continue;
 			}
 
-			UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CurrentSectionEnd(LevelSection);
+			ComponentGetters::GetSectionLevelManager(GetWorld())->CurrentSectionEnd(LevelSection);
 			return;
 		}
 	}
@@ -241,8 +239,7 @@ void AEventTrigger::BeginPlay()
 
 void AEventTrigger::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto LevelEvents = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GetEventsComponent();
-	LevelEvents->ActivateTrigger(ActorTrigger);
+	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(ActorTrigger);
 }
 
 

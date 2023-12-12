@@ -1,9 +1,7 @@
 #include "InventoryComponent.h"
-#include "DanceUtilsFunctionLibrary.h"
 #include "Engine/DataTable.h"
-#include "DanceCharacter.h"
-#include "DancerHealthComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "ComponentGetters.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -24,7 +22,7 @@ void UInventoryComponent::AddItem(AClothingItem* Item)
 {
 	Outfit.Add(Item);
 	InventoryChanged.Broadcast();
-	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(UDanceUtilsFunctionLibrary::GetDanceCharacter(GetOwner())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
+	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(ComponentGetters::GetDanceCharacter(GetWorld())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
 	Item->AttachToComponent(SkeletalMesh, TransformRules, GetBodySection(Item->GetItemType()));

@@ -3,10 +3,8 @@
 
 #include "GridElement.h"
 #include "Components/BoxComponent.h"
-#include "LevelProgressComponent.h"
 #include "ChoreoPlayerController.h"
-#include "DancerHealthComponent.h"
-#include "DanceCharacter.h"
+#include "ComponentGetters.h"
 
 AGridElement::AGridElement()
 {
@@ -44,13 +42,13 @@ void AGridElement::OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, A
 
 void ACheckpoint::OnEnterRange()
 {
-	DanceCharacter->GetChoreoController()->GetLevelProgressComponent()->ToggleCheckpoint(this);
+	ComponentGetters::GetLevelProgressComponent(GetWorld())->ToggleCheckpoint(this);
 	CheckpointReached();
 }
 
 void AMine::OnEnterRange()
 {
-	DanceCharacter->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+	ComponentGetters::GetDancerHealthComponent(GetWorld())->TakeHit();
 	Destroy();
 }
 

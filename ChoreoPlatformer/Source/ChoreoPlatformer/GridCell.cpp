@@ -3,18 +3,16 @@
 
 #include "GridCell.h"
 #include "Kismet/GameplayStatics.h"
-#include "SongTempoComponent.h"
 #include "ChoreoPlayerController.h"
-#include "SongTempoComponent.h"
 #include "Paper2D/Classes/PaperSpriteComponent.h"
 #include "Paper2D/Classes/PaperFlipbookComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimelineCreatorComponent.h"
+#include "ComponentGetters.h"
 
-// Sets default values
 AGridCell::AGridCell()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Base = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base"));
@@ -44,8 +42,7 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 void AGridCell::BeginPlay()
 {
 	Super::BeginPlay();
-	auto PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
-	SongTempo = PlayerController->GetSongTempoComponent();
+	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
 	ColorTimeline->Initialize();
 	ColorTimeline->AddMesh(HitBox);
 }

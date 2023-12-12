@@ -3,9 +3,8 @@
 
 #include "DancerHealthComponent.h"
 #include "ChoreoPlayerController.h"
-#include "LevelProgressComponent.h"
-#include "InventoryComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 
 UDancerHealthComponent::UDancerHealthComponent()
 {
@@ -51,14 +50,14 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	{
 		return;
 	}
-	if (!UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->LoseHealthItem())
+	if (!ComponentGetters::GetInventoryComponent(GetWorld())->LoseHealthItem())
 	{
 		Restart();
 		HealthChanged.Broadcast(false, false, true);
 	}
 	else
 	{
-		HealthChanged.Broadcast(false, UDanceUtilsFunctionLibrary::GetInventoryComponent(GetOwner())->HasHealthItem(), false);
+		HealthChanged.Broadcast(false, ComponentGetters::GetInventoryComponent(GetWorld())->HasHealthItem(), false);
 	}
 }
 

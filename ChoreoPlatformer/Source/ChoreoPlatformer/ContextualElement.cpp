@@ -1,11 +1,8 @@
 #include "ContextualElement.h"
 #include "Components/BoxComponent.h"
-#include "LevelProgressComponent.h"
 #include "ChoreoPlayerController.h"
-#include "DancerHealthComponent.h"
-#include "InventoryComponent.h"
-#include "TilemapLevelManager.h"
-#include "DanceCharacter.h"
+#include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 
 AContextualElement::AContextualElement()
 {
@@ -71,7 +68,7 @@ void ALever::TriggerInteraction()
 
 void AItemObstacle::TriggerInteraction()
 {
-	//if (UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->HasItem(RequiredItem) && !bFinished)
+	//if (ComponentGetters::GetInventoryComponent(GetWorld)->HasItem(RequiredItem) && !bFinished)
 	{
 		bFinished = true;
 		RemoveObstacle();
@@ -80,7 +77,7 @@ void AItemObstacle::TriggerInteraction()
 
 void AItemObstacle::RemoveObstacle()
 {
-	//UDanceUtilsFunctionLibrary::GetInventoryComponent(this)->RemoveItem(RequiredItem);
+	//ComponentGetters::GetInventoryComponent(GetWorld())->RemoveItem(RequiredItem);
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ToggleHighlight(false);
 	PostObstacleActions();
@@ -89,6 +86,6 @@ void AItemObstacle::RemoveObstacle()
 
 void ATileHole::PostObstacleActions()
 {
-	UDanceUtilsFunctionLibrary::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), ETempoTile::Black, FGameplayTag::EmptyTag);
+	ComponentGetters::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), ETempoTile::Black, FGameplayTag::EmptyTag);
 }
 

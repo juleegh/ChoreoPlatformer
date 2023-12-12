@@ -2,17 +2,14 @@
 
 #include "Enemy.h"
 #include "ChoreoPlayerController.h"
-#include "DanceCharacter.h"
-#include "DancerHealthComponent.h"
-#include "SongTempoComponent.h"
 #include "Components/SplineComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimelineCreatorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "TilemapLevelManager.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "ComponentGetters.h"
 
 AEnemy::AEnemy()
 {
@@ -43,8 +40,8 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
-	SongTempo = UDanceUtilsFunctionLibrary::GetSongTempoComponent(this);
-	SectionLevelManager = UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld());
+	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
+	SectionLevelManager = ComponentGetters::GetSectionLevelManager(GetWorld());
 }
 
 void AEnemy::SetupSection()
@@ -92,7 +89,7 @@ void AEnemy::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActo
 		PlayerCharacter = character;
 		if (!MoveTimeline->IsRunning())
 		{
-			character->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+			ComponentGetters::GetDancerHealthComponent(GetWorld())->TakeHit();
 			PlayerCharacter = nullptr;
 		}
 	}
@@ -111,7 +108,7 @@ void AEnemy::DoTempoAction()
 {
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->GetChoreoController()->GetDancerHealthComponent()->TakeHit();
+		ComponentGetters::GetDancerHealthComponent(GetWorld())->TakeHit();
 	}
 }
 
@@ -161,7 +158,7 @@ void AWalkingEnemy::BeginPlay()
 void AWalkingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
-	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove())
+	if (!ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove())
 	{
 		return;
 	}
@@ -210,7 +207,7 @@ void ARotatingEnemy::BeginPlay()
 void ARotatingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
-	if (!UDanceUtilsFunctionLibrary::GetSectionLevelManager(GetWorld())->CanMove())
+	if (!ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove())
 	{
 		return;
 	}

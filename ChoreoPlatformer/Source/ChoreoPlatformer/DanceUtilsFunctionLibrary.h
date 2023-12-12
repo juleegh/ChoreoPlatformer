@@ -17,6 +17,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static float GetTargetTempo(ETempoTile TileType);
 	static FVector GetTransformedPosition(FVector Origin, FVector Direction);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static bool IsAdjacentToPlayer(class AActor* WorldContextActor, int TilesAway);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static ETempoAccuracy GetTempoResult(float Distance);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -32,18 +34,4 @@ public:
 	static FTileInfo CheckPosition(TArray<class AActor*> ToIgnore, FVector Start);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static TArray<AActor*> GetAdjacent(class AActor* ToIgnore, FVector Position, int Radius);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
-	static class ADanceCharacter* GetDanceCharacter(AActor* WorldContextActor);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
-	static bool IsAdjacentToPlayer(class AActor* WorldContextActor, int TilesAway);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
-	static class UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
-	static class UInventoryComponent* GetInventoryComponent(AActor* WorldContextActor);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
-	static class ASectionLevelManager* GetSectionLevelManager(UWorld* WorldContextObject);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextObject"))
-	static class ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject);
-	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
-	static class USongTempoComponent* GetSongTempoComponent(AActor* WorldContextActor);
 };
