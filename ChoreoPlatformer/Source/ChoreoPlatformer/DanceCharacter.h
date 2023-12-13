@@ -24,6 +24,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* MoveAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* PauseAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* CancelAction;

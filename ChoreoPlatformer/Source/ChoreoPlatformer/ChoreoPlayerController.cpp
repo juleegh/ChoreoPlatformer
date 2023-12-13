@@ -29,6 +29,11 @@ bool AChoreoPlayerController::InGame()
 	return ComponentGetters::GetSectionLevelManager(GetWorld()) != nullptr;
 }
 
+bool AChoreoPlayerController::IsPaused()
+{
+	return DancerUI->GetGameUI()->IsPaused();
+}
+
 void AChoreoPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -69,9 +74,14 @@ void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 	}
 }
 
+void AChoreoPlayerController::TogglePause()
+{
+	DancerUI->GetGameUI()->TogglePause();
+}
+
 void AChoreoPlayerController::Move(const FInputActionValue& Value)
 {
-	if (!InGame() || !ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
+	if (!InGame() || IsPaused() || !ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
 	{
 		return;
 	}
@@ -79,9 +89,19 @@ void AChoreoPlayerController::Move(const FInputActionValue& Value)
 	CheckMovement(Value.Get<FVector>());
 }
 
+void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)
+{
+	if (!InGame())
+	{
+		return;
+	}
+
+	TogglePause();
+}
+
 void AChoreoPlayerController::CheckMovement(FVector Direction)
 {
-	if (!Calibration->IsCalibrated() && !bBypassCalibration)
+	if (!Calibration->IsCalibrated())
 	{
 		Calibration->ReceiveInput();
 		Calibrating.Broadcast();
@@ -149,4 +169,21 @@ void AChoreoPlayerController::TriggerResultFeedback(float Result)
 	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 	DancerUI->GetGameUI()->PromptTempoResult(Result);
 	ComponentGetters::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+}
+
+void AChoreoPlayerController::TriggerCalibration()
+{
+	TogglePause();
+	Calibration->StartCalibration();
+	DancerUI->GetGameUI()->GoToGameScreen(UGameUI::CalibrationScreen);
+}
+
+void AChoreoPlayerController::FinishCalibration()
+{
+	if (!Calibration->IsCalibrated())
+	{
+		return;
+	}
+	CalibrationEnded.Broadcast();
+	DancerUI->GetGameUI()->CancelMenu();
 }

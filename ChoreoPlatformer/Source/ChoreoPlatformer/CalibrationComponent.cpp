@@ -13,6 +13,15 @@ UCalibrationComponent::UCalibrationComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UCalibrationComponent::StartCalibration()
+{
+	bIsCalibrated = false;
+	PostTempos = 0;
+	PostTempoMargin = 0;
+	Tries = 0;
+}
+
+
 bool UCalibrationComponent::IsCalibrated()
 {
 	return bIsCalibrated;
@@ -55,7 +64,6 @@ void UCalibrationComponent::ReceiveInput()
 	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) && Tries >= 8)
 	{
 		bIsCalibrated = true;
-		Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->CalibrationEnded.Broadcast();
-		ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
+		Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->FinishCalibration();
 	}
 }

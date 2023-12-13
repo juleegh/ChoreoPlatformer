@@ -42,8 +42,6 @@ protected:
 	bool bShouldTakeDamage = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassOutOfTempo = true;
-	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
-	bool bBypassCalibration = true;
 	UPROPERTY()
 	bool bIsDead = false;
 	UPROPERTY()
@@ -56,14 +54,23 @@ protected:
 	void TriggerResultFeedback(float Result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool InGame();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsPaused();
 
 public:
+	void PauseGame(const FInputActionValue& Value);
 	AChoreoPlayerController();
 	UPROPERTY(BlueprintAssignable)
 	FCalibrating Calibrating;
 	UPROPERTY(BlueprintAssignable)
 	FCalibrationEnded CalibrationEnded;
 	void Move(const FInputActionValue& Value);
+	UFUNCTION(BlueprintCallable)
+	void TogglePause();
+	UFUNCTION(BlueprintCallable)
 	void GoToLevel(const FGameplayTag Level);
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
+	UFUNCTION(BlueprintCallable)
+	void TriggerCalibration();
+	void FinishCalibration();
 };

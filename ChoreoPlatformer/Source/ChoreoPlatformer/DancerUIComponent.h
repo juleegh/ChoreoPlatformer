@@ -29,6 +29,8 @@ class CHOREOPLATFORMER_API UChoreoActivatableWidget : public UCommonActivatableW
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class UDancerUIComponent* GetDancerUIComponent();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	class AChoreoPlayerController* GetController();
 	UFUNCTION(BlueprintCallable)
 	void SetSelected(UChoreoButtonBase* NewSelected);
 protected:
@@ -56,6 +58,8 @@ public:
 	static const FGameplayTag GameStats;
 	static const FGameplayTag MainMenu;
 	static const FGameplayTag CollectablesScreen;
+	static const FGameplayTag Pause;
+	static const FGameplayTag CalibrationScreen;
 
 	UFUNCTION()
 	void UpdateCountdown(int TemposLeft);
@@ -75,9 +79,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GoToMenuScreen(const FGameplayTag MenuScreen);
 	UFUNCTION(BlueprintCallable)
+	void GoToGameScreen(const FGameplayTag GameScreen);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	class AChoreoPlayerController* GetController();
+	void TogglePause();
+	UFUNCTION(BlueprintCallable)
 	void ExitGame();
 
+	bool IsPaused() { return bIsPaused; }
+
 protected:
+	bool bIsPaused = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
 	TMap<FGameplayTag, TSubclassOf<UCommonActivatableWidget>> WidgetClasses;
 	UPROPERTY(BlueprintReadWrite)

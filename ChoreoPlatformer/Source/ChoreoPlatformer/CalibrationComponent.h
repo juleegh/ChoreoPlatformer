@@ -19,7 +19,7 @@ public:
 protected:
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
-	bool bIsCalibrated = false;
+	bool bIsCalibrated = true;
 	UPROPERTY()
 	float PostTempos = 0;
 	UPROPERTY()
@@ -31,4 +31,5 @@ protected:
 public:
 	bool IsCalibrated();
 	void ReceiveInput();
+	void StartCalibration();
 };

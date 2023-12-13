@@ -11,6 +11,8 @@ const FGameplayTag UGameUI::MainMenu = FGameplayTag::RequestGameplayTag("GameUI.
 const FGameplayTag UGameUI::LevelSelection = FGameplayTag::RequestGameplayTag("GameUI.LevelSelection");
 const FGameplayTag UGameUI::GameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
 const FGameplayTag UGameUI::CollectablesScreen = FGameplayTag::RequestGameplayTag("GameUI.CollectablesScreen");
+const FGameplayTag UGameUI::Pause = FGameplayTag::RequestGameplayTag("GameUI.Pause");
+const FGameplayTag UGameUI::CalibrationScreen = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -26,6 +28,16 @@ UDancerUIComponent::UDancerUIComponent()
 UDancerUIComponent* UChoreoActivatableWidget::GetDancerUIComponent()
 {
     return ComponentGetters::GetDancerUIComponent(GetWorld());
+}
+
+AChoreoPlayerController* UChoreoActivatableWidget::GetController()
+{
+    return Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
+}
+
+AChoreoPlayerController* UGameUI::GetController()
+{
+    return Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UChoreoActivatableWidget::SetSelected(UChoreoButtonBase* NewSelected)
@@ -64,6 +76,7 @@ void UDancerUIComponent::Cancel(const FInputActionValue& Value)
 
 void UGameUI::LoadMenu()
 {
+    bIsPaused = false;
     ClearGameWidgets();
     PushMenuWidget(WidgetClasses[MainMenu], MainMenu);
 }
@@ -71,12 +84,31 @@ void UGameUI::LoadMenu()
 void UGameUI::LoadGame()
 {
     ClearMenuWidgets();
+    bIsPaused = false;
     PushGameWidget(WidgetClasses[GameStats], GameStats);
 }
 
 void UGameUI::GoToMenuScreen(const FGameplayTag MenuScreen)
 {
     PushMenuWidget(WidgetClasses[MenuScreen], MenuScreen);
+}
+
+void UGameUI::GoToGameScreen(const FGameplayTag GameScreen)
+{
+    PushGameWidget(WidgetClasses[GameScreen], GameScreen);
+}
+
+void UGameUI::TogglePause()
+{
+    bIsPaused = !bIsPaused;
+    if (bIsPaused)
+    {
+        PushGameWidget(WidgetClasses[Pause], Pause);
+    }
+    else
+    {
+        RemoveGameWidget(GameWidgets[Pause]);
+    }
 }
 
 void UGameUI::ExitGame()
