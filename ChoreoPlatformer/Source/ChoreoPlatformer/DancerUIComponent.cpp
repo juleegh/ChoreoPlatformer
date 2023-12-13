@@ -13,6 +13,7 @@ const FGameplayTag UGameUI::GameStats = FGameplayTag::RequestGameplayTag("GameUI
 const FGameplayTag UGameUI::CollectablesScreen = FGameplayTag::RequestGameplayTag("GameUI.CollectablesScreen");
 const FGameplayTag UGameUI::Pause = FGameplayTag::RequestGameplayTag("GameUI.Pause");
 const FGameplayTag UGameUI::CalibrationScreen = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
+const FGameplayTag UGameUI::EndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -90,12 +91,26 @@ void UGameUI::LoadGame()
 
 void UGameUI::GoToMenuScreen(const FGameplayTag MenuScreen)
 {
-    PushMenuWidget(WidgetClasses[MenuScreen], MenuScreen);
+    if (WidgetClasses.Contains(MenuScreen))
+    {
+        PushMenuWidget(WidgetClasses[MenuScreen], MenuScreen);
+    }
 }
 
 void UGameUI::GoToGameScreen(const FGameplayTag GameScreen)
 {
-    PushGameWidget(WidgetClasses[GameScreen], GameScreen);
+    if (WidgetClasses.Contains(GameScreen))
+    {
+        PushGameWidget(WidgetClasses[GameScreen], GameScreen);
+    }
+}
+
+void UGameUI::RemoveGameWidget(FGameplayTag WidgetTag)
+{
+    if (GameWidgets.Contains(WidgetTag))
+    {
+        RemoveGameWidget(GameWidgets[WidgetTag]);
+    }
 }
 
 void UGameUI::TogglePause()

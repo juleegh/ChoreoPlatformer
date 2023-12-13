@@ -133,6 +133,7 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 	CurrentSectionStart = NextSection;
 
 	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(SectionEndTrigger);
+	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(UGameUI::EndOfLevel);
 	bIsPlaying = false;
 }
 
@@ -199,20 +200,11 @@ void ULevelEventsComponent::HandleWidgetEvent(FGameplayTag TriggerTag)
 	auto EventInfo = LevelEvents->WidgetEvents[TriggerTag];
 	if (EventInfo.bSpawnsWidget)
 	{
-		if (!Widgets.Contains(EventInfo.LevelWidget))
-		{
-			Widgets.Add(EventInfo.LevelWidget, CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), EventInfo.LevelWidget));
-			Widgets[EventInfo.LevelWidget]->AddToViewport();
-			Widgets[EventInfo.LevelWidget]->SetVisibility(ESlateVisibility::Visible);
-		}
+		ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(TriggerTag);
 	}
 	else
 	{
-		if (Widgets.Contains(EventInfo.LevelWidget))
-		{
-			Widgets[EventInfo.LevelWidget]->RemoveFromViewport();
-			Widgets.Remove(EventInfo.LevelWidget);
-		}
+		ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveGameWidget(TriggerTag);
 	}
 }
 

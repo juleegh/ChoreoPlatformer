@@ -60,6 +60,7 @@ public:
 	static const FGameplayTag CollectablesScreen;
 	static const FGameplayTag Pause;
 	static const FGameplayTag CalibrationScreen;
+	static const FGameplayTag EndOfLevel;
 
 	UFUNCTION()
 	void UpdateCountdown(int TemposLeft);
@@ -70,9 +71,9 @@ public:
 	void LoadMenu();
 	UFUNCTION(BlueprintCallable)
 	void LoadGame();
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CancelMenu();
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ConfirmMenu();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ChangedCurrent(UChoreoButtonBase* SelectedButton);
@@ -85,7 +86,7 @@ public:
 	void TogglePause();
 	UFUNCTION(BlueprintCallable)
 	void ExitGame();
-
+	void RemoveGameWidget(FGameplayTag WidgetTag);
 	bool IsPaused() { return bIsPaused; }
 
 protected:

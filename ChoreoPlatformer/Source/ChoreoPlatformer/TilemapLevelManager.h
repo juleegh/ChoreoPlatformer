@@ -88,8 +88,6 @@ protected:
 	UPROPERTY()
 	UEventsDataAsset* LevelEvents;
 	UPROPERTY()
-	TMap<TSubclassOf<UUserWidget>, UUserWidget*> Widgets;
-	UPROPERTY()
 	TMap<FGameplayTag, int> Countdowns;
 
 	void HandleWidgetEvent(FGameplayTag TriggerTag);
