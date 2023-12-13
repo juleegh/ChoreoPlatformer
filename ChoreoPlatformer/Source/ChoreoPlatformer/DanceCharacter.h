@@ -23,6 +23,10 @@ protected:
 	class UInputMappingContext* ChoreoIMC;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* MoveAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* ConfirmAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* CancelAction;
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;
 	virtual void BeginPlay() override;

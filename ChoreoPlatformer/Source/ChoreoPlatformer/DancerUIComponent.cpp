@@ -3,11 +3,14 @@
 #include "DancerUIComponent.h"
 #include "ChoreoPlayerController.h"
 #include "ComponentGetters.h"
+#include "Input/CommonUIInputTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
+const FGameplayTag UGameUI::MainMenu = FGameplayTag::RequestGameplayTag("GameUI.MainMenu");
 const FGameplayTag UGameUI::LevelSelection = FGameplayTag::RequestGameplayTag("GameUI.LevelSelection");
 const FGameplayTag UGameUI::GameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
+const FGameplayTag UGameUI::CollectablesScreen = FGameplayTag::RequestGameplayTag("GameUI.CollectablesScreen");
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -20,6 +23,26 @@ UDancerUIComponent::UDancerUIComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+UDancerUIComponent* UChoreoActivatableWidget::GetDancerUIComponent()
+{
+    return ComponentGetters::GetDancerUIComponent(GetWorld());
+}
+
+void UChoreoActivatableWidget::SetSelected(UChoreoButtonBase* NewSelected)
+{
+    SelectedButton = NewSelected;
+}
+
+UDancerUIComponent* UChoreoButtonBase::GetDancerUIComponent()
+{
+    return ComponentGetters::GetDancerUIComponent(GetWorld());
+}
+
+void UChoreoButtonBase::OnClicked()
+{
+    OnButtonBaseClicked.Broadcast(this);
+}
+
 void UDancerUIComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -29,16 +52,36 @@ void UDancerUIComponent::BeginPlay()
     GameUI->SetVisibility(ESlateVisibility::Visible);
 }
 
+void UDancerUIComponent::Confirm(const FInputActionValue& Value)
+{
+    GameUI->ConfirmMenu();
+}
+
+void UDancerUIComponent::Cancel(const FInputActionValue& Value)
+{
+    GameUI->CancelMenu();
+}
+
 void UGameUI::LoadMenu()
 {
     ClearGameWidgets();
-    PushMenuWidget(LevelSelectionClass, LevelSelection);
+    PushMenuWidget(WidgetClasses[MainMenu], MainMenu);
 }
 
 void UGameUI::LoadGame()
 {
     ClearMenuWidgets();
-    PushGameWidget(StatsClass, GameStats);
+    PushGameWidget(WidgetClasses[GameStats], GameStats);
+}
+
+void UGameUI::GoToMenuScreen(const FGameplayTag MenuScreen)
+{
+    PushMenuWidget(WidgetClasses[MenuScreen], MenuScreen);
+}
+
+void UGameUI::ExitGame()
+{
+    FPlatformMisc::RequestExit(false);
 }
 
 void UGameUI::UpdateCountdown(int TemposLeft)

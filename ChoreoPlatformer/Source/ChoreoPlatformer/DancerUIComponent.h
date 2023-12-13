@@ -5,19 +5,46 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "Engine/DataTable.h"
 #include "CommonUserWidget.h"
 #include "CommonActivatableWidget.h"
+#include "CommonButtonBase.h"
 #include "DancerUIComponent.generated.h"
 
 UCLASS()
-class CHOREOPLATFORMER_API UDancerStats : public UCommonActivatableWidget
+class CHOREOPLATFORMER_API UChoreoButtonBase : public UCommonButtonBase
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+		class UDancerUIComponent* GetDancerUIComponent();
+	UFUNCTION(BlueprintCallable)
+	void OnClicked();
+}; 
+
+UCLASS()
+class CHOREOPLATFORMER_API UChoreoActivatableWidget : public UCommonActivatableWidget
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	class UDancerUIComponent* GetDancerUIComponent();
+	UFUNCTION(BlueprintCallable)
+	void SetSelected(UChoreoButtonBase* NewSelected);
+protected:
+	UPROPERTY(BlueprintReadWrite)
+	class UChoreoButtonBase* SelectedButton;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UDancerStats : public UChoreoActivatableWidget
 {
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-		void UpdateCountdown(int TemposLeft);
+	void UpdateCountdown(int TemposLeft);
 	UFUNCTION(BlueprintImplementableEvent)
-		void PromptTempoResult(float Distance);
+	void PromptTempoResult(float Distance);
 };
 
 UCLASS()
@@ -27,26 +54,32 @@ class CHOREOPLATFORMER_API UGameUI : public UCommonActivatableWidget
 public:
 	static const FGameplayTag LevelSelection;
 	static const FGameplayTag GameStats;
+	static const FGameplayTag MainMenu;
+	static const FGameplayTag CollectablesScreen;
 
 	UFUNCTION()
-		void UpdateCountdown(int TemposLeft);
+	void UpdateCountdown(int TemposLeft);
 	UFUNCTION()
-		void PromptTempoResult(float Distance);
+	void PromptTempoResult(float Distance);
 
 	UFUNCTION(BlueprintCallable)
 	void LoadMenu();
 	UFUNCTION(BlueprintCallable)
 	void LoadGame();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CancelMenu();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ConfirmMenu();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ChangedCurrent(UChoreoButtonBase* SelectedButton);
+	UFUNCTION(BlueprintCallable)
+	void GoToMenuScreen(const FGameplayTag MenuScreen);
+	UFUNCTION(BlueprintCallable)
+	void ExitGame();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
-	TSubclassOf<UCommonActivatableWidget> StatsClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
-	TSubclassOf<UCommonActivatableWidget> CalibrationClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
-	TSubclassOf<UCommonActivatableWidget> LevelSelectionClass;
-	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
-	TSubclassOf<UCommonActivatableWidget> LevelCompleteClass;
+	TMap<FGameplayTag, TSubclassOf<UCommonActivatableWidget>> WidgetClasses;
 	UPROPERTY(BlueprintReadWrite)
 	TMap<FGameplayTag, UCommonActivatableWidget*> GameWidgets;
 	UPROPERTY(BlueprintReadWrite)
@@ -57,9 +90,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PushGameWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass, const FGameplayTag WidgetType);
 	UFUNCTION(BlueprintImplementableEvent)
-	void RemoveMenuWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass);
+	void RemoveMenuWidget(UCommonActivatableWidget* WidgetClass);
 	UFUNCTION(BlueprintImplementableEvent)
-	void RemoveGameWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass);
+	void RemoveGameWidget(UCommonActivatableWidget* WidgetClass);
 	UFUNCTION(BlueprintImplementableEvent)
 	void ClearMenuWidgets();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -76,7 +109,8 @@ public:
 	UDancerUIComponent();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UGameUI* GetGameUI() { return GameUI; }
-
+	void Confirm(const FInputActionValue& Value);
+	void Cancel(const FInputActionValue& Value);
 protected:
 	UPROPERTY()
 	TSubclassOf<UCommonActivatableWidget> GameUIClass;
@@ -87,7 +121,7 @@ protected:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API UCalibrationScreen : public UCommonActivatableWidget
+class CHOREOPLATFORMER_API UCalibrationScreen : public UChoreoActivatableWidget
 {
 	GENERATED_BODY()
 public:
@@ -98,7 +132,7 @@ public:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API ULevelSelectionUI : public UCommonActivatableWidget
+class CHOREOPLATFORMER_API ULevelSelectionUI : public UChoreoActivatableWidget
 {
 	GENERATED_BODY()
 public:
@@ -111,7 +145,7 @@ protected:
 }; 
 
 UCLASS()
-class CHOREOPLATFORMER_API ULevelCompleteUI : public UCommonActivatableWidget
+class CHOREOPLATFORMER_API ULevelCompleteUI : public UChoreoActivatableWidget
 {
 	GENERATED_BODY()
 public:

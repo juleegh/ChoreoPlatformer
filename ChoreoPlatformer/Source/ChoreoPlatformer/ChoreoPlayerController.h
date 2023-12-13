@@ -35,6 +35,7 @@ protected:
 	class ULevelEventsComponent* LevelEvents;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	int IntroductionTempos = 4;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")

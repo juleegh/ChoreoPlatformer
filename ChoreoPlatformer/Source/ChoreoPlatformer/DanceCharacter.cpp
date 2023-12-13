@@ -35,9 +35,12 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	auto controller = GetChoreoController();
+	auto UIcontroller = ComponentGetters::GetDancerUIComponent(GetWorld());
 	if (auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, controller, &AChoreoPlayerController::Move);
+		EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Confirm);
+		EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Cancel);
 	}
 
 }
