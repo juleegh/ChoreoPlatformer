@@ -29,7 +29,14 @@ void UChoreoGameInstance::BeginLoadingScreen(const FString& InMapName)
 
 void UChoreoGameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
 {
-    ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->LoadGame();
-    ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(CurrentLevel);
+    if (!InLoadedWorld->GetName().Equals("GameIntro"))
+    {
+        ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->LoadGame();
+        ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(CurrentLevel);
+    }
+    else
+    {
+        ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->LoadMenu();
+    }
 }
 

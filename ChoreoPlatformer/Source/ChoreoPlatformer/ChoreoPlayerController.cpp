@@ -60,9 +60,12 @@ void AChoreoPlayerController::BeginPlay()
 
 void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 {
-	UWorld* World = GetWorld();
-
-	if (World)
+	if (InGame())
+	{
+		DancerUI->GetGameUI()->CancelMenu();
+		ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(Level);
+	}
+	else if (UWorld* World = GetWorld())
 	{
 		FString LevelName = "C1_AncientCity";
 		if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
@@ -70,6 +73,20 @@ void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 			GameInstance->CurrentLevel = Level;
 		}
 
+		UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
+	}
+}
+
+void AChoreoPlayerController::GoBackToMainMenu()
+{
+	if (!InGame())
+	{
+		return;
+	}
+	
+	if (UWorld* World = GetWorld())
+	{
+		FString LevelName = "GameIntro";
 		UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
 	}
 }

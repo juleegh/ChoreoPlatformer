@@ -68,6 +68,8 @@ public:
 	void TogglePause();
 	UFUNCTION(BlueprintCallable)
 	void GoToLevel(const FGameplayTag Level);
+	UFUNCTION(BlueprintCallable)
+	void GoBackToMainMenu();
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
 	UFUNCTION(BlueprintCallable)
 	void TriggerCalibration();
