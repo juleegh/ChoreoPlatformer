@@ -22,6 +22,8 @@ protected:
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()
+	class AChoreoPlayerController* PlayerController;
+	UPROPERTY()
 	class ADanceCharacter* PlayerCharacter;
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;

@@ -58,7 +58,6 @@ protected:
 	FGameplayTag CurrentSection;
 	UPROPERTY()
 	class ASectionStart* CurrentSectionStart;
-	bool bIsPlaying;
 
 public:
 	void Initialize();
@@ -72,7 +71,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void NextSectionStart();
 	void StartFromSection(const FGameplayTag SectionIdentifier);
-	bool CanMove() { return bIsPlaying; }
 };
 
 UCLASS(ClassGroup = (Custom))

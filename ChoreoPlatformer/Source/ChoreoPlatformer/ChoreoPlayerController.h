@@ -54,12 +54,11 @@ protected:
 	void TriggerResultFeedback(float Result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool InGame();
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsPaused();
 
 public:
-	void PauseGame(const FInputActionValue& Value);
 	AChoreoPlayerController();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsPaused();
 	UPROPERTY(BlueprintAssignable)
 	FCalibrating Calibrating;
 	UPROPERTY(BlueprintAssignable)
@@ -72,5 +71,6 @@ public:
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
 	UFUNCTION(BlueprintCallable)
 	void TriggerCalibration();
+	void PauseGame(const FInputActionValue& Value);
 	void FinishCalibration();
 };

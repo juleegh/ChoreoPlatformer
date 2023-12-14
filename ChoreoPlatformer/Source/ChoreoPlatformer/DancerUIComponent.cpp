@@ -77,15 +77,15 @@ void UDancerUIComponent::Cancel(const FInputActionValue& Value)
 
 void UGameUI::LoadMenu()
 {
-    bIsPaused = false;
     ClearGameWidgets();
+    GameWidgets.Empty();
     PushMenuWidget(WidgetClasses[MainMenu], MainMenu);
 }
 
 void UGameUI::LoadGame()
 {
     ClearMenuWidgets();
-    bIsPaused = false;
+    MenuWidgets.Empty();
     PushGameWidget(WidgetClasses[GameStats], GameStats);
 }
 
@@ -105,25 +105,23 @@ void UGameUI::GoToGameScreen(const FGameplayTag GameScreen)
     }
 }
 
-void UGameUI::RemoveGameWidget(FGameplayTag WidgetTag)
+void UGameUI::RemoveWidgetFromPile(const FGameplayTag& Identifier)
 {
-    if (GameWidgets.Contains(WidgetTag))
+    if (GameWidgets.Contains(Identifier))
     {
-        RemoveGameWidget(GameWidgets[WidgetTag]);
+        RemoveWidget(GameWidgets[Identifier]);
+        GameWidgets[Identifier] = nullptr;
+    }
+    if (MenuWidgets.Contains(Identifier))
+    {
+        RemoveWidget(MenuWidgets[Identifier]);
+        MenuWidgets[Identifier] = nullptr;
     }
 }
 
-void UGameUI::TogglePause()
+bool UGameUI::IsScreenActive(const FGameplayTag& Screen)
 {
-    bIsPaused = !bIsPaused;
-    if (bIsPaused)
-    {
-        PushGameWidget(WidgetClasses[Pause], Pause);
-    }
-    else
-    {
-        RemoveGameWidget(GameWidgets[Pause]);
-    }
+    return GameWidgets.Contains(Screen) && IsValid(GameWidgets[Screen]);
 }
 
 void UGameUI::ExitGame()
@@ -169,5 +167,6 @@ void ULevelCompleteUI::GoToNextSection()
 {
     ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(LevelEndTrigger);
     ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
+    ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(UGameUI::EndOfLevel);
 }
 

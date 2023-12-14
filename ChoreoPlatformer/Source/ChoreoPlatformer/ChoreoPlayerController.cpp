@@ -31,7 +31,7 @@ bool AChoreoPlayerController::InGame()
 
 bool AChoreoPlayerController::IsPaused()
 {
-	return DancerUI->GetGameUI()->IsPaused();
+	return DancerUI->GetGameUI()->IsScreenActive(UGameUI::Pause);
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -76,22 +76,29 @@ void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 
 void AChoreoPlayerController::TogglePause()
 {
-	DancerUI->GetGameUI()->TogglePause();
+	if (!IsPaused())
+	{
+		DancerUI->GetGameUI()->GoToGameScreen(UGameUI::Pause);
+	}
+	else
+	{
+		DancerUI->GetGameUI()->CancelMenu();
+	}
 }
 
 void AChoreoPlayerController::Move(const FInputActionValue& Value)
 {
-	if (!InGame() || IsPaused() || !ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove() || bIsDead)
+	if (!InGame() || IsPaused() || DancerUI->GetGameUI()->IsScreenActive(UGameUI::EndOfLevel) || bIsDead)
 	{
 		return;
 	}
 
 	CheckMovement(Value.Get<FVector>());
 }
-
+	
 void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)
 {
-	if (!InGame())
+	if (!InGame() || DancerUI->GetGameUI()->IsScreenActive(UGameUI::EndOfLevel))
 	{
 		return;
 	}

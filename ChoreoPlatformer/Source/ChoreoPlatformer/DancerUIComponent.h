@@ -17,7 +17,7 @@ class CHOREOPLATFORMER_API UChoreoButtonBase : public UCommonButtonBase
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-		class UDancerUIComponent* GetDancerUIComponent();
+	class UDancerUIComponent* GetDancerUIComponent();
 	UFUNCTION(BlueprintCallable)
 	void OnClicked();
 }; 
@@ -33,6 +33,8 @@ public:
 	class AChoreoPlayerController* GetController();
 	UFUNCTION(BlueprintCallable)
 	void SetSelected(UChoreoButtonBase* NewSelected);
+	UPROPERTY(BlueprintReadWrite)
+	FGameplayTag Identifier;
 protected:
 	UPROPERTY(BlueprintReadWrite)
 	class UChoreoButtonBase* SelectedButton;
@@ -83,29 +85,26 @@ public:
 	void GoToGameScreen(const FGameplayTag GameScreen);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	class AChoreoPlayerController* GetController();
-	void TogglePause();
 	UFUNCTION(BlueprintCallable)
 	void ExitGame();
-	void RemoveGameWidget(FGameplayTag WidgetTag);
-	bool IsPaused() { return bIsPaused; }
+	bool IsScreenActive(const FGameplayTag& Screen);
+	UFUNCTION(BlueprintCallable)
+	void RemoveWidgetFromPile(const FGameplayTag& Identifier);
 
 protected:
-	bool bIsPaused = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
 	TMap<FGameplayTag, TSubclassOf<UCommonActivatableWidget>> WidgetClasses;
 	UPROPERTY(BlueprintReadWrite)
-	TMap<FGameplayTag, UCommonActivatableWidget*> GameWidgets;
+	TMap<FGameplayTag, UChoreoActivatableWidget*> GameWidgets;
 	UPROPERTY(BlueprintReadWrite)
-	TMap<FGameplayTag, UCommonActivatableWidget*> MenuWidgets;
+	TMap<FGameplayTag, UChoreoActivatableWidget*> MenuWidgets;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PushMenuWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass, const FGameplayTag WidgetType);
 	UFUNCTION(BlueprintImplementableEvent)
 	void PushGameWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass, const FGameplayTag WidgetType);
 	UFUNCTION(BlueprintImplementableEvent)
-	void RemoveMenuWidget(UCommonActivatableWidget* WidgetClass);
-	UFUNCTION(BlueprintImplementableEvent)
-	void RemoveGameWidget(UCommonActivatableWidget* WidgetClass);
+	void RemoveWidget(UChoreoActivatableWidget* WidgetClass);
 	UFUNCTION(BlueprintImplementableEvent)
 	void ClearMenuWidgets();
 	UFUNCTION(BlueprintImplementableEvent)

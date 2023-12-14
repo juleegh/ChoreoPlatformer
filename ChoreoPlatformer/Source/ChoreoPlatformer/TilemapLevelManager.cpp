@@ -120,7 +120,6 @@ void ASectionLevelManager::Initialize()
 
 	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	SongTempo->StartTempoCounting();
-	bIsPlaying = true;
 }
 
 void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
@@ -134,7 +133,6 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 
 	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(SectionEndTrigger);
 	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(UGameUI::EndOfLevel);
-	bIsPlaying = false;
 }
 
 void ASectionLevelManager::NextSectionStart()
@@ -144,7 +142,6 @@ void ASectionLevelManager::NextSectionStart()
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
 		ComponentGetters::GetInventoryComponent(GetWorld())->ClearItemsEndOfLevel();
-		bIsPlaying = true;
 	}
 }
 
@@ -197,6 +194,7 @@ void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 
 void ULevelEventsComponent::HandleWidgetEvent(FGameplayTag TriggerTag)
 {
+	/*
 	auto EventInfo = LevelEvents->WidgetEvents[TriggerTag];
 	if (EventInfo.bSpawnsWidget)
 	{
@@ -206,6 +204,7 @@ void ULevelEventsComponent::HandleWidgetEvent(FGameplayTag TriggerTag)
 	{
 		ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveGameWidget(TriggerTag);
 	}
+	*/
 }
 
 void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)

@@ -42,6 +42,7 @@ void AEnemy::BeginPlay()
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
 	SectionLevelManager = ComponentGetters::GetSectionLevelManager(GetWorld());
+	PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void AEnemy::SetupSection()
@@ -158,7 +159,7 @@ void AWalkingEnemy::BeginPlay()
 void AWalkingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
-	if (!ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove())
+	if (PlayerController->IsPaused())
 	{
 		return;
 	}
@@ -207,7 +208,7 @@ void ARotatingEnemy::BeginPlay()
 void ARotatingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
-	if (!ComponentGetters::GetSectionLevelManager(GetWorld())->CanMove())
+	if (PlayerController->IsPaused())
 	{
 		return;
 	}
