@@ -34,4 +34,6 @@ public:
 	static FTileInfo CheckPosition(TArray<class AActor*> ToIgnore, FVector Start);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static TArray<AActor*> GetAdjacent(class AActor* ToIgnore, FVector Position, int Radius);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FVector GetAvailablePosition(class AActor* Player, int Radius);
 };

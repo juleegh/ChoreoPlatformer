@@ -40,6 +40,8 @@ struct FTileInfo
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitElement = false;
 	UPROPERTY(BlueprintReadOnly)
+	bool bHitEnemy = false;
+	UPROPERTY(BlueprintReadOnly)
 	class AContextualElement* HitElement = nullptr;
 	UPROPERTY(BlueprintReadOnly)
 	class AGridCell* HitCell = nullptr;

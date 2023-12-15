@@ -14,6 +14,8 @@ void AClothingItem::BeginPlay()
 {
 	Super::BeginPlay();
 	ToggleHighlight(false);
+	OriginPosition = GetActorLocation();
+	OriginScale = GetActorScale();
 }
 
 void AClothingItem::OnEnterRange()
@@ -25,6 +27,23 @@ void AClothingItem::OnEnterRange()
 		ComponentGetters::GetInventoryComponent(GetWorld())->AddItem(this);
 		RefreshState();
 	}
+}
+
+void AClothingItem::PutBack(FVector NewPosition, bool bToOriginalPosition)
+{
+	bFinished = false;
+	DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	SetActorScale3D(OriginScale);
+	if (bToOriginalPosition)
+	{
+		SetActorLocation(OriginPosition);
+	}
+	else
+	{
+		SetActorLocation(NewPosition);
+	}
+	RefreshState();
 }
 
 void AClothingItem::ToggleHighlight(bool activated)

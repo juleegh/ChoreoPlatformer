@@ -27,6 +27,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Meta = (Category = "ClothingItem"))
 	class UStaticMeshComponent* ItemMesh;
 	UPROPERTY()
+	FVector OriginPosition;
+	UPROPERTY()
+	FVector OriginScale;
+	UPROPERTY(BlueprintReadOnly)
 	bool bFinished = false;
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
@@ -35,4 +39,5 @@ public:
 	void OnEnterRange() override;
 	FGameplayTag GetItemType() { return ItemType; }
 	void ToggleHighlight(bool activated) override;
+	void PutBack(FVector NewPosition = FVector(0,0,0), bool bToOriginalPosition = false);
 };

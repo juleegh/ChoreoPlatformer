@@ -2,6 +2,7 @@
 #include "Engine/DataTable.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ComponentGetters.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -46,7 +47,7 @@ bool UInventoryComponent::LoseHealthItem()
 	}
 	auto Last = Outfit.Last();
 	Outfit.Remove(Last);
-	Last->Destroy();
+	Last->PutBack(UDanceUtilsFunctionLibrary::GetAvailablePosition(ComponentGetters::GetDanceCharacter(GetWorld()), 2));
 	return true;
 }
 
@@ -64,7 +65,7 @@ void UInventoryComponent::ClearItemsEndOfLevel()
 	{
 		auto Last = Outfit.Last();
 		Outfit.Remove(Last);
-		Last->Destroy();
+		Last->PutBack({}, true);
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ContextualElement.h"
 #include "ComponentGetters.h"
+#include "Enemy.h"
 
 float UDanceUtilsFunctionLibrary::GetTargetTempo(ETempoTile TileType)
 {
@@ -71,6 +72,11 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 				DetectedInfo.bHitElement = true;
 				DetectedInfo.Position = element->GetActorLocation();
 				DetectedInfo.HitElement = element;
+			}
+
+			if (auto enemy = Cast<AEnemy>(hit.GetActor()))
+			{
+				DetectedInfo.bHitEnemy = true;
 			}
 			
 			if (auto gridCell = Cast<AGridCell>(hit.GetActor()))
@@ -147,6 +153,36 @@ bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor, int Tile
 	float Distance = TilesAway * 100;
 
 	return Player.X <= Actor.X + Distance && Player.X >= Actor.X - Distance && Player.Y <= Actor.Y + Distance && Player.Y >= Actor.Y - Distance;
+}
+
+FVector UDanceUtilsFunctionLibrary::GetAvailablePosition(AActor* Player, int Radius)
+{
+	auto PlayerPosition = Player->GetActorLocation();
+	TArray<FVector> Positions;
+	for (int column = -Radius; column <= Radius; column++)
+	{
+		for (int row = -Radius; row <= Radius; row++)
+		{
+			if (column == 0 && row == 0)
+			{
+				continue;
+			}
+			FVector TempPosition = PlayerPosition + FVector::RightVector * 100 * column + FVector::ForwardVector * 100 * row;
+			FTileInfo Tile = CheckPosition({Player}, TempPosition);
+			if (!Tile.HitCell || Tile.bHitElement || Tile.bHitEnemy || Tile.TileType == ETempoTile::Blocker)
+			{
+				continue;
+			}
+			Positions.Add(Tile.Position);
+		}
+	}
+
+	if (!Positions.IsEmpty())
+	{
+		return Positions[FMath::RandRange(0, Positions.Num() - 1)];
+	}
+
+	return PlayerPosition;
 }
 
 
