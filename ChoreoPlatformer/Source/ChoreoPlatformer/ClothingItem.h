@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Meta = (Category = "ClothingItem"))
 	class UStaticMeshComponent* ItemMesh;
 	UPROPERTY()
+	class UProjectileTimelineComponent* ProjectileTimeline;
+	UPROPERTY()
 	FVector OriginPosition;
 	UPROPERTY()
 	FVector OriginScale;
@@ -35,6 +37,8 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
 	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	UFUNCTION()
+	void LandedOnGround();
 public:
 	void OnEnterRange() override;
 	FGameplayTag GetItemType() { return ItemType; }

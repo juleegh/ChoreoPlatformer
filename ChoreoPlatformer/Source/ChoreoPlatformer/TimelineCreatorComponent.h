@@ -15,6 +15,7 @@ enum class ETimelineType : uint8
 {
     Linear,
     Curve,
+    Projectile,
 };
 
 UCLASS()
@@ -110,4 +111,24 @@ protected:
     float TargetBrightness;
     UPROPERTY()
     class UMaterialInstanceDynamic* ShineMat;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UProjectileTimelineComponent : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UProjectileTimelineComponent();
+    void Throw(FVector OriginLocation, FVector TargetLocation, float TimelineLength);
+    void ForceStopTimeline() override;
+    UFUNCTION()
+    void LandedCallback(float val);
+
+protected:
+
+    UPROPERTY()
+    FVector OriginPosition;
+    UPROPERTY()
+    FVector TargetPosition;
 };

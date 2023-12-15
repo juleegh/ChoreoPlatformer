@@ -1,5 +1,6 @@
 #include "ClothingItem.h"
 #include "ComponentGetters.h"
+#include "TimelineCreatorComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -8,6 +9,7 @@ AClothingItem::AClothingItem()
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ItemMesh->SetupAttachment(BoxComponent);
+	ProjectileTimeline = CreateDefaultSubobject<UProjectileTimelineComponent>("Projectile Timeline");
 }
 
 void AClothingItem::BeginPlay()
@@ -16,6 +18,8 @@ void AClothingItem::BeginPlay()
 	ToggleHighlight(false);
 	OriginPosition = GetActorLocation();
 	OriginScale = GetActorScale();
+	ProjectileTimeline->Initialize();
+	ProjectileTimeline->TimelineEnded.AddDynamic(this, &AClothingItem::LandedOnGround);
 }
 
 void AClothingItem::OnEnterRange()
@@ -31,19 +35,17 @@ void AClothingItem::OnEnterRange()
 
 void AClothingItem::PutBack(FVector NewPosition, bool bToOriginalPosition)
 {
-	bFinished = false;
 	DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
-	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	SetActorScale3D(OriginScale);
 	if (bToOriginalPosition)
 	{
 		SetActorLocation(OriginPosition);
+		LandedOnGround();
 	}
 	else
 	{
-		SetActorLocation(NewPosition);
+		ProjectileTimeline->Throw(ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation(), NewPosition, 1.5f);
 	}
-	RefreshState();
 }
 
 void AClothingItem::ToggleHighlight(bool activated)
@@ -67,5 +69,9 @@ void AClothingItem::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 	}
 }
 
-
-
+void AClothingItem::LandedOnGround()
+{
+	bFinished = false;
+	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	RefreshState();
+}

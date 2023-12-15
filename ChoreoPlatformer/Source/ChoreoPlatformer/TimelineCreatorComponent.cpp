@@ -30,6 +30,15 @@ UColorTimelineComponent::UColorTimelineComponent()
 	}
 }
 
+UProjectileTimelineComponent::UProjectileTimelineComponent()
+{
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>Curve(TEXT("/Game/Curves/C_ProjectileCurve"));
+	if (Curve.Succeeded())
+	{
+		TimelineCurve = Curve.Object;
+	}
+}
+
 void UTimelineCreatorComponent::Initialize()
 {
 	FOnTimelineEventStatic onTimelineFinishedCallback;
@@ -185,4 +194,25 @@ void UColorTimelineComponent::Reset()
 void UColorTimelineComponent::ForceStopTimeline()
 {
 	ShineMat->SetScalarParameterValue(FName("LightMultiplier"), 0);
+}
+
+void UProjectileTimelineComponent::Throw(FVector OriginLocation, FVector TargetLocation, float TimelineLength)
+{
+	OriginPosition = OriginLocation;
+	TargetPosition = TargetLocation;
+	MyTimeline->SetTimelineLength(TimelineLength);
+	TimelineTick.BindDynamic(this, &UProjectileTimelineComponent::LandedCallback);
+	PlayTimeline();
+}
+
+void UProjectileTimelineComponent::ForceStopTimeline()
+{
+	TimelineTarget->SetActorLocation(TargetPosition);
+}
+
+void UProjectileTimelineComponent::LandedCallback(float interpolatedVal)
+{
+	FVector MiddlePosition = UKismetMathLibrary::VLerp(OriginPosition, TargetPosition, MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength());
+	MiddlePosition.Z += interpolatedVal * 200;
+	TimelineTarget->SetActorLocation(MiddlePosition);
 }
