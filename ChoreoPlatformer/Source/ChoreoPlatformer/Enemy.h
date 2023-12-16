@@ -19,6 +19,8 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UBoxComponent* BoxComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UPaperFlipbookComponent* NextPositionIndicator;
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()
@@ -66,6 +68,7 @@ protected:
 	int PatrolIndex = -1;
 	UPROPERTY()
 	TArray<FVector> PatrolPoints;
+	void MarkNextTarget();
 }; 
 
 UCLASS()

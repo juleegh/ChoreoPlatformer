@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Enemy.h"
+#include "Paper2D/Classes/PaperFlipbookComponent.h"
 #include "ChoreoPlayerController.h"
 #include "Components/SplineComponent.h"
 #include "Components/BoxComponent.h"
@@ -19,6 +20,10 @@ AEnemy::AEnemy()
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	BoxComponent->SetupAttachment(RootComponent);
+
+	NextPositionIndicator = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Next Position"));
+	NextPositionIndicator->SetCollisionResponseToAllChannels(ECR_Ignore);
+	NextPositionIndicator->SetupAttachment(RootComponent);
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -43,6 +48,7 @@ void AEnemy::BeginPlay()
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
 	SectionLevelManager = ComponentGetters::GetSectionLevelManager(GetWorld());
 	PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
+	NextPositionIndicator->SetWorldLocation(GetActorLocation());
 }
 
 void AEnemy::SetupSection()
@@ -147,6 +153,21 @@ int ASplinedEnemy::GetLastIndex() const
 	return 0;
 }
 
+void ASplinedEnemy::MarkNextTarget()
+{
+	int TentativeIndex = PatrolIndex + 1;
+	if (TentativeIndex == GetLastIndex())
+	{
+		TentativeIndex = 0;
+	}
+	FVector NextPosition = PatrolPoints[TentativeIndex];
+	NextPositionIndicator->SetWorldLocation(NextPosition + FVector::UpVector * 5);
+
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(PatrolPoints[PatrolIndex], PatrolPoints[TentativeIndex]);
+	FRotator Rotation = FRotator(0, 90 + LookAt.Yaw, -90);
+	NextPositionIndicator->SetWorldRotation(Rotation);
+}
+
 void AWalkingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -183,6 +204,7 @@ void AWalkingEnemy::DoTempoAction()
 		CurrentTile.HitCell->PromptDamage();
 	}
 	StartedWalking();
+	MarkNextTarget();
 }
 
 void AWalkingEnemy::LookAtNextTarget()
@@ -230,6 +252,7 @@ void ARotatingEnemy::DoTempoAction()
 		HitTile.HitCell->PromptDamage();
 	}
 	StartedRotating();
+	MarkNextTarget();
 }
 
 
