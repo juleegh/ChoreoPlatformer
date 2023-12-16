@@ -144,13 +144,21 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	if (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction)
 	{
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection);
 		return;
 	}
 
 	if (NextTile.bHitElement)
 	{
 		NextTile.HitElement->TriggerInteraction();
-		TriggerResultFeedback(Result);
+		if (NextTile.HitElement->CanInteract())
+		{
+			DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Blocked);
+		}
+		else
+		{
+			DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::ActionCompleted);
+		}
 		return;
 	}
 
@@ -164,9 +172,11 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) || bBypassOutOfTempo)
 	{
 		DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Perfect);
 	}
 	else
 	{
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad);
 		DanceCharacter->MoveFailed.Broadcast();
 	}
 }
@@ -191,7 +201,6 @@ void AChoreoPlayerController::RespawnPlayer()
 void AChoreoPlayerController::TriggerResultFeedback(float Result)
 {
 	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
-	DancerUI->GetGameUI()->PromptTempoResult(Result);
 	ComponentGetters::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 }
 

@@ -9,6 +9,7 @@
 #include "CommonUserWidget.h"
 #include "CommonActivatableWidget.h"
 #include "CommonButtonBase.h"
+#include "DanceDefinitions.h"
 #include "DancerUIComponent.generated.h"
 
 UCLASS()
@@ -48,7 +49,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateCountdown(int TemposLeft);
 	UFUNCTION(BlueprintImplementableEvent)
-	void PromptTempoResult(float Distance);
+	void PromptTempoResult(EMoveResult MoveResult);
 };
 
 UCLASS()
@@ -67,7 +68,7 @@ public:
 	UFUNCTION()
 	void UpdateCountdown(int TemposLeft);
 	UFUNCTION()
-	void PromptTempoResult(float Distance);
+	void PromptTempoResult(EMoveResult MoveResult);
 
 	UFUNCTION(BlueprintCallable)
 	void LoadMenu();
@@ -162,10 +163,10 @@ class CHOREOPLATFORMER_API ULevelCompleteUI : public UChoreoActivatableWidget
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-		FGameplayTag LevelEndTrigger;
+	FGameplayTag LevelEndTrigger;
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-		int GetStepsByAccuracy(ETempoAccuracy Accuracy);
+	int GetStepsByAccuracy(ETempoAccuracy Accuracy);
 	UFUNCTION(BlueprintCallable)
-		void GoToNextSection();
+	void GoToNextSection();
 };
 

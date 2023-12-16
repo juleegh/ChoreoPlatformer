@@ -138,12 +138,12 @@ void UGameUI::UpdateCountdown(int TemposLeft)
     }
 }
 
-void UGameUI::PromptTempoResult(float Distance)
+void UGameUI::PromptTempoResult(EMoveResult MoveResult)
 {
     if (GameWidgets.Contains(GameStats))
     {
         auto DancerStats = Cast<UDancerStats>(GameWidgets[GameStats]);
-        DancerStats->PromptTempoResult(Distance);
+        DancerStats->PromptTempoResult(MoveResult);
     }
 }
 
