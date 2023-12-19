@@ -10,6 +10,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrationEnded);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrating);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMoveBlocked);
 
 UCLASS()
 class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
@@ -42,6 +43,8 @@ protected:
 	bool bShouldTakeDamage = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassOutOfTempo = true;
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	bool bBypassCalibration = false;
 	UPROPERTY()
 	bool bIsDead = false;
 	UPROPERTY()
@@ -59,6 +62,8 @@ public:
 	AChoreoPlayerController();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsPaused();
+	UPROPERTY(BlueprintAssignable)
+	FMoveBlocked MoveBlocked;
 	UPROPERTY(BlueprintAssignable)
 	FCalibrating Calibrating;
 	UPROPERTY(BlueprintAssignable)

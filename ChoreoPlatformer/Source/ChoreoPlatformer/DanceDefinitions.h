@@ -28,12 +28,13 @@ enum class ETempoAccuracy : uint8
 UENUM(BlueprintType)
 enum class EMoveResult : uint8
 {
-	Good,
-	Perfect,
+	Black_OK,
+	Half_OK,
 	Bad,
 	InvalidDirection,
 	Blocked,
 	ActionCompleted,
+	None,
 };
 
 UENUM(BlueprintType)

@@ -138,12 +138,12 @@ void UGameUI::UpdateCountdown(int TemposLeft)
     }
 }
 
-void UGameUI::PromptTempoResult(EMoveResult MoveResult)
+void UGameUI::PromptTempoResult(EMoveResult MoveResult, bool AnimationType)
 {
     if (GameWidgets.Contains(GameStats))
     {
         auto DancerStats = Cast<UDancerStats>(GameWidgets[GameStats]);
-        DancerStats->PromptTempoResult(MoveResult);
+        DancerStats->PromptTempoResult(MoveResult, AnimationType);
     }
 }
 

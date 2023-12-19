@@ -48,13 +48,10 @@ void AChoreoPlayerController::BeginPlay()
 	else
 	{
 		DancerUI->GetGameUI()->LoadGame();
-		/*
-		if (bBypassCalibration)
+		if (!bBypassCalibration)
 		{
-			CalibrationEnded.Broadcast();
-			LevelEvents->ActivateTrigger(FGameplayTag::RequestGameplayTag(FName("tutorial.intro")));
+			TriggerCalibration();
 		}
-		*/
 	}
 }
 
@@ -144,20 +141,18 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	if (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction)
 	{
-		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection);
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection, false);
+		MoveBlocked.Broadcast();
 		return;
 	}
 
 	if (NextTile.bHitElement)
 	{
-		NextTile.HitElement->TriggerInteraction();
-		if (NextTile.HitElement->CanInteract())
+		auto Interaction = NextTile.HitElement->TriggerInteraction();
+		DancerUI->GetGameUI()->PromptTempoResult(Interaction, Interaction == EMoveResult::ActionCompleted);
+		if (Interaction == EMoveResult::Blocked)
 		{
-			DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Blocked);
-		}
-		else
-		{
-			DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::ActionCompleted);
+			MoveBlocked.Broadcast();
 		}
 		return;
 	}
@@ -172,11 +167,11 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) || bBypassOutOfTempo)
 	{
 		DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
-		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Perfect);
+		DancerUI->GetGameUI()->PromptTempoResult(CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK, true);
 	}
 	else
 	{
-		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad);
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
 		DanceCharacter->MoveFailed.Broadcast();
 	}
 }
@@ -206,7 +201,10 @@ void AChoreoPlayerController::TriggerResultFeedback(float Result)
 
 void AChoreoPlayerController::TriggerCalibration()
 {
-	TogglePause();
+	if (IsPaused())
+	{
+		TogglePause();
+	}
 	Calibration->StartCalibration();
 	DancerUI->GetGameUI()->GoToGameScreen(UGameUI::CalibrationScreen);
 }

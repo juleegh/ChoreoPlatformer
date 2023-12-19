@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface_Highlighter.h"
+#include "DanceDefinitions.h"
 #include "GameplayTagContainer.h"
 #include "ContextualElement.generated.h"
 
@@ -29,10 +30,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
 	void ToggleHighlight(bool activated) override;
-	virtual void TriggerInteraction() {}
+	virtual EMoveResult TriggerInteraction() { return EMoveResult::None; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanInteract() { return !bFinished; }
-	//virtual void Tick(float DeltaTime) override;
 };
 
 UCLASS()
@@ -46,7 +46,7 @@ public:
 protected:
 	UPROPERTY()
 	int HitsLeft = 2;
-	void TriggerInteraction() override;
+	EMoveResult TriggerInteraction() override;
 };
 
 UCLASS()
@@ -59,6 +59,8 @@ public:
 	void Open();
 
 protected:
+	EMoveResult TriggerInteraction() override;
+
 };
 
 UCLASS()
@@ -71,7 +73,7 @@ protected:
 	TArray<ADoor*> ConnectedDoors;
 public:
 	ALever() {}
-	void TriggerInteraction() override;
+	EMoveResult TriggerInteraction() override;
 };
 
 UCLASS()
@@ -86,7 +88,7 @@ protected:
 	void RemoveObstacle();
 	virtual void PostObstacleActions() {}
 public:
-	void TriggerInteraction() override;
+	EMoveResult TriggerInteraction() override;
 };
 
 UCLASS()

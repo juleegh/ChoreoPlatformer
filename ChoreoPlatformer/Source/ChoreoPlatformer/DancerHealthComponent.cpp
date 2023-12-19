@@ -14,7 +14,7 @@ UDancerHealthComponent::UDancerHealthComponent()
 void UDancerHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	Accuracy = GetMaxAccuracy() / 2;
+	Accuracy = 0;
 	Steps = TMap<ETempoAccuracy, int>();
 	Steps.Add(ETempoAccuracy::Bad, 0);
 	Steps.Add(ETempoAccuracy::Great, 0);

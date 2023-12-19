@@ -30,7 +30,7 @@ void AContextualElement::ToggleHighlight(bool activated)
 	}
 }
 
-void ABrickWall::TriggerInteraction()
+EMoveResult ABrickWall::TriggerInteraction()
 {
 	HitsLeft--;
 	if (HitsLeft <= 0)
@@ -38,6 +38,7 @@ void ABrickWall::TriggerInteraction()
 		bFinished = true;
 		RefreshState();
 	}
+	return EMoveResult::None;
 }
 
 void ADoor::Open()
@@ -47,7 +48,12 @@ void ADoor::Open()
 	RefreshState();
 }
 
-void ALever::TriggerInteraction()
+EMoveResult ADoor::TriggerInteraction()
+{
+	return EMoveResult::Blocked;
+}
+
+EMoveResult ALever::TriggerInteraction()
 {
 	if (ConnectedDoors.Num() > 0)
 	{
@@ -63,15 +69,18 @@ void ALever::TriggerInteraction()
 		}
 		bFinished = true;
 		ConnectedDoors.Empty();
+		return EMoveResult::ActionCompleted;
 	}
+	return EMoveResult::None;
 }
 
-void AItemObstacle::TriggerInteraction()
+EMoveResult AItemObstacle::TriggerInteraction()
 {
 	//if (ComponentGetters::GetInventoryComponent(GetWorld)->HasItem(RequiredItem) && !bFinished)
 	{
 		bFinished = true;
 		RemoveObstacle();
+		return EMoveResult::None;
 	}
 }
 
