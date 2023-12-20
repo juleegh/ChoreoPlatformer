@@ -7,6 +7,7 @@
 #include "DanceDefinitions.h"
 #include "TilemapLevelManager.h"
 #include "DanceCharacter.h"
+#include "ChoreoPlayerController.h"
 #include "DancerHealthComponent.h"
 #include "LevelProgressComponent.h"
 #include "SongTempoComponent.h"
@@ -17,6 +18,7 @@
 
 namespace ComponentGetters
 {
+	AChoreoPlayerController* GetController(UWorld* WorldContextObject);
 	ADanceCharacter* GetDanceCharacter(UWorld* WorldContextObject);
 	UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject);
 	UInventoryComponent* GetInventoryComponent(UWorld* WorldContextObject);

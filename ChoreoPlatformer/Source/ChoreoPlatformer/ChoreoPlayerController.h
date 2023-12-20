@@ -60,6 +60,8 @@ protected:
 
 public:
 	AChoreoPlayerController();
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UCommonActivatableWidget> GameUIClass;
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsPaused();
 	UPROPERTY(BlueprintAssignable)

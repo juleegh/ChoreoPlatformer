@@ -36,7 +36,9 @@ protected:
 	bool bFinished = false;
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
+#if WITH_EDITOR
 	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 	UFUNCTION()
 	void LandedOnGround();
 public:

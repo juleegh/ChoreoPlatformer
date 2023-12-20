@@ -3,6 +3,12 @@
 
 namespace ComponentGetters
 {
+	AChoreoPlayerController* GetController(UWorld* WorldContextObject)
+	{
+		auto DanceController = WorldContextObject->GetFirstPlayerController();
+		return Cast<AChoreoPlayerController>(DanceController);
+	}
+
 	ADanceCharacter* GetDanceCharacter(UWorld* WorldContextObject)
 	{
 		auto DanceController = WorldContextObject->GetFirstPlayerController();

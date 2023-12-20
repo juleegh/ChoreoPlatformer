@@ -17,12 +17,6 @@ const FGameplayTag UGameUI::EndOfLevel = FGameplayTag::RequestGameplayTag("GameU
 
 UDancerUIComponent::UDancerUIComponent()
 {
-    static ConstructorHelpers::FClassFinder<UCommonActivatableWidget> DanceWidgetClass(TEXT("/Game/Widgets/C_GameScreen"));
-    if (DanceWidgetClass.Succeeded())
-    {
-        GameUIClass = DanceWidgetClass.Class;
-    }
-
     PrimaryComponentTick.bCanEverTick = false;
 }
 
@@ -60,7 +54,7 @@ void UDancerUIComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    GameUI = Cast<UGameUI>(CreateWidget<UCommonUserWidget>(GetWorld()->GetFirstPlayerController(), GameUIClass));
+    GameUI = Cast<UGameUI>(CreateWidget<UCommonUserWidget>(GetWorld()->GetFirstPlayerController(), ComponentGetters::GetController(GetWorld())->GameUIClass));
     GameUI->AddToViewport();
     GameUI->SetVisibility(ESlateVisibility::Visible);
 }

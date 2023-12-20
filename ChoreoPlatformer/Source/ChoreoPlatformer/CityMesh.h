@@ -47,8 +47,9 @@ protected:
 	class UMaterialInstanceDynamic* ObjectMat;
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> TilingMeshes;
+#if WITH_EDITOR
 	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
+#endif
 	void PaintMaterial();
 	void CheckTiling();
 };

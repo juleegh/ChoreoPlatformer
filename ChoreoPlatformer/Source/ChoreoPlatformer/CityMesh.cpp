@@ -9,6 +9,7 @@ ACityMesh::ACityMesh()
 	TilingMeshes.Add(ObjectMesh);
 }
 
+#if WITH_EDITOR
 void ACityMesh::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -27,6 +28,7 @@ void ACityMesh::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 		Tiled->SetStaticMesh(SelectedMesh);
 	}
 }
+#endif
 
 void ACityMesh::PaintMaterial()
 {

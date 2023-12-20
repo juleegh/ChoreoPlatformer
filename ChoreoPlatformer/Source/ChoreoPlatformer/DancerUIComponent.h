@@ -126,8 +126,6 @@ public:
 	void Cancel(const FInputActionValue& Value);
 protected:
 	UPROPERTY()
-	TSubclassOf<UCommonActivatableWidget> GameUIClass;
-	UPROPERTY()
 	UGameUI* GameUI;
 
 	virtual void BeginPlay() override;

@@ -53,6 +53,7 @@ void AClothingItem::ToggleHighlight(bool activated)
 	ItemMesh->SetRenderCustomDepth(activated);
 }
 
+#if WITH_EDITOR
 void AClothingItem::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -68,6 +69,7 @@ void AClothingItem::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 		}
 	}
 }
+#endif
 
 void AClothingItem::LandedOnGround()
 {
