@@ -31,7 +31,8 @@ bool AChoreoPlayerController::InGame()
 
 bool AChoreoPlayerController::IsPaused()
 {
-	return DancerUI->GetGameUI()->IsScreenActive(UGameUI::Pause);
+	const FGameplayTag GTPause = FGameplayTag::RequestGameplayTag("GameUI.Pause");
+	return DancerUI->GetGameUI()->IsScreenActive(GTPause);
 }
 
 void AChoreoPlayerController::BeginPlay()
@@ -92,7 +93,8 @@ void AChoreoPlayerController::TogglePause()
 {
 	if (!IsPaused())
 	{
-		DancerUI->GetGameUI()->GoToGameScreen(UGameUI::Pause);
+		const FGameplayTag GTPause = FGameplayTag::RequestGameplayTag("GameUI.Pause");
+		DancerUI->GetGameUI()->GoToGameScreen(GTPause);
 	}
 	else
 	{
@@ -102,7 +104,8 @@ void AChoreoPlayerController::TogglePause()
 
 void AChoreoPlayerController::Move(const FInputActionValue& Value)
 {
-	if (!InGame() || IsPaused() || DancerUI->GetGameUI()->IsScreenActive(UGameUI::EndOfLevel) || bIsDead)
+	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
+	if (!InGame() || IsPaused() || DancerUI->GetGameUI()->IsScreenActive(GTEOL) || bIsDead)
 	{
 		return;
 	}
@@ -112,7 +115,8 @@ void AChoreoPlayerController::Move(const FInputActionValue& Value)
 	
 void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)
 {
-	if (!InGame() || DancerUI->GetGameUI()->IsScreenActive(UGameUI::EndOfLevel))
+	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
+	if (!InGame() || DancerUI->GetGameUI()->IsScreenActive(GTEOL))
 	{
 		return;
 	}
@@ -206,7 +210,8 @@ void AChoreoPlayerController::TriggerCalibration()
 		TogglePause();
 	}
 	Calibration->StartCalibration();
-	DancerUI->GetGameUI()->GoToGameScreen(UGameUI::CalibrationScreen);
+	const FGameplayTag GTCalibration = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
+	DancerUI->GetGameUI()->GoToGameScreen(GTCalibration);
 }
 
 void AChoreoPlayerController::FinishCalibration()

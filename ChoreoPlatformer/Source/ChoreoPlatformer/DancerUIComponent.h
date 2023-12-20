@@ -57,14 +57,7 @@ class CHOREOPLATFORMER_API UGameUI : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 public:
-	static const FGameplayTag LevelSelection;
-	static const FGameplayTag GameStats;
-	static const FGameplayTag MainMenu;
-	static const FGameplayTag CollectablesScreen;
-	static const FGameplayTag Pause;
-	static const FGameplayTag CalibrationScreen;
-	static const FGameplayTag EndOfLevel;
-
+	
 	UFUNCTION()
 	void UpdateCountdown(int TemposLeft);
 	UFUNCTION()

@@ -132,7 +132,8 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 	CurrentSectionStart = NextSection;
 
 	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(SectionEndTrigger);
-	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(UGameUI::EndOfLevel);
+	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
+	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(GTEOL);
 }
 
 void ASectionLevelManager::NextSectionStart()

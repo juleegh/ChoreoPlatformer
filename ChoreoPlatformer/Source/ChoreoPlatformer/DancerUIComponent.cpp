@@ -7,13 +7,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
-const FGameplayTag UGameUI::MainMenu = FGameplayTag::RequestGameplayTag("GameUI.MainMenu");
-const FGameplayTag UGameUI::LevelSelection = FGameplayTag::RequestGameplayTag("GameUI.LevelSelection");
-const FGameplayTag UGameUI::GameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
-const FGameplayTag UGameUI::CollectablesScreen = FGameplayTag::RequestGameplayTag("GameUI.CollectablesScreen");
-const FGameplayTag UGameUI::Pause = FGameplayTag::RequestGameplayTag("GameUI.Pause");
-const FGameplayTag UGameUI::CalibrationScreen = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
-const FGameplayTag UGameUI::EndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -73,14 +66,16 @@ void UGameUI::LoadMenu()
 {
     ClearGameWidgets();
     GameWidgets.Empty();
-    PushMenuWidget(WidgetClasses[MainMenu], MainMenu);
+    const FGameplayTag GTMainMenu = FGameplayTag::RequestGameplayTag("GameUI.MainMenu");
+    PushMenuWidget(WidgetClasses[GTMainMenu], GTMainMenu);
 }
 
 void UGameUI::LoadGame()
 {
     ClearMenuWidgets();
     MenuWidgets.Empty();
-    PushGameWidget(WidgetClasses[GameStats], GameStats);
+    const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
+    PushGameWidget(WidgetClasses[GTGameStats], GTGameStats);
 }
 
 void UGameUI::GoToMenuScreen(const FGameplayTag MenuScreen)
@@ -125,18 +120,20 @@ void UGameUI::ExitGame()
 
 void UGameUI::UpdateCountdown(int TemposLeft)
 {
-    if (GameWidgets.Contains(GameStats))
+    const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
+    if (GameWidgets.Contains(GTGameStats))
     {
-        auto DancerStats = Cast<UDancerStats>(GameWidgets[GameStats]);
+        auto DancerStats = Cast<UDancerStats>(GameWidgets[GTGameStats]);
         DancerStats->UpdateCountdown(TemposLeft);
     }
 }
 
 void UGameUI::PromptTempoResult(EMoveResult MoveResult, bool AnimationType)
 {
-    if (GameWidgets.Contains(GameStats))
+    const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
+    if (GameWidgets.Contains(GTGameStats))
     {
-        auto DancerStats = Cast<UDancerStats>(GameWidgets[GameStats]);
+        auto DancerStats = Cast<UDancerStats>(GameWidgets[GTGameStats]);
         DancerStats->PromptTempoResult(MoveResult, AnimationType);
     }
 }
@@ -159,8 +156,9 @@ int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
 
 void ULevelCompleteUI::GoToNextSection()
 {
+    const FGameplayTag GTEndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
     ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(LevelEndTrigger);
     ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
-    ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(UGameUI::EndOfLevel);
+    ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(GTEndOfLevel);
 }
 
