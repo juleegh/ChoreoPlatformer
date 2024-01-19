@@ -14,7 +14,7 @@ class CHOREOPLATFORMER_API AEnemy : public ACharacter
 
 public:
 	AEnemy();
-	void SetupSection();
+	void SetupEnemy();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

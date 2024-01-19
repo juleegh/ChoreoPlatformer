@@ -43,16 +43,16 @@ ARotatingEnemy::ARotatingEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	NextPositionIndicator->SetWorldLocation(GetActorLocation());
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
+}
+
+void AEnemy::SetupEnemy()
+{
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
 	SectionLevelManager = ComponentGetters::GetSectionLevelManager(GetWorld());
 	PlayerController = Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
-	NextPositionIndicator->SetWorldLocation(GetActorLocation());
-}
-
-void AEnemy::SetupSection()
-{
 	Section = FGameplayTag::EmptyTag;
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	if (CurrentTile.HitCell)
@@ -61,11 +61,11 @@ void AEnemy::SetupSection()
 	}
 }
 
-
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (SectionLevelManager == nullptr || Section != SectionLevelManager->GetCurrentSection())
+	
+	if(Section != SectionLevelManager->GetCurrentSection())
 	{
 		return;
 	}

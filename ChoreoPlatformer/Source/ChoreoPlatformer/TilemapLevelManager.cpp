@@ -85,7 +85,7 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 	{
 		if (auto Enemy = Cast<AEnemy>(Actor))
 		{
-			Enemy->SetupSection();
+			Enemy->SetupEnemy();
 		}
 	}
 }
