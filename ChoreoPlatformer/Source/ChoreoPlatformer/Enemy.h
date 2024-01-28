@@ -47,7 +47,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartedWalking();
 	UFUNCTION(BlueprintImplementableEvent)
-	void StartedRotating();
+	void StartedRotating(float bPositive);
 };
 
 UCLASS()

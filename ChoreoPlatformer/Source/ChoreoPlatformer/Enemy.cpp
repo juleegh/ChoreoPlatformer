@@ -245,13 +245,15 @@ void ARotatingEnemy::DoTempoAction()
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	FTileInfo HitTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, PatrolPoints[PatrolIndex]);
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
+	float rotDirection = (Rotation - GetActorRotation()).GetNormalized().Yaw;
+
 	MoveTimeline->RotateToPosition(Rotation, Speed);
 	ColorTimeline->Blink();
 	if (HitTile.HitCell)
 	{
 		HitTile.HitCell->PromptDamage();
 	}
-	StartedRotating();
+	StartedRotating(rotDirection);
 	MarkNextTarget();
 }
 
