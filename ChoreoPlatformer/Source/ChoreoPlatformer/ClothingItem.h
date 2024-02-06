@@ -44,6 +44,7 @@ protected:
 public:
 	void OnEnterRange() override;
 	FGameplayTag GetItemType() { return ItemType; }
-	void ToggleHighlight(bool activated) override;
+	UFUNCTION(BlueprintImplementableEvent)
+	void ToggleHighlight(bool activated);
 	void PutBack(FVector NewPosition = FVector(0,0,0), bool bToOriginalPosition = false);
 };

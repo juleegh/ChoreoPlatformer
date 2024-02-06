@@ -30,6 +30,7 @@ void AClothingItem::OnEnterRange()
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		ComponentGetters::GetInventoryComponent(GetWorld())->AddItem(this);
 		RefreshState();
+		ToggleHighlight(false);
 	}
 }
 
@@ -44,13 +45,8 @@ void AClothingItem::PutBack(FVector NewPosition, bool bToOriginalPosition)
 	}
 	else
 	{
-		ProjectileTimeline->Throw(ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation(), NewPosition, 1.5f);
+		ProjectileTimeline->Throw(ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation(), NewPosition + FVector::UpVector * -50, 1.5f);
 	}
-}
-
-void AClothingItem::ToggleHighlight(bool activated)
-{
-	ItemMesh->SetRenderCustomDepth(activated);
 }
 
 #if WITH_EDITOR
@@ -75,5 +71,7 @@ void AClothingItem::LandedOnGround()
 {
 	bFinished = false;
 	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	BoxComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	RefreshState();
+	ToggleHighlight(UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(this, 1));
 }

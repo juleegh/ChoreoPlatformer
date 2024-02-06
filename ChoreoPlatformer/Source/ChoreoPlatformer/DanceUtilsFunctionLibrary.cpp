@@ -107,6 +107,16 @@ TArray<AActor*> UDanceUtilsFunctionLibrary::GetAdjacent(AActor* ToIgnore, FVecto
 	{
 		for (auto hit : OutHits)
 		{
+			auto Actor = hit.GetActor()->GetActorLocation();
+			Actor.Z = Position.Z;
+			float Distance = Radius * 100;
+			float DistanceVector = FVector::Distance(Position, Actor);
+
+			if (DistanceVector > Distance)
+			{
+				continue;
+			}
+			
 			if (auto element = Cast<AContextualElement>(hit.GetActor()))
 			{
 				Elements.Add(hit.GetActor());
@@ -150,9 +160,11 @@ bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor, int Tile
 {
 	auto Player = WorldActor->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	auto Actor = WorldActor->GetActorLocation();
+	Actor.Z = Player.Z;
 	float Distance = TilesAway * 100;
+	float DistanceVector = FVector::Distance(Actor, Player);
 
-	return Player.X <= Actor.X + Distance && Player.X >= Actor.X - Distance && Player.Y <= Actor.Y + Distance && Player.Y >= Actor.Y - Distance;
+	return DistanceVector <= Distance;
 }
 
 FVector UDanceUtilsFunctionLibrary::GetAvailablePosition(AActor* Player, int Radius)
