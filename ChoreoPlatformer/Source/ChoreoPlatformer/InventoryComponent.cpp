@@ -22,7 +22,7 @@ void UInventoryComponent::LoadCollectables()
 void UInventoryComponent::AddItem(AClothingItem* Item)
 {
 	Outfit.Add(Item);
-	InventoryChanged.Broadcast();
+	InventoryChanged.Broadcast(true);
 	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(ComponentGetters::GetDanceCharacter(GetWorld())->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
@@ -47,6 +47,7 @@ bool UInventoryComponent::LoseHealthItem()
 	}
 	auto Last = Outfit.Last();
 	Outfit.Remove(Last);
+	InventoryChanged.Broadcast(false);
 	Last->PutBack(UDanceUtilsFunctionLibrary::GetAvailablePosition(ComponentGetters::GetDanceCharacter(GetWorld()), 2));
 	return true;
 }
@@ -67,6 +68,7 @@ void UInventoryComponent::ClearItemsEndOfLevel()
 		Outfit.Remove(Last);
 		Last->PutBack({}, true);
 	}
+	InventoryCleared.Broadcast();
 }
 
 FName UInventoryComponent::GetBodySection(FGameplayTag ItemType)

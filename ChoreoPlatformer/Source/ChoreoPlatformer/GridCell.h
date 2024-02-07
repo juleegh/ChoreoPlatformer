@@ -38,6 +38,8 @@ protected:
 	FColor DamageColor;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	FColor TriggerColor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	FColor ItemColor;
 
 public:	
 	// Called every frame
@@ -49,6 +51,7 @@ public:
 	bool ForcesPlayerPosition();
 	FVector ForcedDirection();
 	FGameplayTag& GetSection();
+	void PromptItem();
 	void PromptTrigger();
 	void PromptDamage();
 };

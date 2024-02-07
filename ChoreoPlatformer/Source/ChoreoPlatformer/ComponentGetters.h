@@ -38,6 +38,8 @@ class CHOREOPLATFORMER_API UComponentGettersFunctionLibrary : public UBlueprintF
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static UDancerHealthComponent* GetDancerHealthComponent(AActor* WorldContextActor);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static UInventoryComponent* GetInventoryComponent(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static USongTempoComponent* GetSongTempoComponent(AActor* WorldContextActor);
 };

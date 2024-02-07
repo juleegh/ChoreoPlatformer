@@ -10,7 +10,8 @@
 #include "InventoryComponent.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInventoryChanged, bool, bPositiveDelta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryCleared);
 UCLASS()
 class CHOREOPLATFORMER_API UInventoryComponent : public UActorComponent
 {
@@ -35,10 +36,13 @@ protected:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FInventoryChanged InventoryChanged;
+	UPROPERTY(BlueprintAssignable)
+	FInventoryCleared InventoryCleared;
 	
 	void AddItem(AClothingItem* Item);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool HasHealthItem();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int HealthItemQuantity();
 	bool LoseHealthItem();
 	void ClearItemsEndOfLevel();

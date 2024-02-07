@@ -8,7 +8,6 @@
 #include "DancerHealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAccuracyChanged, float, Accuracy, float, Max);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FHealthChanged, bool, bPositiveDelta, bool, bHasHealthItem, bool, bDied);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDied);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -31,8 +30,6 @@ public:
 	UPROPERTY()
 	FAccuracyChanged AccuracyChanged;
 	UPROPERTY(BlueprintAssignable)
-	FHealthChanged HealthChanged;
-	UPROPERTY()
 	FPlayerDied PlayerDied;
 	void Restart();
 	void TakeHit(int Damage = 1);

@@ -27,6 +27,11 @@ void AClothingItem::OnEnterRange()
 	if (!bFinished)
 	{
 		bFinished = true;
+		auto CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+		if (CurrentTile.HitCell)
+		{
+			CurrentTile.HitCell->PromptItem();
+		}
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		ComponentGetters::GetInventoryComponent(GetWorld())->AddItem(this);
 		RefreshState();
@@ -70,6 +75,11 @@ void AClothingItem::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 void AClothingItem::LandedOnGround()
 {
 	bFinished = false;
+	auto CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+	if (CurrentTile.HitCell)
+	{
+		CurrentTile.HitCell->PromptItem();
+	}
 	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	BoxComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	RefreshState();

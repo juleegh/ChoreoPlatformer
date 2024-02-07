@@ -53,11 +53,6 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	if (!ComponentGetters::GetInventoryComponent(GetWorld())->LoseHealthItem())
 	{
 		Restart();
-		HealthChanged.Broadcast(false, false, true);
-	}
-	else
-	{
-		HealthChanged.Broadcast(false, ComponentGetters::GetInventoryComponent(GetWorld())->HasHealthItem(), false);
 	}
 }
 

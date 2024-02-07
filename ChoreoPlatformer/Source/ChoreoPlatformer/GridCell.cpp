@@ -84,6 +84,12 @@ FGameplayTag& AGridCell::GetSection()
 	return Section;
 }
 
+void AGridCell::PromptItem()
+{
+	ColorTimeline->ChangeColor(ItemColor);
+	ColorTimeline->Blink();
+}
+
 void AGridCell::PromptTrigger()
 {
 	ColorTimeline->ChangeColor(TriggerColor);

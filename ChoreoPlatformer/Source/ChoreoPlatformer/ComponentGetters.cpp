@@ -81,3 +81,8 @@ USongTempoComponent* UComponentGettersFunctionLibrary::GetSongTempoComponent(AAc
 {
 	return ComponentGetters::GetSongTempoComponent(WorldContextActor->GetWorld());
 }
+
+UInventoryComponent* UComponentGettersFunctionLibrary::GetInventoryComponent(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetInventoryComponent(WorldContextActor->GetWorld());
+}
