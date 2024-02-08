@@ -20,7 +20,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UBoxComponent* BoxComponent;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UPaperFlipbookComponent* NextPositionIndicator;
+	class UPaperSpriteComponent* AttackIndicator;
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()

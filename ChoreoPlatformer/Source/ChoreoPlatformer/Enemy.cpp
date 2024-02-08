@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Enemy.h"
-#include "Paper2D/Classes/PaperFlipbookComponent.h"
+#include "Paper2D/Classes/PaperSpriteComponent.h"
 #include "ChoreoPlayerController.h"
 #include "Components/SplineComponent.h"
 #include "Components/BoxComponent.h"
@@ -21,9 +21,10 @@ AEnemy::AEnemy()
 	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	BoxComponent->SetupAttachment(RootComponent);
 
-	NextPositionIndicator = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Next Position"));
-	NextPositionIndicator->SetCollisionResponseToAllChannels(ECR_Ignore);
-	NextPositionIndicator->SetupAttachment(RootComponent);
+	AttackIndicator = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Next Position"));
+	AttackIndicator->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackIndicator->SetupAttachment(RootComponent);
+	AttackIndicator->SetUsingAbsoluteLocation(false);
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -43,7 +44,8 @@ ARotatingEnemy::ARotatingEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	NextPositionIndicator->SetWorldLocation(GetActorLocation());
+	AttackIndicator->SetWorldLocation(GetActorLocation());
+	AttackIndicator->SetUsingAbsoluteLocation(true);
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
 }
@@ -65,6 +67,10 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	if (!SectionLevelManager)
+	{
+		return;
+	}
 	if(Section != SectionLevelManager->GetCurrentSection())
 	{
 		return;
@@ -161,11 +167,11 @@ void ASplinedEnemy::MarkNextTarget()
 		TentativeIndex = 0;
 	}
 	FVector NextPosition = PatrolPoints[TentativeIndex];
-	NextPositionIndicator->SetWorldLocation(NextPosition + FVector::UpVector * 5);
+	AttackIndicator->SetWorldLocation(NextPosition + FVector::UpVector * 5);
 
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(PatrolPoints[PatrolIndex], PatrolPoints[TentativeIndex]);
 	FRotator Rotation = FRotator(0, 90 + LookAt.Yaw, -90);
-	NextPositionIndicator->SetWorldRotation(Rotation);
+	AttackIndicator->SetWorldRotation(Rotation);
 }
 
 void AWalkingEnemy::BeginPlay()
@@ -224,7 +230,7 @@ void ARotatingEnemy::BeginPlay()
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
 	ColorTimeline->Initialize();
-	ColorTimeline->AddMesh(HitBox);
+	ColorTimeline->AddMesh(GetMesh());
 }
 
 void ARotatingEnemy::DoTempoAction()
