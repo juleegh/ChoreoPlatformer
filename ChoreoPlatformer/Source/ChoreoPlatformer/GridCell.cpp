@@ -23,11 +23,7 @@ AGridCell::AGridCell()
 	Flipbook->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Flipbook->SetupAttachment(RootComponent);
 
-	HitBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Hit Box"));
-	HitBox->SetCollisionResponseToAllChannels(ECR_Ignore);
-	HitBox->SetupAttachment(RootComponent);
-
-	ColorTimeline = CreateDefaultSubobject<UColorTimelineComponent>("Color Timeline");
+	SpritesTimeline = CreateDefaultSubobject<USpritesTimelineComponent>("Sprites Timeline");
 }
 
 void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection)
@@ -43,8 +39,9 @@ void AGridCell::BeginPlay()
 {
 	Super::BeginPlay();
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
-	ColorTimeline->Initialize();
-	ColorTimeline->AddMesh(HitBox);
+	SpritesTimeline->Initialize();
+	GetSprites();
+	SpritesTimeline->SetSprites(HitSprites);
 }
 
 // Called every frame
@@ -86,20 +83,20 @@ FGameplayTag& AGridCell::GetSection()
 
 void AGridCell::PromptItem()
 {
-	ColorTimeline->ChangeColor(ItemColor);
-	ColorTimeline->Blink();
+	SpritesTimeline->ChangeColor(ItemColor);
+	SpritesTimeline->Blink();
 }
 
 void AGridCell::PromptTrigger()
 {
-	ColorTimeline->ChangeColor(TriggerColor);
-	ColorTimeline->Blink();
+	SpritesTimeline->ChangeColor(TriggerColor);
+	SpritesTimeline->Blink();
 }
 
 void AGridCell::PromptDamage()
 {
-	ColorTimeline->ChangeColor(DamageColor);
-	ColorTimeline->Blink();
+	SpritesTimeline->ChangeColor(DamageColor);
+	SpritesTimeline->Blink();
 }
 
 

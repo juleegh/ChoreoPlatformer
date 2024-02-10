@@ -4,6 +4,7 @@
 #include "Curves/CurveFloat.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Paper2D/Classes/PaperSpriteComponent.h"
 #include "Math/UnrealMathUtility.h"
 
 UTimelineCreatorComponent::UTimelineCreatorComponent()
@@ -22,6 +23,15 @@ UMovementTimelineComponent::UMovementTimelineComponent()
 }
 
 UColorTimelineComponent::UColorTimelineComponent()
+{
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>Curve(TEXT("/Game/Curves/C_UpDownCurve"));
+	if (Curve.Succeeded())
+	{
+		TimelineCurve = Curve.Object;
+	}
+}
+
+USpritesTimelineComponent::USpritesTimelineComponent()
 {
 	static ConstructorHelpers::FObjectFinder<UCurveFloat>Curve(TEXT("/Game/Curves/C_UpDownCurve"));
 	if (Curve.Succeeded())
@@ -215,4 +225,44 @@ void UProjectileTimelineComponent::LandedCallback(float interpolatedVal)
 	FVector MiddlePosition = UKismetMathLibrary::VLerp(OriginPosition, TargetPosition, MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength());
 	MiddlePosition.Z += interpolatedVal * 200;
 	TimelineTarget->SetActorLocation(MiddlePosition);
+}
+
+
+void USpritesTimelineComponent::SetSprites(TArray<UPaperSpriteComponent*> NewSprites)
+{
+	Sprites = NewSprites;
+}
+
+void USpritesTimelineComponent::Blink()
+{
+	OriginOpacity = 0;
+	TargetOpacity = 1.f;
+	TimelineTick.BindDynamic(this, &USpritesTimelineComponent::OpacityCallback);
+	PlayTimeline();
+}
+
+void USpritesTimelineComponent::ChangeColor(FColor newColor)
+{
+	for (auto Sprite : Sprites)
+	{
+		Sprite->SetSpriteColor(newColor);
+	}
+}
+
+void USpritesTimelineComponent::OpacityCallback(float interpolatedVal)
+{
+	auto TempColor = Sprites[0]->GetSpriteColor();
+	TempColor.A = interpolatedVal * TargetOpacity;
+	for (auto Sprite : Sprites)
+	{
+		Sprite->SetSpriteColor(TempColor);
+	}
+}
+
+void USpritesTimelineComponent::Reset()
+{
+	for (auto Sprite : Sprites)
+	{
+		Sprite->SetSpriteColor(FLinearColor(0,0,0,0));
+	}
 }

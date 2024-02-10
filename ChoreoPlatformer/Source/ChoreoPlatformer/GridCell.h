@@ -28,12 +28,12 @@ protected:
 	class UPaperFlipbookComponent* Flipbook;
 	UPROPERTY(BlueprintReadOnly)
 	class USongTempoComponent* SongTempo;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UStaticMeshComponent* HitBox;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TArray<class UPaperSpriteComponent*> HitSprites;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UStaticMeshComponent* Base;
 	UPROPERTY(BlueprintReadOnly)
-	class UColorTimelineComponent* ColorTimeline;
+	class USpritesTimelineComponent* SpritesTimeline;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	FColor DamageColor;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
@@ -46,6 +46,8 @@ public:
 	void Initialize(ETempoTile, FGameplayTag&);
 	UFUNCTION(BlueprintImplementableEvent)
 	void PaintTile();
+	UFUNCTION(BlueprintImplementableEvent)
+	void GetSprites();
 	virtual void Tick(float DeltaTime) override;
 	ETempoTile GetTileType() { return TileType; }
 	bool ForcesPlayerPosition();

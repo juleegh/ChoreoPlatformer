@@ -114,6 +114,31 @@ protected:
 };
 
 UCLASS()
+class CHOREOPLATFORMER_API USpritesTimelineComponent : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+public:
+    USpritesTimelineComponent();
+    void SetSprites(TArray<class UPaperSpriteComponent*>);
+    void Reset() override;
+
+    void Blink();
+    void ChangeColor(FColor newColor);
+    UFUNCTION()
+    void OpacityCallback(float val);
+
+protected:
+
+    UPROPERTY()
+    float OriginOpacity;
+    UPROPERTY()
+    float TargetOpacity;
+    UPROPERTY()
+    TArray<class UPaperSpriteComponent*> Sprites;
+};
+
+UCLASS()
 class CHOREOPLATFORMER_API UProjectileTimelineComponent : public UTimelineCreatorComponent
 {
     GENERATED_BODY()
