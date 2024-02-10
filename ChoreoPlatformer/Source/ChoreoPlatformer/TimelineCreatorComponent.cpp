@@ -49,6 +49,15 @@ UProjectileTimelineComponent::UProjectileTimelineComponent()
 	}
 }
 
+UScaleUpTimelineComponent::UScaleUpTimelineComponent()
+{
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>Curve(TEXT("/Game/Curves/C_Upwards"));
+	if (Curve.Succeeded())
+	{
+		TimelineCurve = Curve.Object;
+	}
+}
+
 void UTimelineCreatorComponent::Initialize()
 {
 	FOnTimelineEventStatic onTimelineFinishedCallback;
@@ -265,4 +274,24 @@ void USpritesTimelineComponent::Reset()
 	{
 		Sprite->SetSpriteColor(FLinearColor(0,0,0,0));
 	}
+}
+
+void UScaleUpTimelineComponent::ScaleUp(FVector Origin, FVector Target, float TimelineLength)
+{
+	OriginScale = Origin;
+	TargetScale = Target;
+	MyTimeline->SetTimelineLength(TimelineLength);
+	TimelineTick.BindDynamic(this, &UScaleUpTimelineComponent::ScaleCallback);
+	PlayTimeline();
+}
+
+void UScaleUpTimelineComponent::ForceStopTimeline()
+{
+	ScalingActor->SetWorldScale3D(TargetScale);
+}
+
+void UScaleUpTimelineComponent::ScaleCallback(float interpolatedVal)
+{
+	FVector MiddlePosition = UKismetMathLibrary::VLerp(OriginScale, TargetScale, MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength());
+	ScalingActor->SetWorldScale3D(MiddlePosition);
 }

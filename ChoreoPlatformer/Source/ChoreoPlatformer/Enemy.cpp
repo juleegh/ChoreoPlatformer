@@ -32,6 +32,7 @@ AEnemy::AEnemy()
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
 	ColorTimeline = CreateDefaultSubobject<UColorTimelineComponent>("Color Timeline");
+	ScaleTimeline = CreateDefaultSubobject<UScaleUpTimelineComponent>("Scale Timeline");
 }
 
 ARotatingEnemy::ARotatingEnemy()
@@ -46,6 +47,11 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	AttackIndicator->SetWorldLocation(GetActorLocation());
 	AttackIndicator->SetUsingAbsoluteLocation(true);
+	MoveTimeline->Initialize();
+	ColorTimeline->Initialize();
+	ScaleTimeline->Initialize();
+	ColorTimeline->AddMesh(GetMesh());
+	ScaleTimeline->ScalingActor = AttackIndicator;
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
 }
@@ -177,9 +183,6 @@ void ASplinedEnemy::MarkNextTarget()
 void AWalkingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	MoveTimeline->Initialize();
-	ColorTimeline->Initialize();
-	ColorTimeline->AddMesh(GetMesh());
 	//MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
 }
 
@@ -202,8 +205,9 @@ void AWalkingEnemy::DoTempoAction()
 	SetActorRotation(Rotation);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, Position);
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
-	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
+	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency();
 	MoveTimeline->MoveToPosition(NextTile.Position, Speed);
+	ScaleTimeline->ScaleUp(FVector::Zero(), FVector::One(), Speed);
 	ColorTimeline->Blink();
 	if (CurrentTile.HitCell)
 	{
@@ -228,9 +232,6 @@ void AWalkingEnemy::LookAtNextTarget()
 void ARotatingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	MoveTimeline->Initialize();
-	ColorTimeline->Initialize();
-	ColorTimeline->AddMesh(GetMesh());
 }
 
 void ARotatingEnemy::DoTempoAction()
@@ -250,10 +251,11 @@ void ARotatingEnemy::DoTempoAction()
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	FTileInfo HitTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, PatrolPoints[PatrolIndex]);
-	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency() * 0.95f;
+	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency();
 	float rotDirection = (Rotation - GetActorRotation()).GetNormalized().Yaw;
 
 	MoveTimeline->RotateToPosition(Rotation, Speed);
+	ScaleTimeline->ScaleUp(FVector::Zero(), FVector::One(), Speed);
 	ColorTimeline->Blink();
 	if (HitTile.HitCell)
 	{

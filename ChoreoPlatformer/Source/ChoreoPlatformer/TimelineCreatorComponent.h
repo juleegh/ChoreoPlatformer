@@ -157,3 +157,26 @@ protected:
     UPROPERTY()
     FVector TargetPosition;
 };
+
+UCLASS()
+class CHOREOPLATFORMER_API UScaleUpTimelineComponent : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UScaleUpTimelineComponent();
+    void ScaleUp(FVector OriginScale, FVector TargetScale, float TimelineLength);
+    void ForceStopTimeline() override;
+    UFUNCTION()
+    void ScaleCallback(float val);
+
+    UPROPERTY()
+    class USceneComponent* ScalingActor;
+
+protected:
+
+    UPROPERTY()
+    FVector OriginScale;
+    UPROPERTY()
+    FVector TargetScale;
+};

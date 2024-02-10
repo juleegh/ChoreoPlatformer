@@ -32,6 +32,8 @@ protected:
 	UPROPERTY()
 	class UColorTimelineComponent* ColorTimeline;
 	UPROPERTY()
+	class UScaleUpTimelineComponent* ScaleTimeline;
+	UPROPERTY()
 	FGameplayTag Section = FGameplayTag::EmptyTag;
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
