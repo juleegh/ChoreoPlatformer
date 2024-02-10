@@ -158,13 +158,17 @@ float UDanceUtilsFunctionLibrary::GetHealthDelta(ETempoAccuracy result)
 
 bool UDanceUtilsFunctionLibrary::IsAdjacentToPlayer(AActor* WorldActor, int TilesAway)
 {
+	return TilesAwayFromPlayer(WorldActor) <= TilesAway;
+}
+
+int UDanceUtilsFunctionLibrary::TilesAwayFromPlayer(AActor* WorldActor)
+{
 	auto Player = WorldActor->GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	auto Actor = WorldActor->GetActorLocation();
 	Actor.Z = Player.Z;
-	float Distance = TilesAway * 100;
 	float DistanceVector = FVector::Distance(Actor, Player);
 
-	return DistanceVector <= Distance;
+	return DistanceVector / 100;
 }
 
 FVector UDanceUtilsFunctionLibrary::GetAvailablePosition(AActor* Player, int Radius)

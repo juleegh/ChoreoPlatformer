@@ -19,6 +19,8 @@ public:
 	static FVector GetTransformedPosition(FVector Origin, FVector Direction);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static bool IsAdjacentToPlayer(class AActor* WorldContextActor, int TilesAway);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static int TilesAwayFromPlayer(class AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static ETempoAccuracy GetTempoResult(float Distance);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
