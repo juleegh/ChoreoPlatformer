@@ -71,7 +71,7 @@ void UInventoryComponent::ClearItemsEndOfLevel()
 	InventoryCleared.Broadcast();
 }
 
-FName UInventoryComponent::GetBodySection(FGameplayTag ItemType)
+FName UInventoryComponent::GetBodySection(FGameplayTag& ItemType)
 {
 	if (ClothingInfo.IsEmpty())
 	{
@@ -82,4 +82,22 @@ FName UInventoryComponent::GetBodySection(FGameplayTag ItemType)
 		return ClothingInfo[ItemType].BodySocket.GetTagName();
 	}
 	return {};
+}
+
+FClothingItemInfo* UInventoryComponent::GetClothingInfo(FGameplayTag& ItemType)
+{
+	if (ClothingInfo.IsEmpty())
+	{
+		LoadCollectables();
+	}
+	if (ClothingInfo.Contains(ItemType))
+	{
+		return &ClothingInfo[ItemType];
+	}
+	return {};
+}
+
+bool UInventoryComponent::HasCollectedItem(FGameplayTag& ItemType)
+{
+	return Inventory.Contains(ItemType);
 }

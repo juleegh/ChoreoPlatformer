@@ -46,5 +46,7 @@ public:
 	int HealthItemQuantity();
 	bool LoseHealthItem();
 	void ClearItemsEndOfLevel();
-	FName GetBodySection(FGameplayTag ItemType);
+	FName GetBodySection(FGameplayTag& ItemType);
+	FClothingItemInfo* GetClothingInfo(FGameplayTag& ItemType);
+	bool HasCollectedItem(FGameplayTag& ItemType);
 };

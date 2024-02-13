@@ -6,7 +6,8 @@
 #include "Input/CommonUIInputTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/StaticMeshActor.h"
 
 UDancerUIComponent::UDancerUIComponent()
 {
@@ -160,5 +161,79 @@ void ULevelCompleteUI::GoToNextSection()
     ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(LevelEndTrigger);
     ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
     ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(GTEndOfLevel);
+}
+
+void UCollectablesUI::LoadOwnedItems()
+{
+    TArray<AActor*> PigeonModels;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), PigeonModels);
+
+    for (auto Pigeon : PigeonModels)
+    {
+        if (auto Mesh = Cast<USkeletalMeshComponent>(Pigeon->GetComponentByClass(USkeletalMeshComponent::StaticClass())))
+        {
+            SkeletalMesh = Mesh;
+            break;
+        }
+    }
+
+    TArray<FClothingItemInfo*> Items;
+    ItemsData->GetAllRows<FClothingItemInfo>(TEXT("ContextString"), Items);
+    
+    for (auto ItemInfo : Items)
+    {
+        OwnedItems.Add(ItemInfo->Identifier, HasCollectedItem(ItemInfo->Identifier));
+
+        if (!CurrentOutfit.Contains(ItemInfo->BodySocket))
+        {
+            auto ClothingActor = GetWorld()->SpawnActor<AActor>(ClothesBP);
+            FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+            TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
+            ClothingActor->AttachToComponent(SkeletalMesh, TransformRules, ItemInfo->BodySocket.GetTagName());
+            CurrentOutfit.Add(ItemInfo->BodySocket, ClothingActor);
+        }
+    }
+
+}
+
+TMap<FGameplayTag, bool> UCollectablesUI::GetItems()
+{
+    if (OwnedItems.IsEmpty())
+    {
+        LoadOwnedItems();
+    }
+
+    return OwnedItems;
+}
+
+FClothingItemInfo& UCollectablesUI::GetClothingItem(FGameplayTag ItemType)
+{
+    return *ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType);
+}
+
+
+bool UCollectablesUI::HasCollectedItem(FGameplayTag ItemType)
+{
+    return ComponentGetters::GetInventoryComponent(GetWorld())->HasCollectedItem(ItemType);
+}
+
+void UCollectablesUI::PutOnItem(FGameplayTag ItemType)
+{
+    auto ItemInfo = GetClothingItem(ItemType);
+    if (!HasCollectedItem(ItemInfo.Identifier) && false)
+    {
+        return;
+    }
+
+    AActor* ClothingActor = CurrentOutfit[ItemInfo.BodySocket];
+    auto Clothing = Cast<UStaticMeshComponent>(ClothingActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
+
+    if (Clothing->GetStaticMesh() == ItemInfo.Mesh)
+    {
+        Clothing->SetStaticMesh(nullptr);
+        return;
+    }
+
+    Clothing->SetStaticMesh(ItemInfo.Mesh);
 }
 

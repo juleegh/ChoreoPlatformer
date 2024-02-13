@@ -161,3 +161,49 @@ public:
 	void GoToNextSection();
 };
 
+UCLASS()
+class CHOREOPLATFORMER_API UCollectablesUI : public UChoreoActivatableWidget
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UDataTable* ItemsData;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> ClothesBP;
+	UPROPERTY()
+	TMap<FGameplayTag, bool> OwnedItems;
+	UPROPERTY()
+	TMap<FGameplayTag, class AActor*> CurrentOutfit;
+	UPROPERTY()
+	class USkeletalMeshComponent* SkeletalMesh;
+	
+	void LoadOwnedItems();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	TMap<FGameplayTag, bool> GetItems();
+
+	UFUNCTION(BlueprintCallable)
+	void PutOnItem(FGameplayTag ItemType);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FClothingItemInfo& GetClothingItem(FGameplayTag ItemType);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool HasCollectedItem(FGameplayTag ItemType);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UCollectableButton : public UChoreoButtonBase
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable, Category = "Collectable Button")
+	void SetupButtonVisuals(FClothingItemInfo ClothingInfo, bool IsAvailable)
+	{
+		OnSetupButtonVisuals(ClothingInfo, IsAvailable);
+	}
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Collectable Button")
+	void OnSetupButtonVisuals(FClothingItemInfo ClothingInfo, bool IsAvailable);
+};
+
