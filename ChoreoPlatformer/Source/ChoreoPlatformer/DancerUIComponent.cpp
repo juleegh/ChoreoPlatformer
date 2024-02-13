@@ -220,7 +220,7 @@ bool UCollectablesUI::HasCollectedItem(FGameplayTag ItemType)
 void UCollectablesUI::PutOnItem(FGameplayTag ItemType)
 {
     auto ItemInfo = GetClothingItem(ItemType);
-    if (!HasCollectedItem(ItemInfo.Identifier) && false)
+    if (!HasCollectedItem(ItemInfo.Identifier))
     {
         return;
     }

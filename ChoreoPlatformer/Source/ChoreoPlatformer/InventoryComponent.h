@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "ClothingItem.h"
+#include "GameFramework/SaveGame.h"
 #include "DanceDefinitions.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
@@ -22,6 +23,8 @@ public:
 	UInventoryComponent();
 
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY()
 	TArray<AClothingItem*> Outfit;
 	UPROPERTY()
@@ -32,6 +35,8 @@ protected:
 	TMap<FGameplayTag, FClothingItemInfo> ClothingInfo;
 
 	void LoadCollectables();
+	void SaveCollectablesData();
+	void LoadCollectablesData();
 
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -49,4 +54,14 @@ public:
 	FName GetBodySection(FGameplayTag& ItemType);
 	FClothingItemInfo* GetClothingInfo(FGameplayTag& ItemType);
 	bool HasCollectedItem(FGameplayTag& ItemType);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API UCollectablesData : public USaveGame
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere, Category = Basic)
+	TArray<FString> Collected;
 };

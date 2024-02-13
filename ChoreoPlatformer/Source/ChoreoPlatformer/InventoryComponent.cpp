@@ -1,12 +1,19 @@
 #include "InventoryComponent.h"
 #include "Engine/DataTable.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "ComponentGetters.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 UInventoryComponent::UInventoryComponent()
 {
 	ItemsData = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("DataTable'/Game/TileElements/ItemDataTable.ItemDataTable'")));
+}
+
+void UInventoryComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	LoadCollectables();
 }
 
 void UInventoryComponent::LoadCollectables()
@@ -16,6 +23,36 @@ void UInventoryComponent::LoadCollectables()
 	for (auto ItemInfo : Items)
 	{
 		ClothingInfo.Add(ItemInfo->Identifier, *ItemInfo);
+	}
+	LoadCollectablesData();
+}
+
+void UInventoryComponent::SaveCollectablesData()
+{
+	UCollectablesData* SaveGameInstance = Cast<UCollectablesData>(UGameplayStatics::CreateSaveGameObject(UCollectablesData::StaticClass()));
+	if (SaveGameInstance)
+	{
+		for (auto ClothingItem : Inventory)
+		{
+			SaveGameInstance->Collected.Add(ClothingItem.ToString());
+		}
+
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("SaveSlot"), 0);
+	}
+
+}
+
+void UInventoryComponent::LoadCollectablesData()
+{
+	UCollectablesData* LoadedData = Cast<UCollectablesData>(UGameplayStatics::LoadGameFromSlot(TEXT("SaveSlot"), 0));
+	if (LoadedData)
+	{
+		Inventory.Empty();
+		for (auto ClothingItem : LoadedData->Collected)
+		{
+			FGameplayTag Collected = FGameplayTag::RequestGameplayTag(FName(ClothingItem));
+			Inventory.Add(Collected);
+		}
 	}
 }
 
@@ -61,6 +98,7 @@ void UInventoryComponent::ClearItemsEndOfLevel()
 			Inventory.Add(ClothingItem->GetItemType());
 		}
 	}
+	SaveCollectablesData();
 
 	while (Outfit.Num() > 0)
 	{
