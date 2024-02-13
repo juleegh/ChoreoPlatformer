@@ -159,6 +159,25 @@ public:
 	int GetStepsByAccuracy(ETempoAccuracy Accuracy);
 	UFUNCTION(BlueprintCallable)
 	void GoToNextSection();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	TArray<FGameplayTag> GetItems();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FClothingItemInfo& GetClothingItem(FGameplayTag ItemType);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ULevelCompleteCollectable : public UChoreoActivatableWidget
+{
+	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintCallable, Category = "Collectable Button")
+	void SetupnVisuals(FClothingItemInfo ClothingInfo)
+	{
+		OnSetupVisuals(ClothingInfo);
+	}
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Collectable Button")
+	void OnSetupVisuals(FClothingItemInfo ClothingInfo);
 };
 
 UCLASS()

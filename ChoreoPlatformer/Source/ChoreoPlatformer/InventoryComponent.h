@@ -49,6 +49,7 @@ public:
 	bool HasHealthItem();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int HealthItemQuantity();
+	TArray<AClothingItem*> GetOutfit();
 	bool LoseHealthItem();
 	void ClearItemsEndOfLevel();
 	FName GetBodySection(FGameplayTag& ItemType);

@@ -71,6 +71,11 @@ bool UInventoryComponent::HasHealthItem()
 	return !Outfit.IsEmpty();
 }
 
+TArray<AClothingItem*> UInventoryComponent::GetOutfit()
+{
+	return Outfit;
+}
+
 int UInventoryComponent::HealthItemQuantity()
 {
 	return Outfit.Num();

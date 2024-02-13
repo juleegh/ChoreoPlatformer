@@ -155,6 +155,22 @@ int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
     return ComponentGetters::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(Accuracy);
 }
 
+TArray<FGameplayTag> ULevelCompleteUI::GetItems()
+{
+    TArray<FGameplayTag> Outfit;
+    auto InventoryOutfit = ComponentGetters::GetInventoryComponent(GetWorld())->GetOutfit();
+    for (auto ClothingItem : InventoryOutfit)
+    {
+        Outfit.Add(ClothingItem->GetItemType());
+    }
+    return Outfit;
+}
+
+FClothingItemInfo& ULevelCompleteUI::GetClothingItem(FGameplayTag ItemType)
+{
+    return *ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType);
+}
+
 void ULevelCompleteUI::GoToNextSection()
 {
     const FGameplayTag GTEndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
