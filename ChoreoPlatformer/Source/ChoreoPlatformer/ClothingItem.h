@@ -43,7 +43,7 @@ protected:
 	void LandedOnGround();
 public:
 	void OnEnterRange() override;
-	FGameplayTag GetItemType() { return ItemType; }
+	FGameplayTag& GetItemType() { return ItemType; }
 	UFUNCTION(BlueprintImplementableEvent)
 	void ToggleHighlight(bool activated);
 	void PutBack(FVector NewPosition = FVector(0,0,0), bool bToOriginalPosition = false);
