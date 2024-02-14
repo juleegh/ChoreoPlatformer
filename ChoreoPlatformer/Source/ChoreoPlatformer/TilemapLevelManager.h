@@ -14,6 +14,9 @@
 class UPaperTileMap;
 class AGridCell;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelStart);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelEnd);
+
 UCLASS(ClassGroup = (Custom))
 class CHOREOPLATFORMER_API ATilemapLevelManager : public AActor
 {
@@ -58,6 +61,10 @@ protected:
 	FGameplayTag CurrentSection;
 	UPROPERTY()
 	class ASectionStart* CurrentSectionStart;
+	UPROPERTY(BlueprintAssignable)
+	FLevelStart LevelStart;
+	UPROPERTY(BlueprintAssignable)
+	FLevelEnd LevelEnd;
 
 public:
 	void Initialize();
@@ -88,7 +95,6 @@ protected:
 	UPROPERTY()
 	TMap<FGameplayTag, int> Countdowns;
 
-	void HandleWidgetEvent(FGameplayTag TriggerTag);
 	void HandleCountdownEvent(FGameplayTag TriggerTag);
 	void HandleSectionEvent(FGameplayTag TriggerTag);
 

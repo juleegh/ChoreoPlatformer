@@ -134,6 +134,7 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(SectionEndTrigger);
 	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
 	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(GTEOL);
+	LevelEnd.Broadcast();
 }
 
 void ASectionLevelManager::NextSectionStart()
@@ -143,6 +144,7 @@ void ASectionLevelManager::NextSectionStart()
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
 		ComponentGetters::GetInventoryComponent(GetWorld())->ClearItemsEndOfLevel();
+		LevelStart.Broadcast();
 	}
 }
 
@@ -179,10 +181,6 @@ ULevelEventsComponent::ULevelEventsComponent()
 
 void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 {
-	if (LevelEvents->WidgetEvents.Contains(TriggerTag))
-	{
-		HandleWidgetEvent(TriggerTag);
-	}
 	if (LevelEvents->CountdownEvents.Contains(TriggerTag))
 	{
 		HandleCountdownEvent(TriggerTag);
@@ -191,21 +189,6 @@ void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 	{
 		HandleSectionEvent(TriggerTag);
 	}
-}
-
-void ULevelEventsComponent::HandleWidgetEvent(FGameplayTag TriggerTag)
-{
-	/*
-	auto EventInfo = LevelEvents->WidgetEvents[TriggerTag];
-	if (EventInfo.bSpawnsWidget)
-	{
-		ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(TriggerTag);
-	}
-	else
-	{
-		ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveGameWidget(TriggerTag);
-	}
-	*/
 }
 
 void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)

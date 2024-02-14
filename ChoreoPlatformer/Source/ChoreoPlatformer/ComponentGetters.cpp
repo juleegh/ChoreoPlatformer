@@ -86,3 +86,8 @@ UInventoryComponent* UComponentGettersFunctionLibrary::GetInventoryComponent(AAc
 {
 	return ComponentGetters::GetInventoryComponent(WorldContextActor->GetWorld());
 }
+
+ASectionLevelManager* UComponentGettersFunctionLibrary::GetSectionLevelManager(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetSectionLevelManager(WorldContextActor->GetWorld());
+}
