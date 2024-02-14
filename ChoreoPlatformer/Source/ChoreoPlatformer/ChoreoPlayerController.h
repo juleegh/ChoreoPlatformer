@@ -78,6 +78,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GoBackToMainMenu();
 	bool ShouldTakeDamage() { return bShouldTakeDamage; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool CanMove();
 	UFUNCTION(BlueprintCallable)
 	void TriggerCalibration();
 	void PauseGame(const FInputActionValue& Value);

@@ -102,15 +102,22 @@ void AChoreoPlayerController::TogglePause()
 	}
 }
 
-void AChoreoPlayerController::Move(const FInputActionValue& Value)
+bool AChoreoPlayerController::CanMove()
 {
 	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
 	if (!InGame() || IsPaused() || DancerUI->GetGameUI()->IsScreenActive(GTEOL) || bIsDead)
 	{
-		return;
+		return false;
 	}
+	return true;
+}
 
-	CheckMovement(Value.Get<FVector>());
+void AChoreoPlayerController::Move(const FInputActionValue& Value)
+{
+	if (CanMove())
+	{
+		CheckMovement(Value.Get<FVector>());
+	}
 }
 	
 void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)

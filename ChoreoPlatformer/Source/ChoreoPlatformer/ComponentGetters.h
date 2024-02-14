@@ -44,4 +44,6 @@ public:
 	static UInventoryComponent* GetInventoryComponent(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static USongTempoComponent* GetSongTempoComponent(AActor* WorldContextActor);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static AChoreoPlayerController* GetChoreoPlayerController(AActor* WorldContextActor);
 };
