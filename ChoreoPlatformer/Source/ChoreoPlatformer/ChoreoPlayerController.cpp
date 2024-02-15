@@ -49,10 +49,15 @@ void AChoreoPlayerController::BeginPlay()
 	else
 	{
 		DancerUI->GetGameUI()->LoadGame();
-		if (!bBypassCalibration)
-		{
-			TriggerCalibration();
-		}
+		CheckForCalibration();
+	}
+}
+
+void AChoreoPlayerController::CheckForCalibration()
+{
+	if (!bBypassCalibration)
+	{
+		TriggerCalibration();
 	}
 }
 

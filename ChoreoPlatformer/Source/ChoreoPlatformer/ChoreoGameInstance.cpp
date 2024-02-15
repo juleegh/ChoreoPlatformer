@@ -33,6 +33,7 @@ void UChoreoGameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
     {
         ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->LoadGame();
         ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(CurrentLevel);
+        ComponentGetters::GetController(GetWorld())->CheckForCalibration();
     }
     else
     {

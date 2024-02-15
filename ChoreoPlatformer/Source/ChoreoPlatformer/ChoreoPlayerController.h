@@ -60,6 +60,7 @@ protected:
 
 public:
 	AChoreoPlayerController();
+	void CheckForCalibration();
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UCommonActivatableWidget> GameUIClass;
 	UFUNCTION(BlueprintCallable, BlueprintPure)
