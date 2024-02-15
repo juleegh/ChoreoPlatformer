@@ -30,6 +30,8 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	bool bMetallic;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
+	bool bRandomRotation;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	float OcclusionDistance = 400;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	float OcclusionVolume = 700;

@@ -81,6 +81,13 @@ void ACityMesh::CheckTiling()
 		if (Tiled != ObjectMesh)
 		{
 			Tiled->SetRelativeLocation(FVector(column * XDistance, 0, row * YDistance));
+			Tiled->SetRelativeRotation(FRotator(0));
+			if (bRandomRotation)
+			{
+				float Rot = FMath::RandRange(0, 360);
+				int Angle = Rot / 90;
+				Tiled->SetRelativeRotation(FRotator(0, Angle * 90, 0));
+			}
 		}
 		column++;
 		if (column >= Width)
