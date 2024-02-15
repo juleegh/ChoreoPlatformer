@@ -84,6 +84,8 @@ public:
 	bool IsScreenActive(const FGameplayTag& Screen);
 	UFUNCTION(BlueprintCallable)
 	void RemoveWidgetFromPile(const FGameplayTag& Identifier);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ToggleBackground(bool bVisibility);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget Classes")
@@ -117,6 +119,7 @@ public:
 	UGameUI* GetGameUI() { return GameUI; }
 	void Confirm(const FInputActionValue& Value);
 	void Cancel(const FInputActionValue& Value);
+	
 protected:
 	UPROPERTY()
 	UGameUI* GameUI;
