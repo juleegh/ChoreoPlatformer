@@ -240,6 +240,11 @@ void UProjectileTimelineComponent::LandedCallback(float interpolatedVal)
 void USpritesTimelineComponent::SetSprites(TArray<UPaperSpriteComponent*> NewSprites)
 {
 	Sprites = NewSprites;
+	ShineMat = Sprites[0]->CreateDynamicMaterialInstance(0, Sprites[0]->GetMaterial(0));
+	for (auto Sprite : Sprites)
+	{
+		Sprite->SetMaterial(0, ShineMat);
+	}
 }
 
 void USpritesTimelineComponent::Blink()
@@ -256,6 +261,11 @@ void USpritesTimelineComponent::ChangeColor(FColor newColor)
 	{
 		Sprite->SetSpriteColor(newColor);
 	}
+}
+
+void USpritesTimelineComponent::ChangeBrightness(float Brightness)
+{
+	ShineMat->SetScalarParameterValue(FName("Brightness"), Brightness);
 }
 
 void USpritesTimelineComponent::OpacityCallback(float interpolatedVal)

@@ -173,7 +173,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	if (!NextTile.HitCell || NextTile.TileType == ETempoTile::Blocker)
+	if (!NextTile.HitCell)
 	{
 		return;
 	}

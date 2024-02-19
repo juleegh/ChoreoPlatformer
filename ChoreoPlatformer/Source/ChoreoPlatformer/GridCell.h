@@ -40,6 +40,8 @@ protected:
 	FColor TriggerColor;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	FColor ItemColor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	FColor ExitColor;
 
 public:	
 	// Called every frame
@@ -56,4 +58,6 @@ public:
 	void PromptItem();
 	void PromptTrigger();
 	void PromptDamage();
+	UFUNCTION(BlueprintCallable)
+	void ToggleStaticTrigger(FColor Color, bool bVisible);
 };

@@ -10,7 +10,7 @@ enum class ETempoTile : uint8
 {
 	Black,
 	Half,
-	Blocker,
+	Ending,
 	ForceUp,
 	ForceDown,
 	ForceLeft,

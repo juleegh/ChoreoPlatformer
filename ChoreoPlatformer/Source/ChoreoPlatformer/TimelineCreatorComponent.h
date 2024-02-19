@@ -125,6 +125,7 @@ public:
 
     void Blink();
     void ChangeColor(FColor newColor);
+    void ChangeBrightness(float Brightness);
     UFUNCTION()
     void OpacityCallback(float val);
 
@@ -136,6 +137,8 @@ protected:
     float TargetOpacity;
     UPROPERTY()
     TArray<class UPaperSpriteComponent*> Sprites;
+    UPROPERTY()
+    class UMaterialInstanceDynamic* ShineMat;
 };
 
 UCLASS()

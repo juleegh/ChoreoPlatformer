@@ -190,7 +190,7 @@ FVector UDanceUtilsFunctionLibrary::GetAvailablePosition(AActor* Player, int Rad
 			}
 			FVector TempPosition = PlayerPosition + FVector::RightVector * 100 * column + FVector::ForwardVector * 100 * row;
 			FTileInfo Tile = CheckPosition({Player}, TempPosition);
-			if (!Tile.HitCell || Tile.bHitElement || Tile.bHitEnemy || Tile.TileType == ETempoTile::Blocker)
+			if (!Tile.HitCell || Tile.bHitElement || Tile.bHitEnemy)
 			{
 				continue;
 			}
