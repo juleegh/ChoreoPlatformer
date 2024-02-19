@@ -33,6 +33,9 @@ public:
 	virtual EMoveResult TriggerInteraction() { return EMoveResult::None; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanInteract() { return !bFinished; }
+	virtual void Reset();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnReset();
 };
 
 UCLASS()
@@ -57,6 +60,7 @@ class CHOREOPLATFORMER_API ADoor : public AContextualElement
 public:
 	ADoor() {}
 	void Open();
+	void Reset() override;
 
 protected:
 	EMoveResult TriggerInteraction() override;

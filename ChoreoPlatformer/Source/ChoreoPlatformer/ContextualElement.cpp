@@ -30,6 +30,12 @@ void AContextualElement::ToggleHighlight(bool activated)
 	}
 }
 
+void AContextualElement::Reset()
+{
+	bFinished = false;
+	OnReset();
+}
+
 EMoveResult ABrickWall::TriggerInteraction()
 {
 	HitsLeft--;
@@ -46,6 +52,12 @@ void ADoor::Open()
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	bFinished = true;
 	RefreshState();
+}
+
+void ADoor::Reset()
+{
+	Super::Reset();
+	BoxComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 }
 
 EMoveResult ADoor::TriggerInteraction()
@@ -68,7 +80,6 @@ EMoveResult ALever::TriggerInteraction()
 			}
 		}
 		bFinished = true;
-		ConnectedDoors.Empty();
 		return EMoveResult::ActionCompleted;
 	}
 	return EMoveResult::None;

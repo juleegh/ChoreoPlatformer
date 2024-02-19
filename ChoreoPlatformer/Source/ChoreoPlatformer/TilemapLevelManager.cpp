@@ -88,6 +88,16 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 			Enemy->SetupEnemy();
 		}
 	}
+
+	TArray<AActor*> GameplayElements;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AContextualElement::StaticClass(), GameplayElements);
+	for (auto Actor : GameplayElements)
+	{
+		if (auto Element = Cast<AContextualElement>(Actor))
+		{
+			Element->Reset();
+		}
+	}
 }
 
 void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
