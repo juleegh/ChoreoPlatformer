@@ -4,7 +4,6 @@
 #include "Paper2D/Classes/PaperSpriteComponent.h"
 #include "ChoreoPlayerController.h"
 #include "Components/SplineComponent.h"
-#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimelineCreatorComponent.h"
@@ -15,11 +14,6 @@
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
-	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	BoxComponent->SetupAttachment(RootComponent);
 
 	AttackIndicator = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Next Position"));
 	AttackIndicator->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -52,8 +46,6 @@ void AEnemy::BeginPlay()
 	ScaleTimeline->Initialize();
 	ColorTimeline->AddMesh(GetMesh());
 	ScaleTimeline->ScalingActor = AttackIndicator;
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeBegin);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnOverlapRangeEnd);
 }
 
 void AEnemy::SetupEnemy()
@@ -81,8 +73,7 @@ void AEnemy::Tick(float DeltaTime)
 	{
 		return;
 	}
-	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
-	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo);
+	float Result = SongTempo->TempoResult(CurrentSpeed);
 
 	if (hasDoneTempoAction)
 	{
@@ -96,36 +87,21 @@ void AEnemy::Tick(float DeltaTime)
 		if (Result <= UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
 		{
 			hasDoneTempoAction = true;
+			FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+			CurrentSpeed = CurrentTile.TargetTempo;
 			DoTempoAction();
 		}
 	}
 }
 
-void AEnemy::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemy::DoDamage(FVector DamageArea)
 {
-	if (auto character = Cast<ADanceCharacter>(OtherActor))
+	FTileInfo CurrentDamage = UDanceUtilsFunctionLibrary::CheckPosition({ this }, DamageArea);
+	if (CurrentDamage.HitCell)
 	{
-		PlayerCharacter = character;
-		if (!MoveTimeline->IsRunning())
-		{
-			ComponentGetters::GetDancerHealthComponent(GetWorld())->TakeHit();
-			PlayerCharacter = nullptr;
-		}
+		CurrentDamage.HitCell->PromptDamage();
 	}
-}
-
-void AEnemy::OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (auto character = Cast<ADanceCharacter>(OtherActor))
-	{
-		PlayerCharacter = nullptr;
-	}
-}
-
-
-void AEnemy::DoTempoAction()
-{
-	if (PlayerCharacter)
+	if (CurrentDamage.bHitPlayer)
 	{
 		ComponentGetters::GetDancerHealthComponent(GetWorld())->TakeHit();
 	}
@@ -144,6 +120,7 @@ void ASplinedEnemy::BeginPlay()
 	{
 		PatrolPoints.Add(GetWorldLocationByIndex(i));
 	}
+	PatrolIndex = 0;
 }
 
 FVector ASplinedEnemy::GetWorldLocationByIndex(int Index) const
@@ -193,6 +170,7 @@ void AWalkingEnemy::DoTempoAction()
 	{
 		return;
 	}
+	DoDamage(PatrolPoints[PatrolIndex]);
 
 	PatrolIndex++;
 	if (PatrolIndex == GetLastIndex())
@@ -209,10 +187,6 @@ void AWalkingEnemy::DoTempoAction()
 	MoveTimeline->MoveToPosition(NextTile.Position, Speed);
 	ScaleTimeline->ScaleUp(FVector::Zero(), FVector::One(), Speed);
 	ColorTimeline->Blink();
-	if (CurrentTile.HitCell)
-	{
-		CurrentTile.HitCell->PromptDamage();
-	}
 	StartedWalking();
 	MarkNextTarget();
 }
@@ -242,6 +216,8 @@ void ARotatingEnemy::DoTempoAction()
 		return;
 	}
 
+	DoDamage(PatrolPoints[PatrolIndex]);
+	DoDamage(GetActorLocation());
 	PatrolIndex++;
 	if (PatrolIndex == GetLastIndex())
 	{
@@ -257,10 +233,7 @@ void ARotatingEnemy::DoTempoAction()
 	MoveTimeline->RotateToPosition(Rotation, Speed);
 	ScaleTimeline->ScaleUp(FVector::Zero(), FVector::One(), Speed);
 	ColorTimeline->Blink();
-	if (HitTile.HitCell)
-	{
-		HitTile.HitCell->PromptDamage();
-	}
+	
 	StartedRotating(rotDirection);
 	MarkNextTarget();
 }

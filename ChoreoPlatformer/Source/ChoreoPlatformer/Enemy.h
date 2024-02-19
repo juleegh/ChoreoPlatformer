@@ -18,15 +18,11 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UBoxComponent* BoxComponent;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UPaperSpriteComponent* AttackIndicator;
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;
 	UPROPERTY()
 	class AChoreoPlayerController* PlayerController;
-	UPROPERTY()
-	class ADanceCharacter* PlayerCharacter;
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;
 	UPROPERTY()
@@ -37,15 +33,14 @@ protected:
 	FGameplayTag Section = FGameplayTag::EmptyTag;
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
+	UPROPERTY()
+	float CurrentSpeed = 1;
 
 	bool hasDoneTempoAction;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION()
-	void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnOverlapRangeEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	virtual void DoTempoAction();
+	virtual void DoTempoAction() {}
+	virtual void DoDamage(FVector DamageArea);
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartedWalking();
 	UFUNCTION(BlueprintImplementableEvent)

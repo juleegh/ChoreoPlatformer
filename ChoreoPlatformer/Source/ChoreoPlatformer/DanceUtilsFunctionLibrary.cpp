@@ -54,13 +54,12 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 
 	FVector End = ((-FVector::ZAxisVector * 1010) + Start);
 	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(ComponentGetters::GetDanceCharacter(ToIgnore[0]->GetWorld()));
 	for (auto ignore : ToIgnore)
 	{
 		CollisionParams.AddIgnoredActor(ignore);
 	}
 
-	//DrawDebugLine(ToIgnore->GetWorld(), Start, End, FColor::Red, false, 1, 0, 5);
+	//DrawDebugLine(ToIgnore[0]->GetWorld(), Start, End, FColor::Red, false, 1, 0, 5);
 
 	if (ToIgnore[0]->GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_WorldDynamic, CollisionParams))
 	{
@@ -77,6 +76,12 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 			if (auto enemy = Cast<AEnemy>(hit.GetActor()))
 			{
 				DetectedInfo.bHitEnemy = true;
+			}
+
+			if (auto player = Cast<ADanceCharacter>(hit.GetActor()))
+			{
+				DetectedInfo.bHitPlayer = true;
+				DetectedInfo.Position = player->GetActorLocation();
 			}
 			
 			if (auto gridCell = Cast<AGridCell>(hit.GetActor()))
