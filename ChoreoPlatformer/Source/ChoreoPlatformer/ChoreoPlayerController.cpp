@@ -196,17 +196,17 @@ void AChoreoPlayerController::OnPlayerDied()
 {
 	DanceCharacter->StopMovement();
 
-	float DelayDuration = 1.0f;
+	float DelayDuration = 2.0f;
 	FTimerDelegate TimerCallback;
 	TimerCallback.BindUFunction(this, FName("RespawnPlayer"));
 	bIsDead = true;
 	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
-	LevelProgress->LoadCheckpoint();
 }
 
 void AChoreoPlayerController::RespawnPlayer()
 {
 	bIsDead = false;
+	LevelProgress->LoadCheckpoint();
 }
 
 void AChoreoPlayerController::TriggerResultFeedback(float Result)
