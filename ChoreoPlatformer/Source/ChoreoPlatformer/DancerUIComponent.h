@@ -181,6 +181,15 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Collectable Button")
 	void OnSetupVisuals(FClothingItemInfo ClothingInfo);
+
+	UFUNCTION(BlueprintCallable, Category = "Collectable Button")
+	void OnToggleOff()
+	{
+		ToggleOff();
+	}
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Collectable Button")
+	void ToggleOff();
 };
 
 UCLASS()
