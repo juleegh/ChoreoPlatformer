@@ -55,10 +55,10 @@ void AChoreoPlayerController::BeginPlay()
 
 void AChoreoPlayerController::CheckForCalibration()
 {
+#if WITH_EDITOR
 	if (!bBypassCalibration)
-	{
+#endif
 		TriggerCalibration();
-	}
 }
 
 void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
@@ -180,7 +180,12 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	TriggerResultFeedback(Result);
 
-	if (SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) || bBypassOutOfTempo)
+	bool bIsOnTempo = SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true);
+#if WITH_EDITOR
+	bIsOnTempo = bIsOnTempo || bBypassOutOfTempo;
+#endif
+
+	if (bIsOnTempo)
 	{
 		DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
 		DancerUI->GetGameUI()->PromptTempoResult(CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK, true);
@@ -201,6 +206,14 @@ void AChoreoPlayerController::OnPlayerDied()
 	TimerCallback.BindUFunction(this, FName("RespawnPlayer"));
 	bIsDead = true;
 	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
+}
+
+bool AChoreoPlayerController::ShouldTakeDamage()
+{
+#if WITH_EDITOR
+	return bShouldTakeDamage;
+#endif
+	return true;
 }
 
 void AChoreoPlayerController::RespawnPlayer()

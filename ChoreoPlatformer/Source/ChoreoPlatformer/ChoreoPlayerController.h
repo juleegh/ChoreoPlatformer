@@ -78,7 +78,7 @@ public:
 	void GoToLevel(const FGameplayTag Level);
 	UFUNCTION(BlueprintCallable)
 	void GoBackToMainMenu();
-	bool ShouldTakeDamage() { return bShouldTakeDamage; }
+	bool ShouldTakeDamage();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanMove();
 	UFUNCTION(BlueprintCallable)
