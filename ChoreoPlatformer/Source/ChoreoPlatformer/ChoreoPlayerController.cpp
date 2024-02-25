@@ -70,6 +70,7 @@ void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 	}
 	else if (UWorld* World = GetWorld())
 	{
+
 		FString LevelName = "C1_AncientCity";
 		if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
 		{
@@ -86,7 +87,7 @@ void AChoreoPlayerController::GoBackToMainMenu()
 	{
 		return;
 	}
-	
+
 	if (UWorld* World = GetWorld())
 	{
 		FString LevelName = "GameIntro";
@@ -124,7 +125,7 @@ void AChoreoPlayerController::Move(const FInputActionValue& Value)
 		CheckMovement(Value.Get<FVector>());
 	}
 }
-	
+
 void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)
 {
 	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
@@ -155,17 +156,28 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
 
-	if (CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction)
+	bool bCantPass = CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction;
+#if WITH_EDITOR
+	bCantPass = bCantPass && !bBypassObstacles;
+#endif
+
+	if (bCantPass)
 	{
 		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection, false);
 		MoveBlocked.Broadcast();
 		return;
 	}
 
-	if (NextTile.bHitElement)
+	bool bHitElement = NextTile.bHitElement;
+#if WITH_EDITOR
+	bHitElement = bHitElement && !bBypassObstacles;
+#endif
+
+	if (bHitElement)
 	{
 		auto Interaction = NextTile.HitElement->TriggerInteraction();
 		DancerUI->GetGameUI()->PromptTempoResult(Interaction, Interaction == EMoveResult::ActionCompleted);
+
 		if (Interaction == EMoveResult::Blocked)
 		{
 			MoveBlocked.Broadcast();

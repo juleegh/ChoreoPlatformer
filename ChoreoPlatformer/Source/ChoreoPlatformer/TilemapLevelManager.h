@@ -75,6 +75,7 @@ public:
 	const FGameplayTag& GetStartSection() { return StartSection; };
 	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
 	void CurrentSectionEnd(class ASectionStart* NextSection);
+	void CurrentSectionEnd(FGameplayTag NextSection);
 	UFUNCTION(BlueprintCallable)
 	void NextSectionStart();
 	void StartFromSection(const FGameplayTag SectionIdentifier);

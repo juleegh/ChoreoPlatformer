@@ -122,8 +122,6 @@ void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGam
 void ASectionLevelManager::Initialize()
 {
 	CurrentSection = StartSection;
-	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(CurrentSection);
-
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
 	PlayCurrentSection();
@@ -132,16 +130,25 @@ void ASectionLevelManager::Initialize()
 	SongTempo->StartTempoCounting();
 }
 
-void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
+void ASectionLevelManager::CurrentSectionEnd(ASectionStart* NextSection)
 {
 	if (!NextSection->GetSectionIdentifier().IsValid())
 	{
 		return;
 	}
-	CurrentSection = NextSection->GetSectionIdentifier();
+	CurrentSectionEnd(NextSection->GetSectionIdentifier());
 	CurrentSectionStart = NextSection;
+}
 
-	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(SectionEndTrigger);
+void ASectionLevelManager::CurrentSectionEnd(FGameplayTag NextSection)
+{
+	if (!NextSection.IsValid())
+	{
+		return;
+	}
+	CurrentSection = NextSection;
+	CurrentSectionStart = nullptr;
+
 	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
 	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(GTEOL);
 	LevelEnd.Broadcast();
@@ -149,6 +156,13 @@ void ASectionLevelManager::CurrentSectionEnd(class ASectionStart* NextSection)
 
 void ASectionLevelManager::NextSectionStart()
 {
+	if (CurrentSection.MatchesTag(FGameplayTag::RequestGameplayTag("Level.MainMenu")))
+	{
+		LevelStart.Broadcast();
+		ComponentGetters::GetController(GetWorld())->GoBackToMainMenu();
+		return;
+	}
+	
 	if (CurrentSection.IsValid())
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
@@ -227,6 +241,7 @@ void ULevelEventsComponent::HandleSectionEvent(FGameplayTag TriggerTag)
 			return;
 		}
 	}
+	ComponentGetters::GetSectionLevelManager(GetWorld())->CurrentSectionEnd(TriggerTag);
 }
 
 AEventTrigger::AEventTrigger()

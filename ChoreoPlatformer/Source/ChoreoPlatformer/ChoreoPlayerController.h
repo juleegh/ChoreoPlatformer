@@ -42,6 +42,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bShouldTakeDamage = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	bool bBypassObstacles = false;
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassOutOfTempo = true;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassCalibration = false;
