@@ -73,6 +73,7 @@ void AEnemy::Tick(float DeltaTime)
 	{
 		return;
 	}
+	float CurrentSpeed = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation()).TargetTempo;
 	float Result = SongTempo->TempoResult(CurrentSpeed);
 
 	if (hasDoneTempoAction)
@@ -87,8 +88,6 @@ void AEnemy::Tick(float DeltaTime)
 		if (Result <= UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
 		{
 			hasDoneTempoAction = true;
-			FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
-			CurrentSpeed = CurrentTile.TargetTempo;
 			DoTempoAction();
 		}
 	}

@@ -33,8 +33,6 @@ protected:
 	FGameplayTag Section = FGameplayTag::EmptyTag;
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
-	UPROPERTY()
-	float CurrentSpeed = 1;
 
 	bool hasDoneTempoAction;
 	virtual void BeginPlay() override;
