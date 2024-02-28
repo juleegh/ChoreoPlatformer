@@ -97,3 +97,8 @@ AChoreoPlayerController* UComponentGettersFunctionLibrary::GetChoreoPlayerContro
 	auto DanceController = WorldContextActor->GetWorld()->GetFirstPlayerController();
 	return Cast<AChoreoPlayerController>(DanceController);
 }
+
+ULevelEventsComponent* UComponentGettersFunctionLibrary::GetLevelEventsComponent(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetLevelEventsComponent(WorldContextActor->GetWorld());
+}

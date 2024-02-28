@@ -206,4 +206,16 @@ FVector UDanceUtilsFunctionLibrary::GetAvailablePosition(AActor* Player, int Rad
 	return PlayerPosition;
 }
 
-
+FGameplayTag UDanceUtilsFunctionLibrary::FindInContainer(FGameplayTagContainer Container, FGameplayTag Parent)
+{
+	TArray<FGameplayTag> ContainerTags;
+	Container.GetGameplayTagArray(ContainerTags);
+	for (FGameplayTag Tag : ContainerTags)
+	{
+		if (Tag.MatchesTag(Parent))
+		{
+			return Tag;
+		}
+	}
+	return Parent;
+}

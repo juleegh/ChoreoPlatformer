@@ -87,3 +87,17 @@ struct CHOREOPLATFORMER_API FClothingItemInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMesh* Mesh;
 };
+
+USTRUCT(BlueprintType)
+struct CHOREOPLATFORMER_API FLevelEventInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	FLevelEventInfo() {}
+	FLevelEventInfo(FGameplayTag Trigger) : EventTrigger(Trigger) {}
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "EventInfo"))
+	FGameplayTag EventTrigger;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "EventInfo"))
+	FGameplayTagContainer FlavorTriggers;
+};

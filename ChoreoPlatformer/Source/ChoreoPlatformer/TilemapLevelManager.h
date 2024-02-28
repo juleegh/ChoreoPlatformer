@@ -95,12 +95,17 @@ protected:
 	UEventsDataAsset* LevelEvents;
 	UPROPERTY()
 	TMap<FGameplayTag, int> Countdowns;
+	UPROPERTY()
+	FLevelEventInfo LastEventData;
 
 	void HandleCountdownEvent(FGameplayTag TriggerTag);
 	void HandleSectionEvent(FGameplayTag TriggerTag);
+	void ActivateTrigger(FGameplayTag TriggerTag);
 
 public:
-	void ActivateTrigger(FGameplayTag TriggerTag);
+	void HandleEvent(FLevelEventInfo LevelEventInfo);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FLevelEventInfo GetLastEventData() { return LastEventData; }
 };
 
 UCLASS()
@@ -110,15 +115,19 @@ class CHOREOPLATFORMER_API AEventTrigger : public AActor
 
 public:
 	AEventTrigger();
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetFlavorTrigger() { return FlavorTrigger; }
 
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		class UBoxComponent* BoxComponent;
 	UPROPERTY(EditInstanceOnly)
-		FGameplayTag ActorTrigger;
+	FGameplayTag ActorTrigger;
+	UPROPERTY(EditInstanceOnly)
+	FGameplayTag FlavorTrigger;
 	UFUNCTION()
-		void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
 
 UCLASS()

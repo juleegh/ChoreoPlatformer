@@ -46,4 +46,6 @@ public:
 	static USongTempoComponent* GetSongTempoComponent(AActor* WorldContextActor);
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
 	static AChoreoPlayerController* GetChoreoPlayerController(AActor* WorldContextActor);
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (WorldContext = "WorldContextActor"))
+	static ULevelEventsComponent* GetLevelEventsComponent(AActor* WorldContextActor);
 };

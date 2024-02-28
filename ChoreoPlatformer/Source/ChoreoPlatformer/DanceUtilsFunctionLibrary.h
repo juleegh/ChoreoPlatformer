@@ -38,4 +38,6 @@ public:
 	static TArray<AActor*> GetAdjacent(class AActor* ToIgnore, FVector Position, int Radius);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FVector GetAvailablePosition(class AActor* Player, int Radius);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FGameplayTag FindInContainer(FGameplayTagContainer Container, FGameplayTag ParentTag);
 };

@@ -203,6 +203,12 @@ ULevelEventsComponent::ULevelEventsComponent()
 	}
 }
 
+void ULevelEventsComponent::HandleEvent(FLevelEventInfo EventInfo)
+{
+	LastEventData = EventInfo;
+	ActivateTrigger(EventInfo.EventTrigger);
+}
+
 void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 {
 	if (LevelEvents->CountdownEvents.Contains(TriggerTag))
@@ -261,7 +267,10 @@ void AEventTrigger::BeginPlay()
 
 void AEventTrigger::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ComponentGetters::GetLevelEventsComponent(GetWorld())->ActivateTrigger(ActorTrigger);
+	FLevelEventInfo EventInfo;
+	EventInfo.EventTrigger = ActorTrigger;
+	EventInfo.FlavorTriggers.AddTag(FlavorTrigger);
+	ComponentGetters::GetLevelEventsComponent(GetWorld())->HandleEvent(EventInfo);
 }
 
 
