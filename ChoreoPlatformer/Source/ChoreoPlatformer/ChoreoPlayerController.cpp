@@ -120,9 +120,15 @@ bool AChoreoPlayerController::CanMove()
 
 void AChoreoPlayerController::Move(const FInputActionValue& Value)
 {
+	FVector Direction = Value.Get<FVector>();
+	if (Direction.X != 0 && Direction.Y != 0)
+	{
+		Direction.Y = 0;
+	}
+
 	if (CanMove())
 	{
-		CheckMovement(Value.Get<FVector>());
+		CheckMovement(Direction);
 	}
 }
 
