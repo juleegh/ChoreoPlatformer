@@ -196,7 +196,8 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		return;
 	}
 
-	TriggerResultFeedback(Result);
+	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
 
 	bool bIsOnTempo = SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true);
 #if WITH_EDITOR
@@ -206,13 +207,15 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (bIsOnTempo)
 	{
 		DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
-		DancerUI->GetGameUI()->PromptTempoResult(CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK, true);
+		DancerUI->GetGameUI()->PromptTempoResult(MoveResult, true);
 	}
 	else
 	{
 		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
+		MoveResult = EMoveResult::Bad;
 		DanceCharacter->MoveFailed.Broadcast();
 	}
+	ComponentGetters::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result), MoveResult);
 }
 
 void AChoreoPlayerController::OnPlayerDied()
@@ -238,12 +241,6 @@ void AChoreoPlayerController::RespawnPlayer()
 {
 	bIsDead = false;
 	LevelProgress->LoadCheckpoint();
-}
-
-void AChoreoPlayerController::TriggerResultFeedback(float Result)
-{
-	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
-	ComponentGetters::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 }
 
 void AChoreoPlayerController::TriggerCalibration()

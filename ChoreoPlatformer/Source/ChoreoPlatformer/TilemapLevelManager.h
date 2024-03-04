@@ -71,7 +71,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCurrentSection();
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayTempoResult(ETempoAccuracy Result);
+	void PlayTempoResult(ETempoAccuracy AccuracyResult, EMoveResult MoveResult);
 	const FGameplayTag& GetStartSection() { return StartSection; };
 	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
 	void CurrentSectionEnd(class ASectionStart* NextSection);
