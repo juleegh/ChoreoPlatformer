@@ -89,6 +89,17 @@ struct CHOREOPLATFORMER_API FClothingItemInfo : public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
+struct CHOREOPLATFORMER_API FTileSpriteInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Icon"))
+	class UPaperSprite* Icon;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Color"))
+	FColor Color;
+};
+
+USTRUCT(BlueprintType)
 struct CHOREOPLATFORMER_API FLevelEventInfo : public FTableRowBase
 {
 	GENERATED_BODY()

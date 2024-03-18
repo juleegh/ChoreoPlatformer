@@ -35,13 +35,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	class USpritesTimelineComponent* SpritesTimeline;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
-	FColor DamageColor;
+	TMap<FGameplayTag, FTileSpriteInfo> SpritesInfo;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
-	FColor TriggerColor;
+	FGameplayTag DamageType;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
-	FColor ItemColor;
+	FGameplayTag TriggerType;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
-	FColor ExitColor;
+	FGameplayTag ItemType;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	FGameplayTag ExitType;
 
 public:	
 	// Called every frame
@@ -59,5 +61,5 @@ public:
 	void PromptTrigger();
 	void PromptDamage();
 	UFUNCTION(BlueprintCallable)
-	void ToggleStaticTrigger(FColor Color, bool bVisible);
+	void ToggleStaticTrigger(const FGameplayTag& SpriteType, bool bVisible);
 };

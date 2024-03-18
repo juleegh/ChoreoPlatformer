@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Paper2D/Classes/PaperSpriteComponent.h"
+#include "Engine/DataTable.h"
 #include "Math/UnrealMathUtility.h"
 
 UTimelineCreatorComponent::UTimelineCreatorComponent()
@@ -190,7 +191,6 @@ void UColorTimelineComponent::AddMesh(UMeshComponent* Mesh)
 void UColorTimelineComponent::Blink()
 {
 	OriginBrightness = 0;
-	TargetBrightness = 0.25f;
 	TimelineTick.BindDynamic(this, &UColorTimelineComponent::BlinkCallback);
 	PlayTimeline();
 }
@@ -250,16 +250,16 @@ void USpritesTimelineComponent::SetSprites(TArray<UPaperSpriteComponent*> NewSpr
 void USpritesTimelineComponent::Blink()
 {
 	OriginOpacity = 0;
-	TargetOpacity = 1.f;
 	TimelineTick.BindDynamic(this, &USpritesTimelineComponent::OpacityCallback);
 	PlayTimeline();
 }
 
-void USpritesTimelineComponent::ChangeColor(FColor newColor)
+void USpritesTimelineComponent::ChangeType(const FTileSpriteInfo& SpriteType)
 {
 	for (auto Sprite : Sprites)
 	{
-		Sprite->SetSpriteColor(newColor);
+		Sprite->SetSpriteColor(SpriteType.Color);
+		Sprite->SetSprite(SpriteType.Icon);
 	}
 }
 

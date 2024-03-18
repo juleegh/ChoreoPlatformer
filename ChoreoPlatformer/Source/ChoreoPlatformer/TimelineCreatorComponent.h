@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/TimelineComponent.h"
+#include "DanceDefinitions.h"
 #include "Components/ActorComponent.h"
 #include "TimelineCreatorComponent.generated.h"
 
@@ -107,8 +108,8 @@ protected:
 
     UPROPERTY()
     float OriginBrightness;
-    UPROPERTY()
-    float TargetBrightness;
+    UPROPERTY(BlueprintReadWrite)
+    float TargetBrightness = 1;
     UPROPERTY()
     class UMaterialInstanceDynamic* ShineMat;
 };
@@ -124,17 +125,18 @@ public:
     void Reset() override;
 
     void Blink();
-    void ChangeColor(FColor newColor);
+    void ChangeType(const FTileSpriteInfo& spriteType);
     void ChangeBrightness(float Brightness);
     UFUNCTION()
     void OpacityCallback(float val);
 
 protected:
-
     UPROPERTY()
     float OriginOpacity;
-    UPROPERTY()
-    float TargetOpacity;
+    UPROPERTY(BlueprintReadWrite)
+    float TargetOpacity = 1;
+    UPROPERTY(BlueprintReadWrite)
+    TObjectPtr<class UTexture2D> SpriteTexture;
     UPROPERTY()
     TArray<class UPaperSpriteComponent*> Sprites;
     UPROPERTY()

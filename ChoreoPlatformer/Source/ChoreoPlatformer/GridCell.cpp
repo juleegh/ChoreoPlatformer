@@ -30,7 +30,7 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 {
 	TileType = Properties;
 	Section = BelongingSection;
-	ToggleStaticTrigger(ExitColor, Properties == ETempoTile::Ending);
+	ToggleStaticTrigger(ExitType, Properties == ETempoTile::Ending);
 	PaintTile();
 }
 
@@ -84,25 +84,26 @@ FGameplayTag& AGridCell::GetSection()
 
 void AGridCell::PromptItem()
 {
-	SpritesTimeline->ChangeColor(ItemColor);
+	SpritesTimeline->ChangeType(SpritesInfo[ItemType]);
 	SpritesTimeline->Blink();
 }
 
 void AGridCell::PromptTrigger()
 {
-	SpritesTimeline->ChangeColor(TriggerColor);
+	SpritesTimeline->ChangeType(SpritesInfo[TriggerType]);
 	SpritesTimeline->Blink();
 }
 
 void AGridCell::PromptDamage()
 {
-	SpritesTimeline->ChangeColor(DamageColor);
+	SpritesTimeline->ChangeType(SpritesInfo[DamageType]);
 	SpritesTimeline->Blink();
 }
 
-void AGridCell::ToggleStaticTrigger(FColor Color, bool bVisible)
+void AGridCell::ToggleStaticTrigger(const FGameplayTag& SpriteType, bool bVisible)
 {
-	Color.A = bVisible;
-	SpritesTimeline->ChangeColor(Color);
+	auto Properties = SpritesInfo[SpriteType];
+	Properties.Color.A = bVisible;
+	SpritesTimeline->ChangeType(Properties);
 	SpritesTimeline->ChangeBrightness(bVisible ? 1 : 0.2f);
 }
