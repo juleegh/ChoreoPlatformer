@@ -18,7 +18,7 @@
 void ATilemapLevelManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	TArray<AActor*> LevelManager;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), LevelManager);
 
@@ -78,7 +78,7 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 
 		TileMapActor->SetActorHiddenInGame(true);
 	}
-	
+
 	TArray<AActor*> Enemies;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy::StaticClass(), Enemies);
 	for (auto Actor : Enemies)
@@ -156,18 +156,18 @@ void ASectionLevelManager::CurrentSectionEnd(FGameplayTag NextSection)
 
 void ASectionLevelManager::NextSectionStart()
 {
+	ComponentGetters::GetInventoryComponent(GetWorld())->ClearItemsEndOfLevel();
 	if (CurrentSection.MatchesTag(FGameplayTag::RequestGameplayTag("Level.MainMenu")))
 	{
 		LevelStart.Broadcast();
 		ComponentGetters::GetController(GetWorld())->GoBackToMainMenu();
 		return;
 	}
-	
+
 	if (CurrentSection.IsValid())
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
-		ComponentGetters::GetInventoryComponent(GetWorld())->ClearItemsEndOfLevel();
 		LevelStart.Broadcast();
 	}
 }
