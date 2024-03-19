@@ -106,6 +106,6 @@ void AItemObstacle::RemoveObstacle()
 
 void ATileHole::PostObstacleActions()
 {
-	ComponentGetters::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), ETempoTile::Black, FGameplayTag::EmptyTag);
+	ComponentGetters::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), GetActorRotation(), ETempoTile::Black, FGameplayTag::EmptyTag);
 }
 

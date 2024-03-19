@@ -54,24 +54,15 @@ void AGridCell::Tick(float DeltaTime)
 
 bool AGridCell::ForcesPlayerPosition()
 {
-	return TileType == ETempoTile::ForceUp ||
-		TileType == ETempoTile::ForceDown ||
-		TileType == ETempoTile::ForceLeft ||
-		TileType == ETempoTile::ForceRight;
+	return TileType == ETempoTile::ForceDirection;
 }
 
 FVector AGridCell::ForcedDirection()
 {
 	switch (TileType)
 	{
-		case ETempoTile::ForceUp:
-			return -FVector::RightVector;
-		case ETempoTile::ForceDown:
-			return FVector::RightVector;
-		case ETempoTile::ForceRight:
-			return FVector::ForwardVector;
-		case ETempoTile::ForceLeft:
-			return -FVector::ForwardVector;
+		case ETempoTile::ForceDirection:
+			return FVector(FMath::RoundToInt(GetActorForwardVector().X), FMath::RoundToInt(GetActorForwardVector().Y), 0);
 		default:
 			return FVector::ZeroVector;
 	}

@@ -36,7 +36,7 @@ public:
 	void LoadMap(const FGameplayTag& Level);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
-	void SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier);
+	void SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier);
 };
 
 UCLASS()

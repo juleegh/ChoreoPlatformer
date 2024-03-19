@@ -11,10 +11,7 @@ enum class ETempoTile : uint8
 	Black,
 	Half,
 	Ending,
-	ForceUp,
-	ForceDown,
-	ForceLeft,
-	ForceRight,
+	ForceDirection,
 };
 
 UENUM(BlueprintType)

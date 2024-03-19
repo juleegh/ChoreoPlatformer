@@ -68,9 +68,12 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 						continue;
 
 					auto TileType = TileInfo.PackedTileIndex;
+					FRotator DeltaRotation = FRotator();
+					DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
+
 					const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y + GetActorUpVector() * LayerPos;
 
-					SpawnTile(DeltaPos, (ETempoTile)TileType, SectionIdentifier);
+					SpawnTile(DeltaPos, DeltaRotation, (ETempoTile)TileType, SectionIdentifier);
 				}
 			}
 			LayerPos -= 50.f;
@@ -100,12 +103,12 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 	}
 }
 
-void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGameplayTag SectionIdentifier)
+void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier)
 {
 	AGridCell* Current;
 	if (TilePool.Num() == 0)
 	{
-		auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, GetActorRotation());
+		auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, DeltaRotation);
 		SpawnedTile->SetOwner(this);
 		Current = SpawnedTile;
 	}
@@ -113,6 +116,7 @@ void ATilemapLevelManager::SpawnTile(FVector Position, ETempoTile TileType, FGam
 	{
 		Current = TilePool[0];
 		Current->SetActorLocation(Position);
+		Current->SetActorRotation(DeltaRotation);
 		TilePool.RemoveAt(0);
 	}
 	Current->Initialize(TileType, SectionIdentifier);
