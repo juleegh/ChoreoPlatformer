@@ -180,7 +180,14 @@ void UMovementTimelineComponent::Reset()
 
 void UMovementTimelineComponent::ForceStopTimeline()
 {
-	TimelineTarget->SetActorLocation(TargetLocation);
+	if (TargetLocation != OriginLocation)
+	{
+		TimelineTarget->SetActorLocation(TargetLocation);
+	}
+	if (TargetRotation != OriginRotation)
+	{
+		TimelineTarget->SetActorRotation(TargetRotation);
+	}
 }
 
 void UColorTimelineComponent::AddMesh(UMeshComponent* Mesh)

@@ -109,3 +109,38 @@ void ATileHole::PostObstacleActions()
 	ComponentGetters::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), GetActorRotation(), ETempoTile::Black, FGameplayTag::EmptyTag);
 }
 
+void ARotatingAnchor::Reset()
+{
+	if (Tile)
+	{
+		Tile->SetActorRotation(InitialRotation);
+		Tile = nullptr;
+	}
+}
+
+EMoveResult ARotatingAnchor::TriggerInteraction()
+{
+	if (!Tile)
+	{
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+		Tile = TileInfo.HitCell;
+		InitialRotation = Tile->GetActorRotation();
+	}
+	Tile->RotateToDirection(FRotator(0, 90, 0));
+	return EMoveResult::None;
+}
+
+EMoveResult ARotationButton::TriggerInteraction()
+{
+	if (ConnectedTiles.Num() > 0)
+	{
+		RefreshState();
+		for (ARotatingAnchor* ConnectedTile : ConnectedTiles)
+		{
+			ConnectedTile->TriggerInteraction();
+		}
+		return EMoveResult::ActionCompleted;
+	}
+	return EMoveResult::None;
+}
+

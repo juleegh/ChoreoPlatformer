@@ -34,6 +34,9 @@ protected:
 	class UStaticMeshComponent* Base;
 	UPROPERTY(BlueprintReadOnly)
 	class USpritesTimelineComponent* SpritesTimeline;
+	UPROPERTY()
+	class UMovementTimelineComponent* MoveTimeline;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	TMap<FGameplayTag, FTileSpriteInfo> SpritesInfo;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
@@ -52,7 +55,6 @@ public:
 	void PaintTile();
 	UFUNCTION(BlueprintImplementableEvent)
 	void GetSprites();
-	virtual void Tick(float DeltaTime) override;
 	ETempoTile GetTileType() { return TileType; }
 	bool ForcesPlayerPosition();
 	FVector ForcedDirection();
@@ -60,6 +62,7 @@ public:
 	void PromptItem();
 	void PromptTrigger();
 	void PromptDamage();
+	void RotateToDirection(FRotator Rotation);
 	UFUNCTION(BlueprintCallable)
 	void ToggleStaticTrigger(const FGameplayTag& SpriteType, bool bVisible);
 };

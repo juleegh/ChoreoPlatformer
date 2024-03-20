@@ -96,6 +96,36 @@ public:
 };
 
 UCLASS()
+class CHOREOPLATFORMER_API ARotatingAnchor : public AContextualElement
+{
+	GENERATED_BODY()
+
+public:
+	ARotatingAnchor() {}
+	void Reset() override;
+	EMoveResult TriggerInteraction() override;
+
+protected:
+	UPROPERTY()
+	FRotator InitialRotation;
+	UPROPERTY()
+	class AGridCell* Tile;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ARotationButton : public AContextualElement
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditInstanceOnly)
+	TArray<ARotatingAnchor*> ConnectedTiles;
+public:
+	ARotationButton() {}
+	EMoveResult TriggerInteraction() override;
+};
+
+UCLASS()
 class CHOREOPLATFORMER_API ATileHole : public AItemObstacle
 {
 	GENERATED_BODY()

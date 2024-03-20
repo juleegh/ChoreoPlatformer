@@ -24,6 +24,7 @@ AGridCell::AGridCell()
 	Flipbook->SetupAttachment(RootComponent);
 
 	SpritesTimeline = CreateDefaultSubobject<USpritesTimelineComponent>("Sprites Timeline");
+	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
 }
 
 void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection)
@@ -35,21 +36,14 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 }
 
 
-// Called when the game starts or when spawned
 void AGridCell::BeginPlay()
 {
 	Super::BeginPlay();
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
 	SpritesTimeline->Initialize();
+	MoveTimeline->Initialize();
 	GetSprites();
 	SpritesTimeline->SetSprites(HitSprites);
-}
-
-// Called every frame
-void AGridCell::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 bool AGridCell::ForcesPlayerPosition()
@@ -89,6 +83,16 @@ void AGridCell::PromptDamage()
 {
 	SpritesTimeline->ChangeType(SpritesInfo[DamageType]);
 	SpritesTimeline->Blink();
+}
+
+void AGridCell::RotateToDirection(FRotator Direction)
+{
+	if (MoveTimeline->IsRunning())
+	{
+		MoveTimeline->Stop(true);
+	}
+	MoveTimeline->RotateToPosition(GetActorRotation() + Direction, ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency());
+	PromptTrigger();
 }
 
 void AGridCell::ToggleStaticTrigger(const FGameplayTag& SpriteType, bool bVisible)

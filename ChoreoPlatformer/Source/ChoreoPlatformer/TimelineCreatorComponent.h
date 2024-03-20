@@ -74,18 +74,18 @@ public:
 protected:
 
     UPROPERTY()
-        FVector OriginLocation;
+    FVector OriginLocation;
     UPROPERTY()
-        FVector TargetLocation;
+    FVector TargetLocation;
     UPROPERTY()
-        FRotator OriginRotation;
+    FRotator OriginRotation;
     UPROPERTY()
-        FRotator TargetRotation;
+    FRotator TargetRotation;
 
     UFUNCTION()
-        void MoveCallback(float val);
+    void MoveCallback(float val);
     UFUNCTION()
-        void RotateCallback(float val);
+    void RotateCallback(float val);
 };
 
 UCLASS()
