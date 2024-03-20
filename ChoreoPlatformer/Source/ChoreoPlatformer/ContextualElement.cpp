@@ -122,7 +122,7 @@ EMoveResult ARotatingAnchor::TriggerInteraction()
 {
 	if (!Tile)
 	{
-		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({this, ComponentGetters::GetDanceCharacter(GetWorld())}, GetActorLocation());
 		Tile = TileInfo.HitCell;
 		InitialRotation = Tile->GetActorRotation();
 	}
