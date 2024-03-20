@@ -156,12 +156,6 @@ void ASplinedEnemy::MarkNextTarget()
 	AttackIndicator->SetWorldRotation(Rotation);
 }
 
-void AWalkingEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-	//MoveTimeline->TimelineEnded.AddDynamic(this, &AWalkingEnemy::LookAtNextTarget);
-}
-
 void AWalkingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
@@ -202,11 +196,6 @@ void AWalkingEnemy::LookAtNextTarget()
 	MoveTimeline->RotateToPosition(Rotation, 0.25f);
 }
 
-void ARotatingEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ARotatingEnemy::DoTempoAction()
 {
 	Super::DoTempoAction();
@@ -237,4 +226,57 @@ void ARotatingEnemy::DoTempoAction()
 	MarkNextTarget();
 }
 
+void AForwardEnemy::DoTempoAction()
+{
+	Super::DoTempoAction();
+	if (PlayerController->IsPaused())
+	{
+		return;
+	}
+	DoDamage(GetActorLocation());
 
+	FVector Position = GetNextTile(GetActorLocation());
+
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Position);
+	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
+	SetActorRotation(Rotation);
+	
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, Position);
+
+	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency();
+	MoveTimeline->MoveToPosition(NextTile.Position, Speed);
+	ScaleTimeline->ScaleUp(FVector::Zero(), FVector::One(), Speed);
+	ColorTimeline->Blink();
+	StartedWalking();
+	MarkNextTarget();
+}
+
+void AForwardEnemy::MarkNextTarget()
+{
+	FVector NextPosition = GetNextTile(GetNextTile(GetActorLocation()));
+	AttackIndicator->SetWorldLocation(NextPosition + FVector::UpVector * -95);
+
+	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetNextTile(GetActorLocation()), NextPosition);
+	FRotator Rotation = FRotator(0, 90 + LookAt.Yaw, -90);
+	AttackIndicator->SetWorldRotation(Rotation);
+}
+
+FVector AForwardEnemy::GetNextTile(FVector Position)
+{
+	FVector Direction = GetActorForwardVector();
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, Position);
+	if (CurrentTile.bForcesDirection)
+	{
+		Direction = CurrentTile.ForcedDirection;
+	}
+	Direction *= 100;
+
+	FVector NextPosition = Position + Direction;
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, NextPosition);
+	if (!NextTile.HitCell)
+	{
+		NextPosition = Position - Direction;
+	}
+	return NextPosition;
+}

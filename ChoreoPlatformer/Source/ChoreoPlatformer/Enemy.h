@@ -43,6 +43,18 @@ protected:
 	void StartedWalking();
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartedRotating(float bPositive);
+	virtual void MarkNextTarget() {}
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AForwardEnemy : public AEnemy
+{
+	GENERATED_BODY()
+
+protected:
+	void DoTempoAction() override;
+	void MarkNextTarget() override;
+	FVector GetNextTile(FVector Position);
 };
 
 UCLASS()
@@ -63,7 +75,7 @@ protected:
 	int PatrolIndex = -1;
 	UPROPERTY()
 	TArray<FVector> PatrolPoints;
-	void MarkNextTarget();
+	void MarkNextTarget() override;
 }; 
 
 UCLASS()
@@ -72,7 +84,6 @@ class CHOREOPLATFORMER_API AWalkingEnemy : public ASplinedEnemy
 	GENERATED_BODY()
 
 protected:
-	void BeginPlay() override;
 	void DoTempoAction() override;
 	UFUNCTION()
 	void LookAtNextTarget();
@@ -85,7 +96,6 @@ class CHOREOPLATFORMER_API ARotatingEnemy : public ASplinedEnemy
 public:
 	ARotatingEnemy();
 protected:
-	void BeginPlay() override;
 	void DoTempoAction() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UStaticMeshComponent* HitBox;
