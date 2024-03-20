@@ -219,7 +219,7 @@ void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 	{
 		HandleCountdownEvent(TriggerTag);
 	}
-	if (LevelEvents->Sections.Contains(TriggerTag))
+	if (TriggerTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Level"))))
 	{
 		HandleSectionEvent(TriggerTag);
 	}

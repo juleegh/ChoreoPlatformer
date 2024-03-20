@@ -156,8 +156,6 @@ class CHOREOPLATFORMER_API ULevelCompleteUI : public UChoreoActivatableWidget
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FGameplayTag LevelEndTrigger;
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int GetStepsByAccuracy(ETempoAccuracy Accuracy);
 	UFUNCTION(BlueprintCallable)

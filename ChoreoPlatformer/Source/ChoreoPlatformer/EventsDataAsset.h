@@ -31,7 +31,4 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	TMap<FGameplayTag, int> CountdownEvents;
-	
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	TArray<FGameplayTag> Sections;
 };

@@ -174,7 +174,6 @@ FClothingItemInfo& ULevelCompleteUI::GetClothingItem(FGameplayTag ItemType)
 void ULevelCompleteUI::GoToNextSection()
 {
     const FGameplayTag GTEndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
-    ComponentGetters::GetLevelEventsComponent(GetWorld())->HandleEvent(FLevelEventInfo(LevelEndTrigger));
     ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
     ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(GTEndOfLevel);
 }
