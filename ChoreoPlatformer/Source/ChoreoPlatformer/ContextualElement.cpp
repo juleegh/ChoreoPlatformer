@@ -118,7 +118,7 @@ void ARotatingAnchor::Reset()
 	}
 }
 
-EMoveResult ARotatingAnchor::TriggerInteraction()
+void ARotatingAnchor::Rotate(float Direction)
 {
 	if (!Tile)
 	{
@@ -126,8 +126,7 @@ EMoveResult ARotatingAnchor::TriggerInteraction()
 		Tile = TileInfo.HitCell;
 		InitialRotation = Tile->GetActorRotation();
 	}
-	Tile->RotateToDirection(FRotator(0, 90, 0));
-	return EMoveResult::None;
+	Tile->RotateToDirection(FRotator(0, Direction, 0));
 }
 
 EMoveResult ARotationButton::TriggerInteraction()
@@ -137,7 +136,7 @@ EMoveResult ARotationButton::TriggerInteraction()
 		RefreshState();
 		for (ARotatingAnchor* ConnectedTile : ConnectedTiles)
 		{
-			ConnectedTile->TriggerInteraction();
+			ConnectedTile->Rotate(Direction);
 		}
 		return EMoveResult::ActionCompleted;
 	}

@@ -103,7 +103,7 @@ class CHOREOPLATFORMER_API ARotatingAnchor : public AContextualElement
 public:
 	ARotatingAnchor() {}
 	void Reset() override;
-	EMoveResult TriggerInteraction() override;
+	void Rotate(float Direction);
 
 protected:
 	UPROPERTY()
@@ -120,6 +120,8 @@ class CHOREOPLATFORMER_API ARotationButton : public AContextualElement
 protected:
 	UPROPERTY(EditInstanceOnly)
 	TArray<ARotatingAnchor*> ConnectedTiles;
+	UPROPERTY(EditDefaultsOnly)
+	float Direction = 90;
 public:
 	ARotationButton() {}
 	EMoveResult TriggerInteraction() override;
