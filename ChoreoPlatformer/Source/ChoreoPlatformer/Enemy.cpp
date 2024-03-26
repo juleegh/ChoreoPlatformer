@@ -265,7 +265,7 @@ void AForwardEnemy::MarkNextTarget()
 FVector AForwardEnemy::GetNextTile(FVector Position)
 {
 	FVector Direction = GetActorForwardVector();
-	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, Position);
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, Position);
 	if (CurrentTile.bForcesDirection)
 	{
 		Direction = CurrentTile.ForcedDirection;
@@ -273,7 +273,7 @@ FVector AForwardEnemy::GetNextTile(FVector Position)
 	Direction *= 100;
 
 	FVector NextPosition = Position + Direction;
-	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, NextPosition);
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
 	if (!NextTile.HitCell)
 	{
 		NextPosition = Position - Direction;
