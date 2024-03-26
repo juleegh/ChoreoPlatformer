@@ -48,7 +48,7 @@ void AGridCell::BeginPlay()
 
 bool AGridCell::ForcesPlayerPosition()
 {
-	return TileType == ETempoTile::ForceDirection;
+	return TileType == ETempoTile::ForceDirection || TileType == ETempoTile::ForcedChangeable;
 }
 
 FVector AGridCell::ForcedDirection()
@@ -56,6 +56,7 @@ FVector AGridCell::ForcedDirection()
 	switch (TileType)
 	{
 		case ETempoTile::ForceDirection:
+		case ETempoTile::ForcedChangeable:
 			return FVector(FMath::RoundToInt(GetActorForwardVector().X), FMath::RoundToInt(GetActorForwardVector().Y), 0);
 		default:
 			return FVector::ZeroVector;
