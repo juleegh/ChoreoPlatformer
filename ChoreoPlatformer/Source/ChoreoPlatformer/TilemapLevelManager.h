@@ -26,7 +26,6 @@ public:
 	ATilemapLevelManager() {}
 
 protected:
-	virtual void BeginPlay() override;
 	UPROPERTY()
 	TArray<class AGridCell*> TilePool;
 	UPROPERTY()
@@ -34,6 +33,7 @@ protected:
 
 public:
 	void LoadMap(const FGameplayTag& Level);
+	void LoadTileMap(const UPaperTileMap* TileMap, FVector AnchorLocation, FGameplayTag SectionIdentifier);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
 	void SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier);
@@ -67,7 +67,7 @@ protected:
 	FLevelEnd LevelEnd;
 
 public:
-	void Initialize();
+	void BeginPlay() override;
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayCurrentSection();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -79,6 +79,47 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void NextSectionStart();
 	void StartFromSection(const FGameplayTag SectionIdentifier);
+};
+
+
+USTRUCT(BlueprintType)
+struct CHOREOPLATFORMER_API FProceduralTileInfo
+{
+	GENERATED_BODY()
+
+		UPROPERTY(BlueprintReadOnly)
+		ETempoTile TileType;
+	UPROPERTY(BlueprintReadOnly)
+		FVector DeltaFromOrigin;
+	UPROPERTY(BlueprintReadOnly)
+		float TargetTempo = 1;
+	UPROPERTY(BlueprintReadOnly)
+		bool bForcesDirection;
+	UPROPERTY(BlueprintReadOnly)
+		FVector ForcedDirection;
+};
+
+UCLASS(ClassGroup = (Custom))
+class CHOREOPLATFORMER_API AEndlessLevelManager : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	AEndlessLevelManager() {}
+
+protected:
+
+	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
+	TArray<TObjectPtr<UPaperTileMap>> AvailableTileMaps;
+
+	UPROPERTY(EditInstanceOnly, Category = "Progression")
+	int InitialSongBPM = 110;
+	
+	UPROPERTY()
+	TMap<FVector, FProceduralTileInfo> TilesInfo;
+
+	void Initialize();
+	void LoadMapInDirection(FVector Direction);
 };
 
 UCLASS(ClassGroup = (Custom))

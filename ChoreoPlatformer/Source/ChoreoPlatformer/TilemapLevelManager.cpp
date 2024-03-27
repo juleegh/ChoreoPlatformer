@@ -15,24 +15,6 @@
 #include "Components/BoxComponent.h"
 #include "ComponentGetters.h"
 
-void ATilemapLevelManager::BeginPlay()
-{
-	Super::BeginPlay();
-
-	TArray<AActor*> LevelManager;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionLevelManager::StaticClass(), LevelManager);
-
-	for (auto Manager : LevelManager)
-	{
-		if (auto Level = Cast<ASectionLevelManager>(Manager))
-		{
-			Level->Initialize();
-			LoadMap(Level->GetStartSection());
-			break;
-		}
-	}
-}
-
 void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
 	TilePool.Append(WorldTiles);
@@ -51,34 +33,7 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 			continue;
 		}
 
-		auto LayerWidth = FirstLayer->GetLayerWidth();
-		auto LayerHeight = FirstLayer->GetLayerHeight();
-
-		float LayerPos = 0;
-		for (auto LayerInfo : TileMap->TileLayers)
-		{
-			for (int column = 0; column < LayerWidth; column++)
-			{
-				for (int row = 0; row < LayerHeight; row++)
-				{
-					FString TypeT = "";
-					auto TileInfo = LayerInfo->GetCell(column, row);
-
-					if (TileInfo.TileSet == nullptr)
-						continue;
-
-					auto TileType = TileInfo.PackedTileIndex;
-					FRotator DeltaRotation = FRotator();
-					DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
-
-					const FVector DeltaPos = TileMapActor->GetActorLocation() + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y + GetActorUpVector() * LayerPos;
-
-					SpawnTile(DeltaPos, DeltaRotation, (ETempoTile)TileType, SectionIdentifier);
-				}
-			}
-			LayerPos -= 50.f;
-		}
-
+		LoadTileMap(TileMap, TileMapActor->GetActorLocation(), SectionIdentifier);
 		TileMapActor->SetActorHiddenInGame(true);
 	}
 
@@ -103,6 +58,39 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 	}
 }
 
+void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector AnchorLocation, FGameplayTag SectionIdentifier)
+{
+	auto FirstLayer = TileMap->TileLayers.Last();
+
+	auto LayerWidth = FirstLayer->GetLayerWidth();
+	auto LayerHeight = FirstLayer->GetLayerHeight();
+
+	float LayerPos = 0;
+	for (auto LayerInfo : TileMap->TileLayers)
+	{
+		for (int column = 0; column < LayerWidth; column++)
+		{
+			for (int row = 0; row < LayerHeight; row++)
+			{
+				FString TypeT = "";
+				auto TileInfo = LayerInfo->GetCell(column, row);
+
+				if (TileInfo.TileSet == nullptr)
+					continue;
+
+				auto TileType = TileInfo.PackedTileIndex;
+				FRotator DeltaRotation = FRotator();
+				DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
+
+				const FVector DeltaPos = AnchorLocation + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y + GetActorUpVector() * LayerPos;
+
+				SpawnTile(DeltaPos, DeltaRotation, (ETempoTile)TileType, SectionIdentifier);
+			}
+		}
+		LayerPos -= 50.f;
+	}
+}
+
 void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier)
 {
 	AGridCell* Current;
@@ -123,8 +111,10 @@ void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, E
 	WorldTiles.Add(Current);
 }
 
-void ASectionLevelManager::Initialize()
+void ASectionLevelManager::BeginPlay()
 {
+	Super::BeginPlay();
+
 	CurrentSection = StartSection;
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
@@ -132,6 +122,8 @@ void ASectionLevelManager::Initialize()
 
 	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	SongTempo->StartTempoCounting();
+
+	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
 }
 
 void ASectionLevelManager::CurrentSectionEnd(ASectionStart* NextSection)
@@ -275,6 +267,23 @@ void AEventTrigger::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent
 	EventInfo.EventTrigger = ActorTrigger;
 	EventInfo.FlavorTriggers.AddTag(FlavorTrigger);
 	ComponentGetters::GetLevelEventsComponent(GetWorld())->HandleEvent(EventInfo);
+}
+
+void AEndlessLevelManager::Initialize()
+{
+	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
+	SongTempo->SetupTempo(60 / InitialSongBPM);
+
+	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
+	SongTempo->StartTempoCounting();
+
+	auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
+	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadTileMap(TileMap, FVector::Zero(), FGameplayTag::EmptyTag);
+}
+
+void AEndlessLevelManager::LoadMapInDirection(FVector Direction)
+{
+
 }
 
 
