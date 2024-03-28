@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "ComponentGetters.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 USongTempoComponent::USongTempoComponent()
@@ -95,6 +96,11 @@ void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 		{
 			NewTempoStarted.Broadcast();
 		}
+		if (!DanceAudioManager)
+		{
+			DanceAudioManager = ComponentGetters::GetDanceAudioManager(GetWorld());
+		}
+		DanceAudioManager->MarkTempo();
 	}
 	InTempo = TempoPercentageIsAcceptable(1, GetAcceptancePercentage());
 }

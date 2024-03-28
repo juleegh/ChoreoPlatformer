@@ -31,6 +31,8 @@ protected:
 	int CurrentPauseTempos;
 	float GetAcceptancePercentage();
 	UPROPERTY()
+	class ADanceAudioManager* DanceAudioManager;
+	UPROPERTY()
 	bool bIsCountingTempo = false;
 public:	
 	UFUNCTION(BlueprintCallable, BlueprintPure)

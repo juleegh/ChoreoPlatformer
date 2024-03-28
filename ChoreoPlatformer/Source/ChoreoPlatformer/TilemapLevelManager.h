@@ -53,11 +53,7 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	FGameplayTag StartSection;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
-	class USoundWave* SectionSong;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	float SongBPM;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
-	FGameplayTag SectionEndTrigger;
 
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag CurrentSection;
@@ -70,10 +66,6 @@ protected:
 
 public:
 	void BeginPlay() override;
-	UFUNCTION(BlueprintImplementableEvent)
-	void PlayCurrentSection();
-	UFUNCTION(BlueprintImplementableEvent)
-	void PlayTempoResult(ETempoAccuracy AccuracyResult, EMoveResult MoveResult);
 	const FGameplayTag& GetStartSection() { return StartSection; };
 	const FGameplayTag& GetCurrentSection() { return CurrentSection; };
 	void CurrentSectionEnd(class ASectionStart* NextSection);

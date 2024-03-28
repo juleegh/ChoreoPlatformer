@@ -5,7 +5,6 @@
 #include "CalibrationComponent.h"
 #include "GridCell.h"
 #include "TimelineCreatorComponent.h"
-#include "DancerUIComponent.h"
 #include "ContextualElement.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
@@ -148,6 +147,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (!Calibration->IsCalibrated())
 	{
 		Calibration->ReceiveInput();
+		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
 		Calibrating.Broadcast();
 		return;
 	}
@@ -170,7 +170,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	if (bCantPass)
 	{
 		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection, false);
-		MoveBlocked.Broadcast();
+		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::InvalidDirection);
 		return;
 	}
 
@@ -186,7 +186,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 		if (Interaction == EMoveResult::Blocked)
 		{
-			MoveBlocked.Broadcast();
+			ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Blocked);
 		}
 		return;
 	}
@@ -215,7 +215,7 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		MoveResult = EMoveResult::Bad;
 		DanceCharacter->MoveFailed.Broadcast();
 	}
-	ComponentGetters::GetSectionLevelManager(GetWorld())->PlayTempoResult(UDanceUtilsFunctionLibrary::GetTempoResult(Result), MoveResult);
+	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(MoveResult);
 }
 
 void AChoreoPlayerController::OnPlayerDied()
@@ -261,5 +261,6 @@ void AChoreoPlayerController::FinishCalibration()
 		return;
 	}
 	CalibrationEnded.Broadcast();
+	ComponentGetters::GetDanceAudioManager(GetWorld())->ResetSong();
 	DancerUI->GetGameUI()->CancelMenu();
 }

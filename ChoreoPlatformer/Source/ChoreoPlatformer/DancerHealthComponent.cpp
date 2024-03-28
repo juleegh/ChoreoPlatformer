@@ -41,7 +41,7 @@ void UDancerHealthComponent::CountStep(ETempoAccuracy result)
 	Steps[result]++;
 	Accuracy += UDanceUtilsFunctionLibrary::GetHealthDelta(result);
 	Accuracy = FMath::Clamp(Accuracy, 0, GetMaxAccuracy());
-	AccuracyChanged.Broadcast(GetCurrentAccuracy(), GetMaxAccuracy());
+	ComponentGetters::GetDanceAudioManager(GetWorld())->SetSuccessRate(Accuracy / GetMaxAccuracy());
 }
 
 void UDancerHealthComponent::TakeHit(int Damage)

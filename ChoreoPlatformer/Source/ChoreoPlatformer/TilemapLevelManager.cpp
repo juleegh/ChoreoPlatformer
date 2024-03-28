@@ -128,11 +128,11 @@ void ASectionLevelManager::BeginPlay()
 	CurrentSection = StartSection;
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
-	PlayCurrentSection();
 
 	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	SongTempo->StartTempoCounting();
 
+	ComponentGetters::GetDanceAudioManager(GetWorld())->InitializeSong();
 	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
 }
 
@@ -373,4 +373,3 @@ void AEndlessLevelManager::LoadNextMap(UPaperTileMap* TileMap)
 		}
 	}
 }
-

@@ -15,6 +15,19 @@ namespace ComponentGetters
 		return Cast<ADanceCharacter>(DanceController->GetPawn());
 	}
 
+	ADanceAudioManager* GetDanceAudioManager(UWorld* WorldContextObject)
+	{
+		TArray<AActor*> FoundManagers;
+		UGameplayStatics::GetAllActorsOfClass(WorldContextObject, ADanceAudioManager::StaticClass(), FoundManagers);
+
+		for (auto Manager : FoundManagers)
+		{
+			return Cast<ADanceAudioManager>(Manager);
+		}
+
+		return nullptr;
+	}
+
 	UDancerHealthComponent* GetDancerHealthComponent(UWorld* WorldContextObject)
 	{
 		return Cast<UDancerHealthComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerHealthComponent::StaticClass()));

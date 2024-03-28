@@ -12,6 +12,7 @@
 #include "LevelProgressComponent.h"
 #include "SongTempoComponent.h"
 #include "DancerUIComponent.h"
+#include "DanceAudioManager.h"
 #include "InventoryComponent.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ComponentGetters.generated.h"
@@ -24,6 +25,7 @@ namespace ComponentGetters
 	UInventoryComponent* GetInventoryComponent(UWorld* WorldContextObject);
 	ASectionLevelManager* GetSectionLevelManager(UWorld* WorldContextObject);
 	ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject);
+	ADanceAudioManager* GetDanceAudioManager(UWorld* WorldContextObject);
 	USongTempoComponent* GetSongTempoComponent(UWorld* WorldContextObject);
 	ULevelEventsComponent* GetLevelEventsComponent(UWorld* WorldContextObject);
 	ULevelProgressComponent* GetLevelProgressComponent(UWorld* WorldContextObject);

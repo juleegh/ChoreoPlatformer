@@ -33,6 +33,10 @@ enum class EMoveResult : uint8
 	InvalidDirection,
 	Blocked,
 	ActionCompleted,
+	Calibrating,
+	ItemGained,
+	PlayerHit,
+	EnemyOK,
 	None,
 };
 
