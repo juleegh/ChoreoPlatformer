@@ -13,6 +13,7 @@ enum class ETempoTile : uint8
 	Ending,
 	ForceDirection,
 	ForcedChangeable,
+	Empty,
 };
 
 UENUM(BlueprintType)

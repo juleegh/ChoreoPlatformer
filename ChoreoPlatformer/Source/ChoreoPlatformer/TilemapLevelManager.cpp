@@ -72,7 +72,6 @@ void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector Anc
 		{
 			for (int row = 0; row < LayerHeight; row++)
 			{
-				FString TypeT = "";
 				auto TileInfo = LayerInfo->GetCell(column, row);
 
 				if (TileInfo.TileSet == nullptr)
@@ -109,6 +108,17 @@ void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, E
 	}
 	Current->Initialize(TileType, SectionIdentifier);
 	WorldTiles.Add(Current);
+}
+
+void ATilemapLevelManager::ClearTile(AGridCell* ClearingTile)
+{
+	WorldTiles.Remove(ClearingTile);
+	TilePool.Add(ClearingTile);
+}
+
+TArray<AGridCell*>* ATilemapLevelManager::GetWorldTiles()
+{
+	return &WorldTiles;
 }
 
 void ASectionLevelManager::BeginPlay()
@@ -279,11 +289,88 @@ void AEndlessLevelManager::Initialize()
 
 	auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
 	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadTileMap(TileMap, FVector::Zero(), FGameplayTag::EmptyTag);
+
+	LoadNextMap(TileMap);
+	CurrentTiles = NextTiles;
 }
 
-void AEndlessLevelManager::LoadMapInDirection(FVector Direction)
+void AEndlessLevelManager::ShuffleWorldDown()
 {
+	CurrentLine++;
+	// if the line reaches the top of the current level load the next one and adjust indexes
+	if (CurrentLine == TileMapDimension - 1)
+	{
+		CurrentTiles = NextTiles;
+		auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
+		LoadNextMap(TileMap);
+		CurrentLine = 0;
+	}
+	int enteringIndex = CurrentLine + TileMapDimension / 2;
 
+	auto TileManager = ComponentGetters::GetTilemapLevelManager(GetWorld());
+	// Clear current line
+	for (int i = 0; i < TileMapDimension; i++)
+	{
+		FVector Pos = FVector::RightVector * i;
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({}, Pos);
+		if (TileInfo.HitCell == nullptr)
+		{
+			continue;
+		}
+		TileManager->ClearTile(TileInfo.HitCell);
+	}
+
+	// Shuffle downwards
+	auto WorldTiles = TileManager->GetWorldTiles();
+	for (auto Tile : *WorldTiles)
+	{
+		Tile->SetActorLocation(Tile->GetActorLocation() - GetActorForwardVector() * 100);
+	}
+
+	// Spawn next line
+	int column = 0;
+	for (int row = 0; row < TileMapDimension; row++)
+	{
+		auto Tile = NextTiles[FVector::RightVector * column + FVector::ForwardVector * row];
+		FRotator DeltaRotation = FRotator::MakeFromEuler(Tile.ForcedDirection);
+		const FVector DeltaPos = GetActorRightVector() * TileMapDimension * TileDimension + GetActorForwardVector() * column * TileDimension;
+		column++;
+
+		TileManager->SpawnTile(DeltaPos, DeltaRotation, Tile.TileType, FGameplayTag::EmptyTag);
+	}
 }
 
+void AEndlessLevelManager::LoadNextMap(UPaperTileMap* TileMap)
+{
+	NextTiles.Empty();
+	auto FirstLayer = TileMap->TileLayers.Last();
+
+	TileMapDimension = FirstLayer->GetLayerWidth();
+
+	for (auto LayerInfo : TileMap->TileLayers)
+	{
+		for (int row = 0; row < TileMapDimension; row++)
+		{
+			TArray<FProceduralTileInfo> CurrentRow;
+			for (int column = 0; column < TileMapDimension; column++)
+			{
+				FProceduralTileInfo CurrentTile;
+				auto TileInfo = LayerInfo->GetCell(column, row);
+
+				if (TileInfo.TileSet == nullptr)
+				{
+					CurrentTile.TileType = ETempoTile::Empty;
+				}
+				else
+				{
+					CurrentTile.TileType = (ETempoTile)TileInfo.PackedTileIndex;
+					FRotator DeltaRotation = FRotator();
+					DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
+					CurrentTile.ForcedDirection = DeltaRotation.Euler();
+				}
+				NextTiles.Add(FVector::RightVector * column + FVector::ForwardVector * row, CurrentTile);
+			}
+		}
+	}
+}
 

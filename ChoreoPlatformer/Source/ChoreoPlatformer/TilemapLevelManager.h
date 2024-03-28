@@ -27,9 +27,9 @@ public:
 
 protected:
 	UPROPERTY()
-	TArray<class AGridCell*> TilePool;
+	TArray<AGridCell*> TilePool;
 	UPROPERTY()
-	TArray<class AGridCell*> WorldTiles;
+	TArray<AGridCell*> WorldTiles;
 
 public:
 	void LoadMap(const FGameplayTag& Level);
@@ -37,6 +37,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
 	void SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier);
+	void ClearTile(AGridCell* ClearingTile);
+	TArray<AGridCell*>* GetWorldTiles();
 };
 
 UCLASS()
@@ -87,16 +89,10 @@ struct CHOREOPLATFORMER_API FProceduralTileInfo
 {
 	GENERATED_BODY()
 
-		UPROPERTY(BlueprintReadOnly)
-		ETempoTile TileType;
 	UPROPERTY(BlueprintReadOnly)
-		FVector DeltaFromOrigin;
+	ETempoTile TileType;
 	UPROPERTY(BlueprintReadOnly)
-		float TargetTempo = 1;
-	UPROPERTY(BlueprintReadOnly)
-		bool bForcesDirection;
-	UPROPERTY(BlueprintReadOnly)
-		FVector ForcedDirection;
+	FVector ForcedDirection;
 };
 
 UCLASS(ClassGroup = (Custom))
@@ -116,10 +112,22 @@ protected:
 	int InitialSongBPM = 110;
 	
 	UPROPERTY()
-	TMap<FVector, FProceduralTileInfo> TilesInfo;
+	TMap<FVector, FProceduralTileInfo> CurrentTiles;
+	UPROPERTY()
+	TMap<FVector, FProceduralTileInfo> NextTiles;
+	UPROPERTY()
+	float TileDimension;
+	UPROPERTY()
+	int TileMapDimension;
+	UPROPERTY()
+	int CurrentLine;
 
+	UFUNCTION(BlueprintCallable)
 	void Initialize();
-	void LoadMapInDirection(FVector Direction);
+	UFUNCTION(BlueprintCallable)
+	void ShuffleWorldDown();
+	void LoadNextMap(UPaperTileMap* TileMap);
+
 };
 
 UCLASS(ClassGroup = (Custom))

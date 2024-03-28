@@ -26,7 +26,7 @@ AChoreoPlayerController::AChoreoPlayerController()
 
 bool AChoreoPlayerController::InGame()
 {
-	return ComponentGetters::GetSectionLevelManager(GetWorld()) != nullptr;
+	return !UGameplayStatics::GetCurrentLevelName(this).Equals("MainMenu");
 }
 
 bool AChoreoPlayerController::IsPaused()
@@ -42,14 +42,14 @@ void AChoreoPlayerController::BeginPlay()
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
 	SongTempo->TempoCountdown.AddDynamic(DancerUI->GetGameUI(), &UGameUI::UpdateCountdown);
 
-	if (!InGame())
-	{
-		DancerUI->GetGameUI()->LoadMenu();
-	}
-	else
+	if (InGame())
 	{
 		DancerUI->GetGameUI()->LoadGame();
 		CheckForCalibration();
+	}
+	else
+	{
+		DancerUI->GetGameUI()->LoadMenu();
 	}
 }
 
