@@ -213,8 +213,8 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 	{
 		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
 		MoveResult = EMoveResult::Bad;
-		DanceCharacter->MoveFailed.Broadcast();
 	}
+	DanceCharacter->ToggleReaction(MoveResult);
 	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(MoveResult);
 }
 

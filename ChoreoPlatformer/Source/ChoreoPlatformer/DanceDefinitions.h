@@ -36,6 +36,7 @@ enum class EMoveResult : uint8
 	Calibrating,
 	ItemGained,
 	PlayerHit,
+	PlayerDied,
 	EnemyOK,
 	None,
 };

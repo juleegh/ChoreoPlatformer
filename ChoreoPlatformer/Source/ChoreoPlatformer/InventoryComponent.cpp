@@ -64,6 +64,7 @@ void UInventoryComponent::AddItem(AClothingItem* Item)
 	FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
 	Item->AttachToComponent(SkeletalMesh, TransformRules, GetBodySection(Item->GetItemType()));
+	ComponentGetters::GetDanceCharacter(GetWorld())->ToggleReaction(EMoveResult::ItemGained);
 }
 
 bool UInventoryComponent::HasHealthItem()
@@ -85,10 +86,12 @@ bool UInventoryComponent::LoseHealthItem()
 {
 	if (!HasHealthItem())
 	{
+		ComponentGetters::GetDanceCharacter(GetWorld())->ToggleReaction(EMoveResult::PlayerDied);
 		return false;
 	}
 	auto Last = Outfit.Last();
 	Outfit.Remove(Last);
+	ComponentGetters::GetDanceCharacter(GetWorld())->ToggleReaction(EMoveResult::PlayerHit);
 	InventoryChanged.Broadcast(false);
 	Last->PutBack(UDanceUtilsFunctionLibrary::GetAvailablePosition(ComponentGetters::GetDanceCharacter(GetWorld()), 2));
 	return true;

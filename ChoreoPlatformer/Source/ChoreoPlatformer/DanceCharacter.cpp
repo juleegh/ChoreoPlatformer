@@ -2,18 +2,24 @@
 
 
 #include "DanceCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "ChoreoPlayerController.h"
 #include "TimelineCreatorComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
+#include "DanceAudioManager.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 ADanceCharacter::ADanceCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
+	ColorTimeline = CreateDefaultSubobject<UColorTimelineComponent>("Color Timeline");
 }
 
 void ADanceCharacter::BeginPlay()
@@ -21,6 +27,8 @@ void ADanceCharacter::BeginPlay()
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
 	MoveTimeline->TimelineEnded.AddDynamic(this, &ADanceCharacter::ReachedNextTile);
+	ColorTimeline->Initialize();
+	ColorTimeline->AddMesh(GetMesh());
 
 	if (APlayerController* ChoreoController = Cast<APlayerController>(GetController()))
 	{
@@ -29,6 +37,7 @@ void ADanceCharacter::BeginPlay()
 			SubSystem->AddMappingContext(ChoreoIMC, 0);
 		}
 	}
+	DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
 }
 
 void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -44,6 +53,11 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Cancel);
 	}
 
+}
+
+void ADanceCharacter::InitializeToLevel(float Tempo)
+{
+	GetMesh()->SetPlayRate(Tempo);
 }
 
 void ADanceCharacter::MoveTo(FVector position, float Duration)
@@ -84,5 +98,50 @@ AChoreoPlayerController* ADanceCharacter::GetChoreoController() const
 	return Cast<AChoreoPlayerController>(GetController());
 }
 
+void ADanceCharacter::ToggleReaction(EMoveResult MoveResult)
+{
+	if (ReactionColors.Contains(MoveResult))
+	{
+		ColorTimeline->ChangeColor(ReactionColors[MoveResult]);
+		ColorTimeline->Blink();
+	}
+	if (ReactionParticles.Contains(MoveResult))
+	{
+		FTransform Transform = GetTransform();
+		Transform.SetLocation(GetMesh()->GetSocketLocation(FName("root")));
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ReactionParticles[MoveResult], Transform);
+	}
+	if (ReactionAnimations.Contains(MoveResult))
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(ReactionAnimations[MoveResult]);
+	}
+	DanceAudio->PlayMoveResult(MoveResult);
+}
 
+void ADanceCharacter::SetupPlayerCamera(FGameplayTag CameraStyle)
+{
+	FPigeonCameraSettings CameraSettings = FlavorCameraSettings[FGameplayTag::RequestGameplayTag(FName("CameraSettings.Default"))];
+	if (FlavorCameraSettings.Contains(CameraStyle))
+	{
+		CameraSettings = FlavorCameraSettings[CameraStyle];
+	}
 
+	GetMesh()->SetRelativeRotation(CameraSettings.PigeonRotation);
+	if (CameraSettings.bForcePigeonLocation)
+	{
+		SetActorLocation(CameraSettings.PigeonWorldLocation);
+	}
+	if (UCameraComponent* PigeonCamera = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass())))
+	{
+		PigeonCamera->SetRelativeRotation(CameraSettings.CameraRotation);
+	}
+	
+	if (USpringArmComponent* SpringArm = Cast<USpringArmComponent>(GetComponentByClass(USpringArmComponent::StaticClass())))
+	{
+		SpringArm->TargetOffset = CameraSettings.TargetOffset;
+		SpringArm->TargetArmLength = CameraSettings.TargetArmLength;
+		SpringArm->SetRelativeRotation(CameraSettings.ArmRotation);
+	}
+
+}

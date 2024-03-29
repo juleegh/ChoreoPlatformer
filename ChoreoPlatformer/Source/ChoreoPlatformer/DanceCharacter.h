@@ -4,11 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "DanceDefinitions.h"
 #include "DanceCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerMoved, float, Tempo);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMoveFailed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerNewPosition);
+
+USTRUCT(BlueprintType)
+struct FPigeonCameraSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	FVector TargetOffset;
+	UPROPERTY(EditDefaultsOnly)
+	float TargetArmLength;
+	UPROPERTY(EditDefaultsOnly)
+	FRotator ArmRotation;
+	UPROPERTY(EditDefaultsOnly)
+	FRotator CameraRotation;
+	UPROPERTY(EditDefaultsOnly)
+	FRotator PigeonRotation;
+	UPROPERTY(EditDefaultsOnly)
+	bool bForcePigeonLocation;
+	UPROPERTY(EditDefaultsOnly)
+	FVector PigeonWorldLocation;
+};
 
 UCLASS()
 class CHOREOPLATFORMER_API ADanceCharacter : public ACharacter
@@ -29,8 +50,22 @@ protected:
 	class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* CancelAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
+	TMap<EMoveResult, FColor> ReactionColors;
+	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
+	TMap<EMoveResult, class UParticleSystem*> ReactionParticles;
+	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
+	TMap<EMoveResult, class UAnimMontage*> ReactionAnimations;
+	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
+	TMap<FGameplayTag, FPigeonCameraSettings> FlavorCameraSettings;
+
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;
+	UPROPERTY()
+	class UColorTimelineComponent* ColorTimeline;
+	UPROPERTY()
+	class ADanceAudioManager* DanceAudio;
+	UFUNCTION()
 	virtual void BeginPlay() override;
 	UFUNCTION()
 	void ReachedNextTile();
@@ -41,8 +76,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FPlayerMoved PlayerMoved;
 	UPROPERTY(BlueprintAssignable)
-	FMoveFailed MoveFailed;
-	UPROPERTY(BlueprintAssignable)
 	FPlayerNewPosition PlayerNewPosition;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveTo(FVector position, float Duration);
@@ -51,4 +84,7 @@ public:
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetupToLevel();
+	void InitializeToLevel(float Tempo);
+	void SetupPlayerCamera(FGameplayTag CameraStyle);
+	void ToggleReaction(EMoveResult MoveResult);
 };

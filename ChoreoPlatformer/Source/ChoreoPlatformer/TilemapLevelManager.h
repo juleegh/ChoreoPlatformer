@@ -63,6 +63,8 @@ protected:
 	FLevelStart LevelStart;
 	UPROPERTY(BlueprintAssignable)
 	FLevelEnd LevelEnd;
+	UPROPERTY()
+	FTimerHandle DelayTimerHandle;
 
 public:
 	void BeginPlay() override;

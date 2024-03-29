@@ -14,6 +14,7 @@
 #include "ChoreoPlayerController.h"
 #include "Components/BoxComponent.h"
 #include "ComponentGetters.h"
+#include "TimerManager.h"
 
 void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
@@ -130,6 +131,7 @@ void ASectionLevelManager::BeginPlay()
 	SongTempo->SetupTempo(60 / SongBPM);
 
 	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
+	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->InitializeToLevel(60 / SongBPM);
 	SongTempo->StartTempoCounting();
 
 	ComponentGetters::GetDanceAudioManager(GetWorld())->InitializeSong();
@@ -157,6 +159,16 @@ void ASectionLevelManager::CurrentSectionEnd(FGameplayTag NextSection)
 
 	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
 	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(GTEOL);
+	float DelayDuration = 0.25f;
+	FTimerDelegate TimerCallback;
+
+	TimerCallback.BindLambda([this]() {
+		// Your lambda function code here
+		ComponentGetters::GetDanceCharacter(GetWorld())->SetupPlayerCamera(ComponentGetters::GetLevelEventsComponent(GetWorld())->GetLastEventData().FlavorTriggers.First());
+		});
+
+	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
+
 	LevelEnd.Broadcast();
 }
 
@@ -174,6 +186,7 @@ void ASectionLevelManager::NextSectionStart()
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+		ComponentGetters::GetDanceCharacter(GetWorld())->SetupPlayerCamera(FGameplayTag::EmptyTag);
 		LevelStart.Broadcast();
 	}
 }
