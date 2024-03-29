@@ -52,8 +52,11 @@ void AGridCell::BeginPlay()
 	Super::BeginPlay();
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
 	ComponentGetters::GetDanceCharacter(GetWorld())->PlayerNewPosition.AddDynamic(this, &AGridCell::UpdateFlipbookVisuals);
-	ComponentGetters::GetSectionLevelManager(GetWorld())->LevelStart.AddDynamic(this, &AGridCell::StartFlipbook);
-	ComponentGetters::GetSectionLevelManager(GetWorld())->LevelEnd.AddDynamic(this, &AGridCell::StopFlipbook);
+	if (auto SectionLevelManager = ComponentGetters::GetSectionLevelManager(GetWorld()))
+	{
+		SectionLevelManager->LevelStart.AddDynamic(this, &AGridCell::StartFlipbook);
+		SectionLevelManager->LevelEnd.AddDynamic(this, &AGridCell::StopFlipbook);
+	}
 	SpritesTimeline->Initialize();
 	MoveTimeline->Initialize();
 	GetSprites();
@@ -71,12 +74,12 @@ void AGridCell::UpdateFlipbookVisuals()
 
 void AGridCell::StopFlipbook()
 {
-
+	Flipbook->Stop();
 }
 
 void AGridCell::StartFlipbook()
 {
-
+	Flipbook->PlayFromStart();
 }
 
 bool AGridCell::ForcesPlayerPosition()
