@@ -25,6 +25,7 @@ namespace ComponentGetters
 	UInventoryComponent* GetInventoryComponent(UWorld* WorldContextObject);
 	ASectionLevelManager* GetSectionLevelManager(UWorld* WorldContextObject);
 	ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject);
+	AEndlessLevelManager* GetEndlessLevelManager(UWorld* WorldContextObject);
 	ADanceAudioManager* GetDanceAudioManager(UWorld* WorldContextObject);
 	USongTempoComponent* GetSongTempoComponent(UWorld* WorldContextObject);
 	ULevelEventsComponent* GetLevelEventsComponent(UWorld* WorldContextObject);

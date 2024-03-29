@@ -82,8 +82,6 @@ public:
 	void StopMovement();
 	class AChoreoPlayerController* GetChoreoController() const;
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
-	UFUNCTION(BlueprintImplementableEvent)
-	void SetupToLevel();
 	void InitializeToLevel(float Tempo);
 	void SetupPlayerCamera(FGameplayTag CameraStyle);
 	void ToggleReaction(EMoveResult MoveResult);

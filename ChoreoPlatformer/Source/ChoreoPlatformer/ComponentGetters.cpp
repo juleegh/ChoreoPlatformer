@@ -70,6 +70,19 @@ namespace ComponentGetters
 
 		return nullptr;
 	}
+	
+	AEndlessLevelManager* GetEndlessLevelManager(UWorld* WorldContextObject)
+	{
+		TArray<AActor*> FoundManagers;
+		UGameplayStatics::GetAllActorsOfClass(WorldContextObject, AEndlessLevelManager::StaticClass(), FoundManagers);
+
+		for (auto Manager : FoundManagers)
+		{
+			return Cast<AEndlessLevelManager>(Manager);
+		}
+
+		return nullptr;
+	}
 
 	ASectionLevelManager* GetSectionLevelManager(UWorld* WorldContextObject)
 	{

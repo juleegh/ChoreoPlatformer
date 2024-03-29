@@ -47,6 +47,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassCalibration = false;
 	UPROPERTY()
+	class AEndlessLevelManager* EndlessMode;
+	UPROPERTY()
 	bool bIsDead = false;
 	UPROPERTY()
 	FTimerHandle DelayTimerHandle;
@@ -58,6 +60,7 @@ protected:
 	void TriggerResultFeedback(float Result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool InGame();
+	bool InEndlessMode();
 
 public:
 	AChoreoPlayerController();

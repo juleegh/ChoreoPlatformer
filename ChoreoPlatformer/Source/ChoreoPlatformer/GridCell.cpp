@@ -43,7 +43,6 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 	}
 	Flipbook->SetPlayRate(1.0 / ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency());
 	Flipbook->PlayFromStart();
-	UpdateFlipbookVisuals();
 }
 
 
@@ -63,6 +62,7 @@ void AGridCell::BeginPlay()
 	SpritesTimeline->SetSprites(HitSprites);
 	ForegroundMat = Flipbook->CreateDynamicMaterialInstance(0, Flipbook->GetMaterial(0));
 	BackgroundMat = FlipbookBackground->CreateDynamicMaterialInstance(0, FlipbookBackground->GetMaterial(0));
+	UpdateFlipbookVisuals();
 }
 
 void AGridCell::UpdateFlipbookVisuals()

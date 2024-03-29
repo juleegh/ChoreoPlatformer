@@ -32,7 +32,10 @@ void UChoreoGameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
     if (!InLoadedWorld->GetName().Equals("GameIntro"))
     {
         ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->LoadGame();
-        ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(CurrentLevel);
+        if (auto SectionLevelManager = ComponentGetters::GetSectionLevelManager(GetWorld()))
+        {
+            SectionLevelManager->StartFromSection(CurrentLevel);
+        }
         ComponentGetters::GetController(GetWorld())->CheckForCalibration();
     }
     else

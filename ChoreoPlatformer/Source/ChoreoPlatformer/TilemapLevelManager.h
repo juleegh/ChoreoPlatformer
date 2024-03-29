@@ -97,6 +97,9 @@ class CHOREOPLATFORMER_API AEndlessLevelManager : public AActor
 
 public:
 	AEndlessLevelManager() {}
+	void PlayerMoved(FVector NewPosition);
+	bool ShouldShuffleWorldInstead(FVector NextPosition);
+	void ShuffleWorldDown();
 
 protected:
 
@@ -104,7 +107,7 @@ protected:
 	TArray<TObjectPtr<UPaperTileMap>> AvailableTileMaps;
 
 	UPROPERTY(EditInstanceOnly, Category = "Progression")
-	int InitialSongBPM = 110;
+	float InitialSongBPM = 110;
 	
 	UPROPERTY()
 	TMap<FVector, FProceduralTileInfo> CurrentTiles;
@@ -119,8 +122,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
-	UFUNCTION(BlueprintCallable)
-	void ShuffleWorldDown();
 	void LoadNextMap(UPaperTileMap* TileMap);
 
 };

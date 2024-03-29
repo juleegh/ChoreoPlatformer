@@ -106,6 +106,7 @@ void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, E
 		Current->SetActorLocation(Position);
 		Current->SetActorRotation(DeltaRotation);
 		TilePool.RemoveAt(0);
+		Current->SetActorHiddenInGame(false);
 	}
 	Current->Initialize(TileType, SectionIdentifier);
 	WorldTiles.Add(Current);
@@ -113,6 +114,7 @@ void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, E
 
 void ATilemapLevelManager::ClearTile(AGridCell* ClearingTile)
 {
+	ClearingTile->SetActorLocation(FVector::ForwardVector * -1000);
 	WorldTiles.Remove(ClearingTile);
 	TilePool.Add(ClearingTile);
 }
@@ -130,7 +132,6 @@ void ASectionLevelManager::BeginPlay()
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
 
-	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
 	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->InitializeToLevel(60 / SongBPM);
 	SongTempo->StartTempoCounting();
 
@@ -297,7 +298,7 @@ void AEndlessLevelManager::Initialize()
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / InitialSongBPM);
 
-	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->SetupToLevel();
+	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->InitializeToLevel(60 / InitialSongBPM);
 	SongTempo->StartTempoCounting();
 
 	auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
@@ -305,27 +306,28 @@ void AEndlessLevelManager::Initialize()
 
 	LoadNextMap(TileMap);
 	CurrentTiles = NextTiles;
+	/*
+	*/
 }
 
 void AEndlessLevelManager::ShuffleWorldDown()
 {
 	CurrentLine++;
 	// if the line reaches the top of the current level load the next one and adjust indexes
-	if (CurrentLine == TileMapDimension - 1)
+	if (CurrentLine >= TileMapDimension + (TileMapDimension / 2))
 	{
 		CurrentTiles = NextTiles;
 		auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
 		LoadNextMap(TileMap);
-		CurrentLine = 0;
+		CurrentLine = TileMapDimension / 2;
 	}
-	int enteringIndex = CurrentLine + TileMapDimension / 2;
 
 	auto TileManager = ComponentGetters::GetTilemapLevelManager(GetWorld());
 	// Clear current line
 	for (int i = 0; i < TileMapDimension; i++)
 	{
-		FVector Pos = FVector::RightVector * i;
-		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({}, Pos);
+		FVector Pos = FVector::RightVector * i * TileDimension;
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({ ComponentGetters::GetDanceCharacter(GetWorld()) }, Pos);
 		if (TileInfo.HitCell == nullptr)
 		{
 			continue;
@@ -337,17 +339,16 @@ void AEndlessLevelManager::ShuffleWorldDown()
 	auto WorldTiles = TileManager->GetWorldTiles();
 	for (auto Tile : *WorldTiles)
 	{
-		Tile->SetActorLocation(Tile->GetActorLocation() - GetActorForwardVector() * 100);
+		Tile->SetActorLocation(Tile->GetActorLocation() - FVector::ForwardVector * TileDimension);
 	}
 
 	// Spawn next line
-	int column = 0;
+	int NextLine = CurrentLine - TileMapDimension / 2;
 	for (int row = 0; row < TileMapDimension; row++)
 	{
-		auto Tile = NextTiles[FVector::RightVector * column + FVector::ForwardVector * row];
+		auto Tile = NextTiles[FVector::ForwardVector * NextLine + FVector::RightVector * row];
 		FRotator DeltaRotation = FRotator::MakeFromEuler(Tile.ForcedDirection);
-		const FVector DeltaPos = GetActorRightVector() * TileMapDimension * TileDimension + GetActorForwardVector() * column * TileDimension;
-		column++;
+		const FVector DeltaPos = FVector::ForwardVector * (TileMapDimension - 1) * TileDimension + FVector::RightVector * row * TileDimension;
 
 		TileManager->SpawnTile(DeltaPos, DeltaRotation, Tile.TileType, FGameplayTag::EmptyTag);
 	}
@@ -376,13 +377,24 @@ void AEndlessLevelManager::LoadNextMap(UPaperTileMap* TileMap)
 				}
 				else
 				{
+					TileDimension = TileInfo.TileSet->GetTileSize().X;
 					CurrentTile.TileType = (ETempoTile)TileInfo.PackedTileIndex;
 					FRotator DeltaRotation = FRotator();
 					DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
 					CurrentTile.ForcedDirection = DeltaRotation.Euler();
 				}
-				NextTiles.Add(FVector::RightVector * column + FVector::ForwardVector * row, CurrentTile);
+				NextTiles.Add(FVector::ForwardVector * column + FVector::RightVector * row, CurrentTile);
 			}
 		}
 	}
+}
+
+void AEndlessLevelManager::PlayerMoved(FVector Delta)
+{
+	CurrentLine += Delta.X;
+}
+
+bool AEndlessLevelManager::ShouldShuffleWorldInstead(FVector NextPosition)
+{
+	return NextPosition.X / TileDimension >= TileMapDimension / 2;
 }

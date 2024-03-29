@@ -28,6 +28,11 @@ bool AChoreoPlayerController::InGame()
 	return !UGameplayStatics::GetCurrentLevelName(this).Equals("MainMenu");
 }
 
+bool AChoreoPlayerController::InEndlessMode()
+{
+	return UGameplayStatics::GetCurrentLevelName(this).Equals("EndlessMode");
+}
+
 bool AChoreoPlayerController::IsPaused()
 {
 	const FGameplayTag GTPause = FGameplayTag::RequestGameplayTag("GameUI.Pause");
@@ -50,6 +55,7 @@ void AChoreoPlayerController::BeginPlay()
 	{
 		DancerUI->GetGameUI()->LoadMenu();
 	}
+	EndlessMode = ComponentGetters::GetEndlessLevelManager(GetWorld());
 }
 
 void AChoreoPlayerController::CheckForCalibration()
@@ -206,7 +212,22 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 
 	if (bIsOnTempo)
 	{
-		DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
+		if (InEndlessMode())
+		{
+			if (EndlessMode->ShouldShuffleWorldInstead(NextTile.Position))
+			{
+				EndlessMode->ShuffleWorldDown();
+			}
+			else
+			{
+				EndlessMode->PlayerMoved(Direction);
+				DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
+			}
+		}
+		else
+		{
+			DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
+		}
 		DancerUI->GetGameUI()->PromptTempoResult(MoveResult, true);
 	}
 	else
