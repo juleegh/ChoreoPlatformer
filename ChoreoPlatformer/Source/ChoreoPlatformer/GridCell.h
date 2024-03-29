@@ -26,6 +26,8 @@ protected:
 	ETempoTile TileType;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UPaperFlipbookComponent* Flipbook;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UPaperSpriteComponent* FlipbookBackground;
 	UPROPERTY(BlueprintReadOnly)
 	class USongTempoComponent* SongTempo;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -36,7 +38,19 @@ protected:
 	class USpritesTimelineComponent* SpritesTimeline;
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;
+	UPROPERTY()
+	class UMaterialInstanceDynamic* ForegroundMat;
+	UPROPERTY()
+	class UMaterialInstanceDynamic* BackgroundMat;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	float ShineDistance = 3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	float MinForeground = 0.05;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	float MinBackground = 0.1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	TMap<ETempoTile, class UPaperFlipbook*> TempoFlipbooks;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	TMap<FGameplayTag, FTileSpriteInfo> SpritesInfo;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
@@ -48,11 +62,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	FGameplayTag ExitType;
 
+	UFUNCTION()
+	void UpdateFlipbookVisuals();
+	UFUNCTION()
+	void StopFlipbook();
+	UFUNCTION()
+	void StartFlipbook();
+
 public:	
 	// Called every frame
 	void Initialize(ETempoTile, FGameplayTag&);
-	UFUNCTION(BlueprintImplementableEvent)
-	void PaintTile();
 	UFUNCTION(BlueprintImplementableEvent)
 	void GetSprites();
 	ETempoTile GetTileType() { return TileType; }

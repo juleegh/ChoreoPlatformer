@@ -49,6 +49,11 @@ class CHOREOPLATFORMER_API ASectionLevelManager : public AActor
 public:
 	ASectionLevelManager() {}
 
+	UPROPERTY(BlueprintAssignable)
+	FLevelStart LevelStart;
+	UPROPERTY(BlueprintAssignable)
+	FLevelEnd LevelEnd;
+
 protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Level")
 	FGameplayTag StartSection;
@@ -59,10 +64,6 @@ protected:
 	FGameplayTag CurrentSection;
 	UPROPERTY()
 	class ASectionStart* CurrentSectionStart;
-	UPROPERTY(BlueprintAssignable)
-	FLevelStart LevelStart;
-	UPROPERTY(BlueprintAssignable)
-	FLevelEnd LevelEnd;
 	UPROPERTY()
 	FTimerHandle DelayTimerHandle;
 

@@ -23,6 +23,11 @@ AGridCell::AGridCell()
 	Flipbook->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Flipbook->SetupAttachment(RootComponent);
 
+	FlipbookBackground = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("FlipbookBG"));
+	FlipbookBackground->SetCollisionResponseToAllChannels(ECR_Ignore);
+	FlipbookBackground->SetupAttachment(Flipbook);
+	FlipbookBackground->SetRelativeLocation(-FVector::RightVector);
+
 	SpritesTimeline = CreateDefaultSubobject<USpritesTimelineComponent>("Sprites Timeline");
 	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
 }
@@ -32,7 +37,13 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 	TileType = Properties;
 	Section = BelongingSection;
 	ToggleStaticTrigger(ExitType, Properties == ETempoTile::Ending);
-	PaintTile();
+	if (TempoFlipbooks.Contains(Properties))
+	{
+		Flipbook->SetFlipbook(TempoFlipbooks[Properties]);
+	}
+	Flipbook->SetPlayRate(1.0 / ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency());
+	Flipbook->PlayFromStart();
+	UpdateFlipbookVisuals();
 }
 
 
@@ -40,10 +51,32 @@ void AGridCell::BeginPlay()
 {
 	Super::BeginPlay();
 	SongTempo = ComponentGetters::GetSongTempoComponent(GetWorld());
+	ComponentGetters::GetDanceCharacter(GetWorld())->PlayerNewPosition.AddDynamic(this, &AGridCell::UpdateFlipbookVisuals);
+	ComponentGetters::GetSectionLevelManager(GetWorld())->LevelStart.AddDynamic(this, &AGridCell::StartFlipbook);
+	ComponentGetters::GetSectionLevelManager(GetWorld())->LevelEnd.AddDynamic(this, &AGridCell::StopFlipbook);
 	SpritesTimeline->Initialize();
 	MoveTimeline->Initialize();
 	GetSprites();
 	SpritesTimeline->SetSprites(HitSprites);
+	ForegroundMat = Flipbook->CreateDynamicMaterialInstance(0, Flipbook->GetMaterial(0));
+	BackgroundMat = FlipbookBackground->CreateDynamicMaterialInstance(0, FlipbookBackground->GetMaterial(0));
+}
+
+void AGridCell::UpdateFlipbookVisuals()
+{
+	float PercentageDistance = (ShineDistance - (float)UDanceUtilsFunctionLibrary::TilesAwayFromPlayer(this)) / ShineDistance;
+	ForegroundMat->SetScalarParameterValue(FName("Opacity"), PercentageDistance < MinForeground ? MinForeground : PercentageDistance);
+	BackgroundMat->SetScalarParameterValue(FName("Opacity"), PercentageDistance < MinBackground ? MinBackground : PercentageDistance);
+}
+
+void AGridCell::StopFlipbook()
+{
+
+}
+
+void AGridCell::StartFlipbook()
+{
+
 }
 
 bool AGridCell::ForcesPlayerPosition()
@@ -55,11 +88,11 @@ FVector AGridCell::ForcedDirection()
 {
 	switch (TileType)
 	{
-		case ETempoTile::ForceDirection:
-		case ETempoTile::ForcedChangeable:
-			return FVector(FMath::RoundToInt(GetActorForwardVector().X), FMath::RoundToInt(GetActorForwardVector().Y), 0);
-		default:
-			return FVector::ZeroVector;
+	case ETempoTile::ForceDirection:
+	case ETempoTile::ForcedChangeable:
+		return FVector(FMath::RoundToInt(GetActorForwardVector().X), FMath::RoundToInt(GetActorForwardVector().Y), 0);
+	default:
+		return FVector::ZeroVector;
 	}
 }
 
