@@ -37,6 +37,10 @@ void ADanceCharacter::BeginPlay()
 			SubSystem->AddMappingContext(ChoreoIMC, 0);
 		}
 	}
+	if (!DanceAudio)
+	{
+		DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
+	}
 	DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
 }
 
