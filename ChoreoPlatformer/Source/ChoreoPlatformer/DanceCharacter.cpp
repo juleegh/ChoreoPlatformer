@@ -37,10 +37,6 @@ void ADanceCharacter::BeginPlay()
 			SubSystem->AddMappingContext(ChoreoIMC, 0);
 		}
 	}
-	if (!DanceAudio)
-	{
-		DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
-	}
 	DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
 }
 
@@ -124,6 +120,10 @@ void ADanceCharacter::ToggleReaction(EMoveResult MoveResult)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(ReactionAnimations[MoveResult]);
+	}
+	if (!DanceAudio)
+	{
+		DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
 	}
 	DanceAudio->PlayMoveResult(MoveResult);
 }
