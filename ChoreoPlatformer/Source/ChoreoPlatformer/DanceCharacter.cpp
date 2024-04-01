@@ -76,10 +76,15 @@ void ADanceCharacter::MoveTo(FVector position, float Duration)
 	}
 
 	PlayerMoved.Broadcast(Duration);
+	RotateTowards(position);
+	MoveTimeline->MoveToPosition(position, Duration * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
+}
+
+void ADanceCharacter::RotateTowards(FVector position)
+{
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	GetController()->SetControlRotation(Rotation);
-	MoveTimeline->MoveToPosition(position, Duration * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
 }
 
 void ADanceCharacter::StopMovement()

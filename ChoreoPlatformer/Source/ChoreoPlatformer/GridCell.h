@@ -63,8 +63,6 @@ protected:
 	FGameplayTag ExitType;
 
 	UFUNCTION()
-	void UpdateFlipbookVisuals();
-	UFUNCTION()
 	void StopFlipbook();
 	UFUNCTION()
 	void StartFlipbook();
@@ -72,6 +70,8 @@ protected:
 public:	
 	// Called every frame
 	void Initialize(ETempoTile, FGameplayTag&);
+	UFUNCTION()
+	void UpdateFlipbookVisuals();
 	UFUNCTION(BlueprintImplementableEvent)
 	void GetSprites();
 	ETempoTile GetTileType() { return TileType; }
@@ -82,6 +82,7 @@ public:
 	void PromptTrigger();
 	void PromptDamage();
 	void RotateToDirection(FRotator Rotation);
+	void MoveToPosition(FVector Position, float elapsedTime);
 	UFUNCTION(BlueprintCallable)
 	void ToggleStaticTrigger(const FGameplayTag& SpriteType, bool bVisible);
 };

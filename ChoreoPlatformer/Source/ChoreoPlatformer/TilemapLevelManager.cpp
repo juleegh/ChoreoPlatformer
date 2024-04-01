@@ -310,7 +310,7 @@ void AEndlessLevelManager::Initialize()
 	*/
 }
 
-void AEndlessLevelManager::ShuffleWorldDown()
+void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)
 {
 	CurrentLine++;
 	// if the line reaches the top of the current level load the next one and adjust indexes
@@ -335,22 +335,23 @@ void AEndlessLevelManager::ShuffleWorldDown()
 		TileManager->ClearTile(TileInfo.HitCell);
 	}
 
-	// Shuffle downwards
-	auto WorldTiles = TileManager->GetWorldTiles();
-	for (auto Tile : *WorldTiles)
-	{
-		Tile->SetActorLocation(Tile->GetActorLocation() - FVector::ForwardVector * TileDimension);
-	}
-
 	// Spawn next line
 	int NextLine = CurrentLine - TileMapDimension / 2;
 	for (int row = 0; row < TileMapDimension; row++)
 	{
 		auto Tile = NextTiles[FVector::ForwardVector * NextLine + FVector::RightVector * row];
 		FRotator DeltaRotation = FRotator::MakeFromEuler(Tile.ForcedDirection);
-		const FVector DeltaPos = FVector::ForwardVector * (TileMapDimension - 1) * TileDimension + FVector::RightVector * row * TileDimension;
+		const FVector DeltaPos = FVector::ForwardVector * (TileMapDimension)*TileDimension + FVector::RightVector * row * TileDimension;
 
 		TileManager->SpawnTile(DeltaPos, DeltaRotation, Tile.TileType, FGameplayTag::EmptyTag);
+	}
+
+	// Shuffle downwards
+	auto WorldTiles = TileManager->GetWorldTiles();
+	for (auto Tile : *WorldTiles)
+	{
+		Tile->MoveToPosition(Tile->GetActorLocation() - FVector::ForwardVector * TileDimension, ElapsedTime);
+		Tile->UpdateFlipbookVisuals();
 	}
 }
 

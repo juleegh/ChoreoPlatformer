@@ -79,6 +79,7 @@ public:
 	FPlayerNewPosition PlayerNewPosition;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveTo(FVector position, float Duration);
+	void RotateTowards(FVector position);
 	void StopMovement();
 	class AChoreoPlayerController* GetChoreoController() const;
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }

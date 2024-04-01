@@ -99,7 +99,7 @@ public:
 	AEndlessLevelManager() {}
 	void PlayerMoved(FVector NewPosition);
 	bool ShouldShuffleWorldInstead(FVector NextPosition);
-	void ShuffleWorldDown();
+	void ShuffleWorldDown(float ElapsedTime);
 
 protected:
 

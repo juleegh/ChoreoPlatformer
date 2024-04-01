@@ -43,6 +43,7 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 	}
 	Flipbook->SetPlayRate(1.0 / ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency());
 	Flipbook->PlayFromStart();
+	UpdateFlipbookVisuals();
 }
 
 
@@ -130,6 +131,15 @@ void AGridCell::RotateToDirection(FRotator Direction)
 	}
 	MoveTimeline->RotateToPosition(GetActorRotation() + Direction, ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency());
 	PromptTrigger();
+}
+
+void AGridCell::MoveToPosition(FVector Position, float elapsedTime)
+{
+	if (MoveTimeline->IsRunning())
+	{
+		MoveTimeline->Stop(true);
+	}
+	MoveTimeline->MoveToPosition(Position, elapsedTime);
 }
 
 void AGridCell::ToggleStaticTrigger(const FGameplayTag& SpriteType, bool bVisible)

@@ -216,7 +216,8 @@ void AChoreoPlayerController::CheckMovement(FVector Direction)
 		{
 			if (EndlessMode->ShouldShuffleWorldInstead(NextTile.Position))
 			{
-				EndlessMode->ShuffleWorldDown();
+				DanceCharacter->RotateTowards(NextTile.Position);
+				EndlessMode->ShuffleWorldDown(CurrentTile.TargetTempo * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
 			}
 			else
 			{
