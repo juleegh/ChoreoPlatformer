@@ -35,7 +35,6 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 		}
 
 		LoadTileMap(TileMap, TileMapActor->GetActorLocation(), SectionIdentifier);
-		TileMapActor->SetActorHiddenInGame(true);
 	}
 
 	TArray<AActor*> Enemies;
@@ -75,10 +74,11 @@ void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector Anc
 			{
 				auto TileInfo = LayerInfo->GetCell(column, row);
 
-				if (TileInfo.TileSet == nullptr)
+				if (TileInfo.TileSet == nullptr || TileInfo.TileSet != TileSet.Get())
 					continue;
 
 				auto TileType = TileInfo.PackedTileIndex;
+
 				FRotator DeltaRotation = FRotator();
 				DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
 

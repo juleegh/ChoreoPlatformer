@@ -30,6 +30,8 @@ protected:
 	TArray<AGridCell*> TilePool;
 	UPROPERTY()
 	TArray<AGridCell*> WorldTiles;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level")
+	TSoftObjectPtr<class UPaperTileSet> TileSet;
 
 public:
 	void LoadMap(const FGameplayTag& Level);

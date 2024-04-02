@@ -14,6 +14,7 @@ enum class ETempoTile : uint8
 	ForceDirection,
 	ForcedChangeable,
 	Empty,
+	MAX,
 };
 
 UENUM(BlueprintType)
