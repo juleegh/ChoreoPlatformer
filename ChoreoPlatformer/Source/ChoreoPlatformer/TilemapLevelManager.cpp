@@ -335,23 +335,6 @@ void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)
 		}
 		TileManager->ClearTile(TileInfo.HitCell);
 	}
-	bool ClearedCityMeshes = false;
-	while (!ClearedCityMeshes)
-	{
-		ClearedCityMeshes = true;
-		for (int i = 0; i < WorldMeshes.Num(); i++)
-		{
-			auto Mesh = WorldMeshes[i];
-			if (Mesh->GetActorLocation().X == 0)
-			{
-				Mesh->SetActorLocation(FVector::ForwardVector * -1000);
-				WorldMeshes.Remove(Mesh);
-				MeshPool.Add(Mesh);
-				ClearedCityMeshes = false;
-				break;
-			}
-		}
-	}
 
 	// Spawn next line
 	int NextLine = CurrentLine - TileMapDimension / 2;
@@ -379,6 +362,24 @@ void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)
 	for (auto Mesh : WorldMeshes)
 	{
 		Mesh->MoveToPosition(Mesh->GetActorLocation() - FVector::ForwardVector * TileDimension, ElapsedTime);
+	}
+
+	bool ClearedCityMeshes = false;
+	while (!ClearedCityMeshes)
+	{
+		ClearedCityMeshes = true;
+		for (int i = 0; i < WorldMeshes.Num(); i++)
+		{
+			auto Mesh = WorldMeshes[i];
+			if (Mesh->GetActorLocation().X <= 0)
+			{
+				Mesh->SetActorLocation(FVector::ForwardVector * -1000);
+				WorldMeshes.Remove(Mesh);
+				MeshPool.Add(Mesh);
+				ClearedCityMeshes = false;
+				break;
+			}
+		}
 	}
 }
 
