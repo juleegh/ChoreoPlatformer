@@ -107,6 +107,21 @@ protected:
 
 	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
 	TArray<TObjectPtr<UPaperTileMap>> AvailableTileMaps;
+	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
+	TArray<TObjectPtr<UStaticMesh>> AvailableCityMeshes;
+	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
+	TSubclassOf<class ACityMesh> BaseMesh;
+	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
+	FColor Color1;
+	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
+	FColor Color2;
+	UPROPERTY(EditInstanceOnly, Category = "Tile Generation")
+	FColor Color3;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<ACityMesh>> MeshPool;
+	UPROPERTY()
+	TArray<TObjectPtr<ACityMesh>> WorldMeshes;
 
 	UPROPERTY(EditInstanceOnly, Category = "Progression")
 	float InitialSongBPM = 110;
@@ -125,6 +140,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
 	void LoadNextMap(UPaperTileMap* TileMap);
+	void SpawnCityMesh(FVector Position);
 
 };
 

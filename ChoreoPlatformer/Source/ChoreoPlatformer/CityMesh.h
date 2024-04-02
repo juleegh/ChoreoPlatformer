@@ -13,6 +13,8 @@ class CHOREOPLATFORMER_API ACityMesh : public AActor
 
 public:
 	ACityMesh();
+	void UpdatedMesh();
+	void MoveToPosition(FVector Position, float elapsedTime);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UStaticMeshComponent* ObjectMesh;
@@ -49,9 +51,12 @@ protected:
 	class UMaterialInstanceDynamic* ObjectMat;
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> TilingMeshes;
+	UPROPERTY()
+	class UMovementTimelineComponent* MoveTimeline;
 #if WITH_EDITOR
 	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
+	virtual void BeginPlay() override;
 	void PaintMaterial();
 	void CheckTiling();
 };

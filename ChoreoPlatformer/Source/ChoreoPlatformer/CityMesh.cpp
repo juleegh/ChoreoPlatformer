@@ -1,5 +1,6 @@
 #include "CityMesh.h"
 #include "Components/StaticMeshComponent.h"
+#include "TimelineCreatorComponent.h"
 
 ACityMesh::ACityMesh()
 {
@@ -7,26 +8,39 @@ ACityMesh::ACityMesh()
 	ObjectMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RootComponent = ObjectMesh;
 	TilingMeshes.Add(ObjectMesh);
+	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
+}
+
+void ACityMesh::BeginPlay()
+{
+	Super::BeginPlay();
+	MoveTimeline->Initialize();
+}
+
+void ACityMesh::UpdatedMesh()
+{
+	if (!SelectedMesh)
+	{
+		return;
+	}
+
+#if WITH_EDITOR
+	SetActorLabel(SelectedMesh->GetFName().ToString());
+#endif
+	PaintMaterial();
+	CheckTiling();
+
+	for (auto Tiled : TilingMeshes)
+	{
+		Tiled->SetStaticMesh(SelectedMesh);
+	}
 }
 
 #if WITH_EDITOR
 void ACityMesh::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	if (!SelectedMesh)
-	{
-		return;
-	}
-
-	SetActorLabel(SelectedMesh->GetFName().ToString());
-	PaintMaterial();
-	CheckTiling();
-	
-	for (auto Tiled : TilingMeshes)
-	{
-		Tiled->SetStaticMesh(SelectedMesh);
-	}
+	UpdatedMesh();
 }
 #endif
 
@@ -95,6 +109,14 @@ void ACityMesh::CheckTiling()
 			column = 0;
 			row++;
 		}
+	}	
+}
+
+void ACityMesh::MoveToPosition(FVector Position, float elapsedTime)
+{
+	if (MoveTimeline->IsRunning())
+	{
+		MoveTimeline->Stop(true);
 	}
-	
+	MoveTimeline->MoveToPosition(Position, elapsedTime);
 }

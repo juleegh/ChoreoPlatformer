@@ -15,6 +15,7 @@
 #include "Components/BoxComponent.h"
 #include "ComponentGetters.h"
 #include "TimerManager.h"
+#include "CityMesh.h"
 
 void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
@@ -302,9 +303,9 @@ void AEndlessLevelManager::Initialize()
 	SongTempo->StartTempoCounting();
 
 	auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
-	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadTileMap(TileMap, FVector::Zero(), FGameplayTag::EmptyTag);
+	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadTileMap(TileMap.Get(), FVector::Zero(), FGameplayTag::EmptyTag);
 
-	LoadNextMap(TileMap);
+	LoadNextMap(TileMap.Get());
 	CurrentTiles = NextTiles;
 	/*
 	*/
@@ -318,7 +319,7 @@ void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)
 	{
 		CurrentTiles = NextTiles;
 		auto TileMap = AvailableTileMaps[FMath::RandRange(0, AvailableTileMaps.Num() - 1)];
-		LoadNextMap(TileMap);
+		LoadNextMap(TileMap.Get());
 		CurrentLine = TileMapDimension / 2;
 	}
 
@@ -334,14 +335,36 @@ void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)
 		}
 		TileManager->ClearTile(TileInfo.HitCell);
 	}
+	bool ClearedCityMeshes = false;
+	while (!ClearedCityMeshes)
+	{
+		ClearedCityMeshes = true;
+		for (int i = 0; i < WorldMeshes.Num(); i++)
+		{
+			auto Mesh = WorldMeshes[i];
+			if (Mesh->GetActorLocation().X == 0)
+			{
+				Mesh->SetActorLocation(FVector::ForwardVector * -1000);
+				WorldMeshes.Remove(Mesh);
+				MeshPool.Add(Mesh);
+				ClearedCityMeshes = false;
+				break;
+			}
+		}
+	}
 
 	// Spawn next line
 	int NextLine = CurrentLine - TileMapDimension / 2;
 	for (int row = 0; row < TileMapDimension; row++)
 	{
 		auto Tile = NextTiles[FVector::ForwardVector * NextLine + FVector::RightVector * row];
-		FRotator DeltaRotation = FRotator::MakeFromEuler(Tile.ForcedDirection);
 		const FVector DeltaPos = FVector::ForwardVector * (TileMapDimension)*TileDimension + FVector::RightVector * row * TileDimension;
+		if (Tile.TileType == ETempoTile::Empty)
+		{
+			SpawnCityMesh(DeltaPos);
+			continue;
+		}
+		FRotator DeltaRotation = FRotator::MakeFromEuler(Tile.ForcedDirection);
 
 		TileManager->SpawnTile(DeltaPos, DeltaRotation, Tile.TileType, FGameplayTag::EmptyTag);
 	}
@@ -352,6 +375,10 @@ void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)
 	{
 		Tile->MoveToPosition(Tile->GetActorLocation() - FVector::ForwardVector * TileDimension, ElapsedTime);
 		Tile->UpdateFlipbookVisuals();
+	}
+	for (auto Mesh : WorldMeshes)
+	{
+		Mesh->MoveToPosition(Mesh->GetActorLocation() - FVector::ForwardVector * TileDimension, ElapsedTime);
 	}
 }
 
@@ -393,6 +420,30 @@ void AEndlessLevelManager::LoadNextMap(UPaperTileMap* TileMap)
 void AEndlessLevelManager::PlayerMoved(FVector Delta)
 {
 	CurrentLine += Delta.X;
+}
+
+void AEndlessLevelManager::SpawnCityMesh(FVector Position)
+{
+	ACityMesh* Current;
+	if (MeshPool.Num() == 0)
+	{
+		auto SpawnedMesh = GetWorld()->SpawnActor<ACityMesh>(BaseMesh.Get(), Position, FRotator());
+		SpawnedMesh->SetOwner(this);
+		Current = SpawnedMesh;
+	}
+	else
+	{
+		Current = MeshPool[0].Get();
+		Current->SetActorLocation(Position);
+		MeshPool.RemoveAt(0);
+		Current->SetActorHiddenInGame(false);
+	}
+	Current->SelectedMesh = AvailableCityMeshes[FMath::RandRange(0, AvailableCityMeshes.Num() - 1)].Get();
+	Current->ColorSlot1 = Color1;
+	Current->ColorSlot2 = Color2;
+	Current->ColorSlot3 = Color3;
+	Current->UpdatedMesh();
+	WorldMeshes.Add(Current);
 }
 
 bool AEndlessLevelManager::ShouldShuffleWorldInstead(FVector NextPosition)
