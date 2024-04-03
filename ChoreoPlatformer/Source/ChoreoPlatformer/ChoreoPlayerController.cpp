@@ -25,7 +25,7 @@ AChoreoPlayerController::AChoreoPlayerController()
 
 bool AChoreoPlayerController::InGame()
 {
-	return !UGameplayStatics::GetCurrentLevelName(this).Equals("MainMenu");
+	return !UGameplayStatics::GetCurrentLevelName(this).Equals("GameIntro");
 }
 
 bool AChoreoPlayerController::InEndlessMode()
@@ -68,21 +68,42 @@ void AChoreoPlayerController::CheckForCalibration()
 
 void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 {
-	if (InGame())
+	auto SectionManager = ComponentGetters::GetSectionLevelManager(GetWorld());
+	
+	if (!InGame())
 	{
-		DancerUI->GetGameUI()->CancelMenu();
-		ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(Level);
-	}
-	else if (UWorld* World = GetWorld())
-	{
+		auto LevelFlat = Level.GetTagName().ToString();
+		LevelFlat.RemoveFromStart("Level.");
+		int index = 0;
+		LevelFlat.FindChar('.', index);
 
-		FString LevelName = "C1_AncientCity";
+		FString LevelName = LevelFlat.LeftChop(LevelFlat.Len() - index);
 		if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
 		{
 			GameInstance->CurrentLevel = Level;
 		}
-
 		UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
+	}
+	else
+	{
+		if (!SectionManager)
+		{
+			return;
+		}
+		if (SectionManager->GetCurrentSection().MatchesAny(Level.GetGameplayTagParents()))
+		{
+			DancerUI->GetGameUI()->CancelMenu();
+			ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(Level);
+		}
+		else
+		{
+			FString LevelName = Level.GetGameplayTagParents().First().GetTagName().ToString();
+			if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
+			{
+				GameInstance->CurrentLevel = Level;
+			}
+			UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
+		}
 	}
 }
 
