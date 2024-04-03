@@ -263,6 +263,10 @@ void AChoreoPlayerController::RespawnPlayer()
 {
 	bIsDead = false;
 	LevelProgress->LoadCheckpoint();
+	if (DanceCharacter->PlayerNewPosition.IsBound())
+	{
+		DanceCharacter->PlayerNewPosition.Broadcast();
+	}
 }
 
 void AChoreoPlayerController::TriggerCalibration()
