@@ -41,6 +41,10 @@ void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection
 	{
 		Flipbook->SetFlipbook(TempoFlipbooks[Properties]);
 	}
+	if (DecorSprites.Contains(Properties))
+	{
+		FlipbookBackground->SetSprite(DecorSprites[Properties]);
+	}
 	Flipbook->SetPlayRate(1.0 / ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency());
 	Flipbook->PlayFromStart();
 	UpdateFlipbookVisuals();

@@ -50,7 +50,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	float MinBackground = 0.1;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
-	TMap<ETempoTile, class UPaperFlipbook*> TempoFlipbooks;
+	TMap<ETempoTile, TObjectPtr<class UPaperFlipbook>> TempoFlipbooks;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
+	TMap<ETempoTile, TObjectPtr<class UPaperSprite>> DecorSprites;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
 	TMap<FGameplayTag, FTileSpriteInfo> SpritesInfo;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual Feedback")
