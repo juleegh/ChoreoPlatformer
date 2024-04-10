@@ -30,6 +30,7 @@ public:
 	static float GetPerfectAcceptanceRate() { return 0.15; }
 	static bool PositionsAreEqual(FVector pos1, FVector pos2);
 	static float GetHealthDelta(ETempoAccuracy result);
+	static AActor* GetClosestActor(AActor* TargetActor, TArray<AActor*> Actors);
 	UFUNCTION(BlueprintCallable)
 	static void ToggleHighlight(AActor* Target, bool Highlighted);
 	UFUNCTION(BlueprintCallable, BlueprintPure)

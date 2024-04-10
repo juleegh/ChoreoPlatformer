@@ -31,6 +31,7 @@ namespace ComponentGetters
 	ULevelEventsComponent* GetLevelEventsComponent(UWorld* WorldContextObject);
 	ULevelProgressComponent* GetLevelProgressComponent(UWorld* WorldContextObject);
 	UDancerUIComponent* GetDancerUIComponent(UWorld* WorldContextObject);
+	ASectionStart* GetSectionStart(UWorld* WorldContextObject, const FGameplayTag& SectionIdentifier);
 }
 
 UCLASS()

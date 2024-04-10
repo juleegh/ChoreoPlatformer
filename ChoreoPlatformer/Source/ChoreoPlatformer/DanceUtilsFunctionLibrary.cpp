@@ -143,6 +143,23 @@ TArray<AActor*> UDanceUtilsFunctionLibrary::GetAdjacent(AActor* ToIgnore, FVecto
 	return Elements;
 }
 
+AActor* UDanceUtilsFunctionLibrary::GetClosestActor(AActor* TargetActor, TArray<AActor*> Actors)
+{
+	AActor* Closest = Actors[0];
+	float Distance = FVector::Distance(TargetActor->GetActorLocation(), Closest->GetActorLocation());
+
+	for (auto Actor : Actors)
+	{
+		if (FVector::Distance(TargetActor->GetActorLocation(), Actor->GetActorLocation()) < Distance)
+		{
+			Closest = Actor;
+			Distance = FVector::Distance(TargetActor->GetActorLocation(), Actor->GetActorLocation());
+		}
+	}
+
+	return Closest;
+}
+
 bool UDanceUtilsFunctionLibrary::PositionsAreEqual(FVector pos1, FVector pos2)
 {
 	int x1 = pos1.X;

@@ -96,6 +96,26 @@ namespace ComponentGetters
 
 		return nullptr;
 	}
+
+	ASectionStart* GetSectionStart(UWorld* WorldContextObject, const FGameplayTag& SectionIdentifier)
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(WorldContextObject, ASectionStart::StaticClass(), FoundActors);
+
+		for (auto Section : FoundActors)
+		{
+			if (auto LevelSection = Cast<ASectionStart>(Section))
+			{
+				if (LevelSection->GetSectionIdentifier() != SectionIdentifier)
+				{
+					continue;
+				}
+
+				return LevelSection;
+			}
+		}
+		return nullptr;
+	}
 }
 
 UDancerHealthComponent* UComponentGettersFunctionLibrary::GetDancerHealthComponent(AActor* WorldContextActor)

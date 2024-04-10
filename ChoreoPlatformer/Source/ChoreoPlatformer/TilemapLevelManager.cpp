@@ -24,28 +24,13 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 	WorldTiles.Empty();
 
 	TArray<AActor*> FoundSections;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperTileMapActor::StaticClass(), FoundSections);
+	auto LevelSection = ComponentGetters::GetSectionStart(GetWorld(), Level);
+	ComponentGetters::GetDanceCharacter(GetWorld())->SetActorLocation(LevelSection->GetActorLocation());
 
-	for (auto Section : FoundSections)
-	{
-		if (auto LevelSection = Cast<ASectionStart>(Section))
-		{
-			if (LevelSection->GetSectionIdentifier() != Level)
-			{
-				continue;
-			}
-
-			ComponentGetters::GetDanceCharacter(GetWorld())->SetActorLocation(LevelSection->GetActorLocation());
-			auto DetectedInfo = UDanceUtilsFunctionLibrary::CheckPosition({ ComponentGetters::GetDanceCharacter(GetWorld()) }, LevelSection->GetActorLocation());
-			if (!DetectedInfo.TileMapActor)
-			{
-				continue;
-			}
-			auto TileMap = Cast<APaperTileMapActor>(DetectedInfo.TileMapActor)->GetRenderComponent()->TileMap;
-			LoadTileMap(TileMap, DetectedInfo.TileMapActor->GetActorLocation(), Level);
-			break;
-		}
-	}
+	auto TileMapActor = Cast<APaperTileMapActor>(UDanceUtilsFunctionLibrary::GetClosestActor(LevelSection, FoundSections));
+	auto TileMap = TileMapActor->GetRenderComponent()->TileMap;
+	LoadTileMap(TileMap, TileMapActor->GetActorLocation(), Level);
 
 	TArray<AActor*> Enemies;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy::StaticClass(), Enemies);
@@ -207,20 +192,11 @@ void ASectionLevelManager::StartFromSection(const FGameplayTag SectionIdentifier
 	TArray<AActor*> FoundSections;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
 
-	for (auto Section : FoundSections)
+	if (auto LevelSection = ComponentGetters::GetSectionStart(GetWorld(), SectionIdentifier))
 	{
-		if (auto LevelSection = Cast<ASectionStart>(Section))
-		{
-			if (LevelSection->GetSectionIdentifier() != SectionIdentifier)
-			{
-				continue;
-			}
-
-			CurrentSection = LevelSection->GetSectionIdentifier();
-			CurrentSectionStart = LevelSection;
-			NextSectionStart();
-			return;
-		}
+		CurrentSection = LevelSection->GetSectionIdentifier();
+		CurrentSectionStart = LevelSection;
+		NextSectionStart();
 	}
 }
 
