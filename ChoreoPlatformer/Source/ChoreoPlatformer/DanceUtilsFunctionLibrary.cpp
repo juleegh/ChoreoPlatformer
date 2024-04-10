@@ -60,7 +60,7 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 		CollisionParams.AddIgnoredActor(ignore);
 	}
 
-	DrawDebugLine(ToIgnore[0]->GetWorld(), Start, End, FColor::Red, false, 5, 0, 5);
+	//DrawDebugLine(ToIgnore[0]->GetWorld(), Start, End, FColor::Red, false, 5, 0, 5);
 
 	if (ToIgnore[0]->GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_WorldDynamic, CollisionParams))
 	{
