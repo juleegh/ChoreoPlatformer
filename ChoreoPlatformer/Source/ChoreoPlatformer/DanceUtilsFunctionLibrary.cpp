@@ -4,6 +4,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Interface_Highlighter.h"
 #include "Kismet/GameplayStatics.h"
+#include "PaperTileMapActor.h"
 #include "ContextualElement.h"
 #include "ComponentGetters.h"
 #include "Enemy.h"
@@ -50,16 +51,16 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 	TArray<struct FHitResult> OutHits = {};
 	FTileInfo DetectedInfo;
 
-	Start.Z = 1000.f;
+	Start.Z += 300;
 
-	FVector End = ((-FVector::ZAxisVector * 1010) + Start);
+	FVector End = ((-FVector::ZAxisVector * 1000) + Start);
 	FCollisionQueryParams CollisionParams;
 	for (auto ignore : ToIgnore)
 	{
 		CollisionParams.AddIgnoredActor(ignore);
 	}
 
-	//DrawDebugLine(ToIgnore[0]->GetWorld(), Start, End, FColor::Red, false, 1, 0, 5);
+	DrawDebugLine(ToIgnore[0]->GetWorld(), Start, End, FColor::Red, false, 5, 0, 5);
 
 	if (ToIgnore[0]->GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_WorldDynamic, CollisionParams))
 	{
@@ -76,6 +77,11 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 			if (auto enemy = Cast<AEnemy>(hit.GetActor()))
 			{
 				DetectedInfo.bHitEnemy = true;
+			}
+
+			if (auto tileMap = Cast<APaperTileMapActor>(hit.GetActor()))
+			{
+				DetectedInfo.TileMapActor = tileMap;
 			}
 
 			if (auto player = Cast<ADanceCharacter>(hit.GetActor()))

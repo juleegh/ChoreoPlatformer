@@ -65,6 +65,8 @@ struct FTileInfo
 	UPROPERTY(BlueprintReadOnly)
 	class AGridCell* HitCell = nullptr;
 	UPROPERTY(BlueprintReadOnly)
+	class APaperTileMapActor* TileMapActor = nullptr;
+	UPROPERTY(BlueprintReadOnly)
 	ETempoTile TileType;
 	UPROPERTY(BlueprintReadOnly)
 	FVector Position;

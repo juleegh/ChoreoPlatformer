@@ -16,26 +16,35 @@
 #include "ComponentGetters.h"
 #include "TimerManager.h"
 #include "CityMesh.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
 	TilePool.Append(WorldTiles);
 	WorldTiles.Empty();
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperTileMapActor::StaticClass(), FoundActors);
 
-	for (auto TileMapActor : FoundActors)
+	TArray<AActor*> FoundSections;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASectionStart::StaticClass(), FoundSections);
+
+	for (auto Section : FoundSections)
 	{
-		auto TileMap = Cast<APaperTileMapActor>(TileMapActor)->GetRenderComponent()->TileMap;
-		auto FirstLayer = TileMap->TileLayers.Last();
-		auto LayerName = FName(FirstLayer->LayerName.ToString());
-		FGameplayTag SectionIdentifier = FGameplayTag::RequestGameplayTag(LayerName, false);
-		if (!SectionIdentifier.IsValid() || SectionIdentifier != Level)
+		if (auto LevelSection = Cast<ASectionStart>(Section))
 		{
-			continue;
-		}
+			if (LevelSection->GetSectionIdentifier() != Level)
+			{
+				continue;
+			}
 
-		LoadTileMap(TileMap, TileMapActor->GetActorLocation(), SectionIdentifier);
+			ComponentGetters::GetDanceCharacter(GetWorld())->SetActorLocation(LevelSection->GetActorLocation());
+			auto DetectedInfo = UDanceUtilsFunctionLibrary::CheckPosition({ ComponentGetters::GetDanceCharacter(GetWorld()) }, LevelSection->GetActorLocation());
+			if (!DetectedInfo.TileMapActor)
+			{
+				continue;
+			}
+			auto TileMap = Cast<APaperTileMapActor>(DetectedInfo.TileMapActor)->GetRenderComponent()->TileMap;
+			LoadTileMap(TileMap, DetectedInfo.TileMapActor->GetActorLocation(), Level);
+			break;
+		}
 	}
 
 	TArray<AActor*> Enemies;
