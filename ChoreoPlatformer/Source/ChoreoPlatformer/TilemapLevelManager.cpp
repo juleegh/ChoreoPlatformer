@@ -75,6 +75,8 @@ void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector Anc
 				auto TileType = TileInfo.PackedTileIndex;
 
 				FRotator DeltaRotation = FRotator();
+				DeltaRotation.Pitch = 0;
+				DeltaRotation.Roll = 0;
 				DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
 
 				const FVector DeltaPos = AnchorLocation + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y + GetActorUpVector() * LayerPos;
