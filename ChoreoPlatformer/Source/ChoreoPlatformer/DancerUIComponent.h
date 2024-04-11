@@ -146,9 +146,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangedLevelSelected(int index);
 	UFUNCTION(BlueprintCallable)
+	void ChangedWorldSelected(int delta);
+	UFUNCTION(BlueprintCallable)
 	void LoadSelected();
+	UPROPERTY(EditDefaultsOnly, Category = "Levels")
+	TArray<FGameplayTag> WorldLevels;
 protected:
 	int LevelIndex = 1;
+	int WorldIndex = 0;
 }; 
 
 UCLASS()
