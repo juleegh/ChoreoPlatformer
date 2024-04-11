@@ -72,12 +72,9 @@ void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 	
 	if (!InGame())
 	{
-		auto LevelFlat = Level.GetTagName().ToString();
-		LevelFlat.RemoveFromStart("Level.");
-		int index = 0;
-		LevelFlat.FindChar('.', index);
-
-		FString LevelName = LevelFlat.LeftChop(LevelFlat.Len() - index);
+		FString LevelName = Level.RequestDirectParent().GetTagName().ToString();
+		LevelName.RemoveFromStart("Level.");
+		
 		if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
 		{
 			GameInstance->CurrentLevel = Level;
@@ -90,14 +87,15 @@ void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 		{
 			return;
 		}
-		if (SectionManager->GetCurrentSection().MatchesAny(Level.GetGameplayTagParents()))
+		if (SectionManager->GetCurrentSection().RequestDirectParent().MatchesTag(Level.RequestDirectParent()))
 		{
 			DancerUI->GetGameUI()->CancelMenu();
 			ComponentGetters::GetSectionLevelManager(GetWorld())->StartFromSection(Level);
 		}
 		else
 		{
-			FString LevelName = Level.GetGameplayTagParents().First().GetTagName().ToString();
+			FString LevelName = Level.RequestDirectParent().GetTagName().ToString();
+			LevelName.RemoveFromStart("Level.");
 			if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
 			{
 				GameInstance->CurrentLevel = Level;

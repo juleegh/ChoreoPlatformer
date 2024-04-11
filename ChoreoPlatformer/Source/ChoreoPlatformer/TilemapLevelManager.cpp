@@ -129,11 +129,12 @@ void ASectionLevelManager::BeginPlay()
 	auto SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	SongTempo->SetupTempo(60 / SongBPM);
 
-	Cast<ADanceCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())->InitializeToLevel(60 / SongBPM);
+	ComponentGetters::GetDanceCharacter(GetWorld())->InitializeToLevel(60 / SongBPM);
 	SongTempo->StartTempoCounting();
 
 	ComponentGetters::GetDanceAudioManager(GetWorld())->InitializeSong();
 	ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
+	ComponentGetters::GetDanceCharacter(GetWorld())->SetActorLocation(ComponentGetters::GetSectionStart(GetWorld(), CurrentSection)->GetActorLocation());
 }
 
 void ASectionLevelManager::CurrentSectionEnd(ASectionStart* NextSection)

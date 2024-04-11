@@ -160,8 +160,13 @@ void ULevelSelectionUI::ChangedWorldSelected(int indexDelta)
 
 void ULevelSelectionUI::LoadSelected()
 {
-    FName LevelName = FName(WorldLevels[WorldIndex].GetTagName().ToString() + FString::FromInt(LevelIndex));
+    FName LevelName = FName(WorldLevels[WorldIndex].GetTagName().ToString() + "." + FString::FromInt(LevelIndex));
     Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GoToLevel(FGameplayTag::RequestGameplayTag(LevelName));
+}
+
+FName ULevelSelectionUI::GetCurrentWorldName() const
+{
+    return WorldLevels[WorldIndex].GetTagName();
 }
 
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
