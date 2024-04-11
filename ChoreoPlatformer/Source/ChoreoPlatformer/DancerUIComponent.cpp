@@ -144,9 +144,23 @@ void ULevelSelectionUI::ChangedLevelSelected(int index)
     LevelIndex = index;
 }
 
+void ULevelSelectionUI::ChangedWorldSelected(int indexDelta)
+{
+    WorldIndex += indexDelta;
+    if (WorldIndex < 0)
+    {
+        WorldIndex = 0;
+    }
+    else if (WorldIndex >= WorldLevels.Num())
+    {
+        WorldIndex = WorldLevels.Num() - 1;
+    }
+    LevelIndex = 1;
+}
+
 void ULevelSelectionUI::LoadSelected()
 {
-    FName LevelName = FName("Level.AncientCity." + FString::FromInt(LevelIndex));
+    FName LevelName = FName(WorldLevels[WorldIndex].GetTagName().ToString() + FString::FromInt(LevelIndex));
     Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GoToLevel(FGameplayTag::RequestGameplayTag(LevelName));
 }
 
