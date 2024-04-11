@@ -150,7 +150,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadSelected();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FName GetCurrentWorldName() const;
+	const FGameplayTag& GetCurrentWorldTag() const;
 	UPROPERTY(EditDefaultsOnly, Category = "Levels")
 	TArray<FGameplayTag> WorldLevels;
 protected:

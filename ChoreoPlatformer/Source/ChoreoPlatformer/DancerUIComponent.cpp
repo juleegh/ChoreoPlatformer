@@ -164,9 +164,9 @@ void ULevelSelectionUI::LoadSelected()
     Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GoToLevel(FGameplayTag::RequestGameplayTag(LevelName));
 }
 
-FName ULevelSelectionUI::GetCurrentWorldName() const
+const FGameplayTag& ULevelSelectionUI::GetCurrentWorldTag() const
 {
-    return WorldLevels[WorldIndex].GetTagName();
+    return WorldLevels[WorldIndex];
 }
 
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
