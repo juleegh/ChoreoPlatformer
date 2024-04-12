@@ -7,6 +7,7 @@
 
 UInventoryComponent::UInventoryComponent()
 {
+	PrimaryComponentTick.bCanEverTick = false;
 	ItemsData = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("DataTable'/Game/TileElements/ItemDataTable.ItemDataTable'")));
 }
 

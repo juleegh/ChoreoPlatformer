@@ -23,7 +23,10 @@ class CHOREOPLATFORMER_API ATilemapLevelManager : public AActor
 	GENERATED_BODY()
 
 public:
-	ATilemapLevelManager() {}
+	ATilemapLevelManager()
+	{
+		PrimaryActorTick.bCanEverTick = false;
+	}
 
 protected:
 	UPROPERTY()
@@ -49,7 +52,10 @@ class CHOREOPLATFORMER_API ASectionLevelManager : public AActor
 	GENERATED_BODY()
 
 public:
-	ASectionLevelManager() {}
+	ASectionLevelManager()
+	{
+		PrimaryActorTick.bCanEverTick = false;
+	}
 
 	UPROPERTY(BlueprintAssignable)
 	FLevelStart LevelStart;
@@ -98,7 +104,10 @@ class CHOREOPLATFORMER_API AEndlessLevelManager : public AActor
 	GENERATED_BODY()
 
 public:
-	AEndlessLevelManager() {}
+	AEndlessLevelManager()
+	{
+		PrimaryActorTick.bCanEverTick = false;
+	}
 	void PlayerMoved(FVector NewPosition);
 	bool ShouldShuffleWorldInstead(FVector NextPosition);
 	void ShuffleWorldDown(float ElapsedTime);
@@ -199,7 +208,10 @@ class CHOREOPLATFORMER_API ASectionStart : public ACheckpoint
 	GENERATED_BODY()
 
 public:
-	ASectionStart() {}
+	ASectionStart()
+	{
+		PrimaryActorTick.bCanEverTick = false;
+	}
 
 protected:
 	UPROPERTY(EditInstanceOnly)

@@ -10,7 +10,7 @@
 
 UCalibrationComponent::UCalibrationComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UCalibrationComponent::StartCalibration()

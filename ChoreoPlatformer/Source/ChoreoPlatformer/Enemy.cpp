@@ -64,15 +64,11 @@ void AEnemy::SetupEnemy()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (Section == FGameplayTag::EmptyTag)
+	{
+		return;
+	}
 	
-	if (!SectionLevelManager)
-	{
-		return;
-	}
-	if(Section != SectionLevelManager->GetCurrentSection())
-	{
-		return;
-	}
 	float CurrentSpeed = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation()).TargetTempo;
 	float Result = SongTempo->TempoResult(CurrentSpeed);
 

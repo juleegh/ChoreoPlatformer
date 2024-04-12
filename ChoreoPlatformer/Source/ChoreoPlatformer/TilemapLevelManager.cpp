@@ -204,6 +204,7 @@ void ASectionLevelManager::StartFromSection(const FGameplayTag SectionIdentifier
 
 ULevelEventsComponent::ULevelEventsComponent()
 {
+	PrimaryComponentTick.bCanEverTick = false;
 	static ConstructorHelpers::FObjectFinder<UEventsDataAsset>DataAsset(TEXT("/Game/Events/LevelEvents"));
 	if (DataAsset.Succeeded())
 	{

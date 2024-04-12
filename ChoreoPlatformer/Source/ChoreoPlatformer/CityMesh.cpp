@@ -4,6 +4,7 @@
 
 ACityMesh::ACityMesh()
 {
+	PrimaryActorTick.bCanEverTick = false;
 	ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Prop Mesh"));
 	ObjectMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RootComponent = ObjectMesh;

@@ -7,6 +7,7 @@
 
 ADanceAudioManager::ADanceAudioManager()
 {
+	PrimaryActorTick.bCanEverTick = false;
 	MetaSound = CreateDefaultSubobject<UAudioComponent>(TEXT("MetaSound"));
 }
 

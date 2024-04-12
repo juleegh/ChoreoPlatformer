@@ -13,7 +13,7 @@
 
 AGridCell::AGridCell()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Base = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base"));
 	Base->SetCollisionResponseToAllChannels(ECR_Ignore);

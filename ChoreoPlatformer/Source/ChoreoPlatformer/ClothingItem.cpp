@@ -6,6 +6,7 @@
 
 AClothingItem::AClothingItem()
 {
+	PrimaryActorTick.bCanEverTick = false;
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ItemMesh->SetupAttachment(BoxComponent);
