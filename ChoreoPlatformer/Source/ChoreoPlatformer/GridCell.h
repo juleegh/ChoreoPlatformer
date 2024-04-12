@@ -71,7 +71,7 @@ protected:
 
 public:	
 	// Called every frame
-	void Initialize(ETempoTile, FGameplayTag&);
+	void Initialize(ETempoTile, const FGameplayTag&);
 	UFUNCTION()
 	void UpdateFlipbookVisuals();
 	UFUNCTION(BlueprintImplementableEvent)

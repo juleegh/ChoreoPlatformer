@@ -35,10 +35,10 @@ protected:
 
 public:
 	void LoadMap(const FGameplayTag& Level);
-	void LoadTileMap(const UPaperTileMap* TileMap, FVector AnchorLocation, FGameplayTag SectionIdentifier);
+	void LoadTileMap(const UPaperTileMap* TileMap, const FVector& AnchorLocation, const FGameplayTag& SectionIdentifier);
 	UPROPERTY(EditDefaultsOnly, Category = "Base Tile")
 	TSubclassOf<AGridCell> TileBP;
-	void SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier);
+	void SpawnTile(const FVector& Position, const FRotator& DeltaRotation, const ETempoTile TileType, const FGameplayTag& SectionIdentifier);
 	void ClearTile(AGridCell* ClearingTile);
 	TArray<AGridCell*>* GetWorldTiles();
 };

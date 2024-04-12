@@ -53,8 +53,12 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 	}
 }
 
-void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector AnchorLocation, FGameplayTag SectionIdentifier)
+void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, const FVector& AnchorLocation, const FGameplayTag& SectionIdentifier)
 {
+	if (!TileMap)
+	{
+		return;
+	}
 	auto FirstLayer = TileMap->TileLayers.Last();
 
 	auto LayerWidth = FirstLayer->GetLayerWidth();
@@ -74,12 +78,10 @@ void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector Anc
 
 				auto TileType = TileInfo.PackedTileIndex;
 
-				FRotator DeltaRotation = FRotator();
-				DeltaRotation.Pitch = 0;
-				DeltaRotation.Roll = 0;
+				FRotator DeltaRotation = FRotator(0);
 				DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
 
-				const FVector DeltaPos = AnchorLocation + GetActorRightVector() * row * TileInfo.TileSet->GetTileSize().X + GetActorForwardVector() * column * TileInfo.TileSet->GetTileSize().Y + GetActorUpVector() * LayerPos;
+				const FVector DeltaPos = AnchorLocation + FVector::RightVector * row * TileInfo.TileSet->GetTileSize().X + FVector::ForwardVector * column * TileInfo.TileSet->GetTileSize().Y + FVector::UpVector * LayerPos;
 
 				SpawnTile(DeltaPos, DeltaRotation, (ETempoTile)TileType, SectionIdentifier);
 			}
@@ -88,23 +90,20 @@ void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, FVector Anc
 	}
 }
 
-void ATilemapLevelManager::SpawnTile(FVector Position, FRotator DeltaRotation, ETempoTile TileType, FGameplayTag SectionIdentifier)
+void ATilemapLevelManager::SpawnTile(const FVector& Position, const FRotator& DeltaRotation, const ETempoTile TileType, const FGameplayTag& SectionIdentifier)
 {
 	AGridCell* Current;
 	if (TilePool.Num() == 0)
 	{
-		auto SpawnedTile = GetWorld()->SpawnActor<AGridCell>(TileBP, Position, DeltaRotation);
-		SpawnedTile->SetOwner(this);
-		Current = SpawnedTile;
+		Current = GetWorld()->SpawnActor<AGridCell>(TileBP);
 	}
 	else
 	{
 		Current = TilePool[0];
-		Current->SetActorLocation(Position);
-		Current->SetActorRotation(DeltaRotation);
 		TilePool.RemoveAt(0);
-		Current->SetActorHiddenInGame(false);
 	}
+	Current->SetActorLocation(Position);
+	Current->SetActorRotation(DeltaRotation);
 	Current->Initialize(TileType, SectionIdentifier);
 	WorldTiles.Add(Current);
 }
@@ -425,7 +424,6 @@ void AEndlessLevelManager::SpawnCityMesh(FVector Position)
 		Current = MeshPool[0].Get();
 		Current->SetActorLocation(Position);
 		MeshPool.RemoveAt(0);
-		Current->SetActorHiddenInGame(false);
 	}
 	Current->SelectedMesh = AvailableCityMeshes[FMath::RandRange(0, AvailableCityMeshes.Num() - 1)].Get();
 	Current->ColorSlot1 = Color1;

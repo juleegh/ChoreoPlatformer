@@ -32,7 +32,7 @@ AGridCell::AGridCell()
 	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
 }
 
-void AGridCell::Initialize(ETempoTile Properties, FGameplayTag& BelongingSection)
+void AGridCell::Initialize(ETempoTile Properties, const FGameplayTag& BelongingSection)
 {
 	TileType = Properties;
 	Section = BelongingSection;
