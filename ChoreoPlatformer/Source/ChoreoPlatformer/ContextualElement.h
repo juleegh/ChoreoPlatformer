@@ -27,6 +27,10 @@ protected:
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UBoxComponent* BoxComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UStaticMeshComponent* InteractionHighlight;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UColorFadeTimelineComponent* ColorTimeline;
 	UFUNCTION(BlueprintImplementableEvent)
 	void RefreshState();
 	void ToggleHighlight(bool activated) override;
@@ -61,10 +65,12 @@ public:
 	ADoor() {}
 	void Open();
 	void Reset() override;
+	UPROPERTY()
+	class ALever* BelongingLever;
+	void ToggleHighlight(bool activated) override;
 
 protected:
 	EMoveResult TriggerInteraction() override;
-
 };
 
 UCLASS()
@@ -75,9 +81,11 @@ class CHOREOPLATFORMER_API ALever : public AContextualElement
 protected:
 	UPROPERTY(EditInstanceOnly)
 	TArray<ADoor*> ConnectedDoors;
+	virtual void BeginPlay() override;
 public:
 	ALever() {}
 	EMoveResult TriggerInteraction() override;
+	void ToggleHighlight(bool activated) override;
 };
 
 UCLASS()
@@ -104,6 +112,9 @@ public:
 	ARotatingAnchor() {}
 	void Reset() override;
 	void Rotate(float Direction);
+	UPROPERTY()
+	class ARotationButton* BelongingLever;
+	void ToggleHighlight(bool activated) override;
 
 protected:
 	UPROPERTY()
@@ -122,9 +133,11 @@ protected:
 	TArray<ARotatingAnchor*> ConnectedTiles;
 	UPROPERTY(EditDefaultsOnly)
 	float Direction = 90;
+	virtual void BeginPlay() override;
 public:
 	ARotationButton() {}
 	EMoveResult TriggerInteraction() override;
+	void ToggleHighlight(bool activated) override;
 };
 
 UCLASS()

@@ -1,33 +1,37 @@
 #include "ContextualElement.h"
 #include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "TimelineCreatorComponent.h"
 #include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
 
 AContextualElement::AContextualElement()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
 	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	BoxComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RootComponent = BoxComponent;
+
+	InteractionHighlight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Interaction Highlight"));
+	InteractionHighlight->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InteractionHighlight->SetupAttachment(RootComponent);
+
+	ColorTimeline = CreateDefaultSubobject<UColorFadeTimelineComponent>("Color Timeline");
 }
 
 void AContextualElement::BeginPlay()
 {
 	Super::BeginPlay();
-	ToggleHighlight(false);
+	ColorTimeline->Initialize();
+	ColorTimeline->AddMesh(InteractionHighlight);
+	ColorTimeline->Reset();
 }
 
 void AContextualElement::ToggleHighlight(bool activated)
 {
-	for (UActorComponent* ActorComponent : GetComponents())
-	{
-		if(UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(ActorComponent))
-		{
-			MeshComponent->SetRenderCustomDepth(activated);
-		}
-	}
+	ColorTimeline->FadeInDirection(activated);
 }
 
 void AContextualElement::Reset()
@@ -45,6 +49,14 @@ EMoveResult ABrickWall::TriggerInteraction()
 		RefreshState();
 	}
 	return EMoveResult::None;
+}
+
+void ADoor::ToggleHighlight(bool activated)
+{
+	if (BelongingLever)
+	{
+		BelongingLever->ToggleHighlight(activated);
+	}
 }
 
 void ADoor::Open()
@@ -65,11 +77,34 @@ EMoveResult ADoor::TriggerInteraction()
 	return EMoveResult::Blocked;
 }
 
+void ALever::BeginPlay()
+{
+	Super::BeginPlay();
+	for (ADoor* ConnectedDoor : ConnectedDoors)
+	{
+		ConnectedDoor->BelongingLever = this;
+	}
+}
+
+void ALever::ToggleHighlight(bool activated)
+{
+	if (bFinished)
+	{
+		return;
+	}
+	ColorTimeline->FadeInDirection(activated);
+	for (ADoor* ConnectedDoor : ConnectedDoors)
+	{
+		ConnectedDoor->ColorTimeline->FadeInDirection(activated);
+	}
+}
+
 EMoveResult ALever::TriggerInteraction()
 {
 	if (ConnectedDoors.Num() > 0)
 	{
 		RefreshState();
+		ToggleHighlight(false);
 		for (ADoor* ConnectedDoor : ConnectedDoors)
 		{
 			ConnectedDoor->Open();
@@ -109,6 +144,14 @@ void ATileHole::PostObstacleActions()
 	ComponentGetters::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), GetActorRotation(), ETempoTile::Black, FGameplayTag::EmptyTag);
 }
 
+void ARotatingAnchor::ToggleHighlight(bool activated)
+{
+	if (BelongingLever)
+	{
+		BelongingLever->ToggleHighlight(activated);
+	}
+}
+
 void ARotatingAnchor::Reset()
 {
 	if (Tile)
@@ -127,6 +170,24 @@ void ARotatingAnchor::Rotate(float Direction)
 		InitialRotation = Tile->GetActorRotation();
 	}
 	Tile->RotateToDirection(FRotator(0, Direction, 0));
+}
+
+void ARotationButton::BeginPlay()
+{
+	Super::BeginPlay();
+	for (ARotatingAnchor* ConnectedTile : ConnectedTiles)
+	{
+		ConnectedTile->BelongingLever = this;
+	}
+}
+
+void ARotationButton::ToggleHighlight(bool activated)
+{
+	ColorTimeline->FadeInDirection(activated);
+	for (ARotatingAnchor* ConnectedTile : ConnectedTiles)
+	{
+		ConnectedTile->ColorTimeline->FadeInDirection(activated);
+	}
 }
 
 EMoveResult ARotationButton::TriggerInteraction()

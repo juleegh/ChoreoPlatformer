@@ -32,6 +32,15 @@ UColorTimelineComponent::UColorTimelineComponent()
 	}
 }
 
+UColorFadeTimelineComponent::UColorFadeTimelineComponent()
+{
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>Curve(TEXT("/Game/Curves/C_Upwards"));
+	if (Curve.Succeeded())
+	{
+		TimelineCurve = Curve.Object;
+	}
+}
+
 USpritesTimelineComponent::USpritesTimelineComponent()
 {
 	static ConstructorHelpers::FObjectFinder<UCurveFloat>Curve(TEXT("/Game/Curves/C_UpDownCurve"));
@@ -218,6 +227,36 @@ void UColorTimelineComponent::Reset()
 }
 
 void UColorTimelineComponent::ForceStopTimeline()
+{
+	ShineMat->SetScalarParameterValue(FName("LightMultiplier"), 0);
+}
+
+void UColorFadeTimelineComponent::AddMesh(UMeshComponent* Mesh)
+{
+	ShineMat = Mesh->CreateDynamicMaterialInstance(0, Mesh->GetMaterial(0));
+}
+
+void UColorFadeTimelineComponent::FadeInDirection(bool Direction)
+{
+	OriginBrightness = FMath::Abs(Direction - 1);
+	TargetBrightness = Direction;
+	MyTimeline->SetTimelineLength(0.75f);
+	TimelineTick.BindDynamic(this, &UColorFadeTimelineComponent::FadeCallback);
+	PlayTimeline();
+}
+
+void UColorFadeTimelineComponent::FadeCallback(float interpolatedVal)
+{
+	float progress = MyTimeline->GetPlaybackPosition() / MyTimeline->GetTimelineLength();
+	ShineMat->SetScalarParameterValue(FName("LightMultiplier"), (1 - progress) * OriginBrightness + progress * TargetBrightness);
+}
+
+void UColorFadeTimelineComponent::Reset()
+{
+	ShineMat->SetScalarParameterValue(FName("LightMultiplier"), 0);
+}
+
+void UColorFadeTimelineComponent::ForceStopTimeline()
 {
 	ShineMat->SetScalarParameterValue(FName("LightMultiplier"), 0);
 }

@@ -115,6 +115,31 @@ protected:
 };
 
 UCLASS()
+class CHOREOPLATFORMER_API UColorFadeTimelineComponent : public UTimelineCreatorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UColorFadeTimelineComponent();
+    void AddMesh(class UMeshComponent*);
+    void Reset() override;
+    void ForceStopTimeline() override;
+
+    void FadeInDirection(bool Direction);
+    UFUNCTION()
+    void FadeCallback(float val);
+
+protected:
+
+    UPROPERTY()
+    float OriginBrightness;
+    UPROPERTY()
+    float TargetBrightness = 1;
+    UPROPERTY()
+    class UMaterialInstanceDynamic* ShineMat;
+};
+
+UCLASS()
 class CHOREOPLATFORMER_API USpritesTimelineComponent : public UTimelineCreatorComponent
 {
     GENERATED_BODY()
