@@ -28,4 +28,8 @@ public:
 	static bool IsOnTempo(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static AChoreoPlayerController* GetChoreoPlayerController(AActor* Player);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static bool EnemyCanMove(AActor* Enemy);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static bool ActorIsOnTempo(AActor* Player);
 };

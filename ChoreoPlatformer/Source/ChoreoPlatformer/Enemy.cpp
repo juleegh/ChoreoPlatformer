@@ -13,7 +13,7 @@
 
 AEnemy::AEnemy()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	AttackIndicator = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Next Position"));
 	AttackIndicator->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -61,32 +61,14 @@ void AEnemy::SetupEnemy()
 	}
 }
 
-void AEnemy::Tick(float DeltaTime)
+bool AEnemy::CurrentlyActive() const
 {
-	Super::Tick(DeltaTime);
-	if (Section == FGameplayTag::EmptyTag)
-	{
-		return;
-	}
-	
-	float CurrentSpeed = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation()).TargetTempo;
-	float Result = SongTempo->TempoResult(CurrentSpeed);
+	return Section != FGameplayTag::EmptyTag;
+}
 
-	if (hasDoneTempoAction)
-	{
-		if (Result > UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
-		{
-			hasDoneTempoAction = false;
-		}
-	}
-	else
-	{
-		if (Result <= UDanceUtilsFunctionLibrary::GetPerfectAcceptanceRate())
-		{
-			hasDoneTempoAction = true;
-			DoTempoAction();
-		}
-	}
+bool AEnemy::CanMove() const
+{
+	return !MoveTimeline->IsRunning() || MoveTimeline->ReachedHalfwayPoint();
 }
 
 void AEnemy::DoDamage(FVector DamageArea)

@@ -31,6 +31,7 @@ public:
     void Stop(bool bForceFinishAction);
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     bool IsRunning() const;
+    bool ReachedHalfwayPoint() const;
     UPROPERTY()
     FTimelineEnded TimelineEnded;
 

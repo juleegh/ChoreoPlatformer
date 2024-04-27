@@ -15,6 +15,8 @@ class CHOREOPLATFORMER_API AEnemy : public ACharacter
 public:
 	AEnemy();
 	void SetupEnemy();
+	bool CurrentlyActive() const;
+	bool CanMove() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -34,9 +36,8 @@ protected:
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
 
-	bool hasDoneTempoAction;
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable)
 	virtual void DoTempoAction() {}
 	virtual void DoDamage(FVector DamageArea);
 	UFUNCTION(BlueprintImplementableEvent)

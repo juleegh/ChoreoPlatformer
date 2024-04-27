@@ -128,6 +128,19 @@ bool UTimelineCreatorComponent::IsRunning() const
 	return false;
 }
 
+bool UTimelineCreatorComponent::ReachedHalfwayPoint() const
+{
+	if (MyTimeline != NULL)
+	{
+		if (MyTimeline->GetPlaybackPosition() <= 0)
+			return false;
+
+		float RemainingPercentage = (MyTimeline->GetTimelineLength() - MyTimeline->GetPlaybackPosition()) / MyTimeline->GetTimelineLength();
+		return  RemainingPercentage < 0.05f;
+	}
+	return false;
+}
+
 void UTimelineCreatorComponent::PlayTimeline()
 {
 	if (MyTimeline != NULL)
