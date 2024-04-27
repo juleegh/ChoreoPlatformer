@@ -140,8 +140,7 @@ ASectionLevelManager* UComponentGettersFunctionLibrary::GetSectionLevelManager(A
 
 AChoreoPlayerController* UComponentGettersFunctionLibrary::GetChoreoPlayerController(AActor* WorldContextActor)
 {
-	auto DanceController = WorldContextActor->GetWorld()->GetFirstPlayerController();
-	return Cast<AChoreoPlayerController>(DanceController);
+	return ComponentGetters::GetController(WorldContextActor->GetWorld());
 }
 
 ULevelEventsComponent* UComponentGettersFunctionLibrary::GetLevelEventsComponent(AActor* WorldContextActor)

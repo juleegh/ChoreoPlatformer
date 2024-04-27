@@ -52,14 +52,12 @@ protected:
 	bool bIsDead = false;
 	UPROPERTY()
 	FTimerHandle DelayTimerHandle;
-	void CheckMovement(FVector Direction);
 	UFUNCTION()
 	void OnPlayerDied();
 	UFUNCTION()
 	void RespawnPlayer();
 	void TriggerResultFeedback(float Result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool InGame();
 	bool InEndlessMode();
 
 public:
@@ -69,11 +67,16 @@ public:
 	TSubclassOf<class UCommonActivatableWidget> GameUIClass;
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsPaused();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool InGame();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsAlive();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsOnTempo();
 	UPROPERTY(BlueprintAssignable)
 	FCalibrating Calibrating;
 	UPROPERTY(BlueprintAssignable)
 	FCalibrationEnded CalibrationEnded;
-	void Move(const FInputActionValue& Value);
 	UFUNCTION(BlueprintCallable)
 	void TogglePause();
 	UFUNCTION(BlueprintCallable)
@@ -81,10 +84,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GoBackToMainMenu();
 	bool ShouldTakeDamage();
-	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanMove();
 	UFUNCTION(BlueprintCallable)
 	void TriggerCalibration();
 	void PauseGame(const FInputActionValue& Value);
 	void FinishCalibration();
+
+	UFUNCTION(BlueprintCallable)
+	bool TryInteraction();
+	UFUNCTION(BlueprintCallable)
+	bool TryMovement();
 };

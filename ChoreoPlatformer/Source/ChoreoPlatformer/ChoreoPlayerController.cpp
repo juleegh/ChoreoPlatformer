@@ -28,6 +28,11 @@ bool AChoreoPlayerController::InGame()
 	return !UGameplayStatics::GetCurrentLevelName(this).Equals("GameIntro");
 }
 
+bool AChoreoPlayerController::IsAlive()
+{
+	return !bIsDead;
+}
+
 bool AChoreoPlayerController::InEndlessMode()
 {
 	return UGameplayStatics::GetCurrentLevelName(this).Equals("EndlessMode");
@@ -142,18 +147,14 @@ bool AChoreoPlayerController::CanMove()
 	return true;
 }
 
-void AChoreoPlayerController::Move(const FInputActionValue& Value)
+bool AChoreoPlayerController::IsOnTempo()
 {
-	FVector Direction = Value.Get<FVector>();
-	if (Direction.X != 0 && Direction.Y != 0)
-	{
-		Direction.Y = 0;
-	}
-
-	if (CanMove())
-	{
-		CheckMovement(Direction);
-	}
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
+	bool bIsOnTempo = SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true);
+#if WITH_EDITOR
+	bIsOnTempo = bIsOnTempo || bBypassOutOfTempo;
+#endif
+	return bIsOnTempo;
 }
 
 void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)
@@ -165,98 +166,6 @@ void AChoreoPlayerController::PauseGame(const FInputActionValue& Value)
 	}
 
 	TogglePause();
-}
-
-void AChoreoPlayerController::CheckMovement(FVector Direction)
-{
-	if (!Calibration->IsCalibrated())
-	{
-		Calibration->ReceiveInput();
-		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
-		Calibrating.Broadcast();
-		return;
-	}
-	if (SongTempo->IsOnPause() || SongTempo->IsStopped())
-	{
-		return;
-	}
-
-	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
-	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
-
-	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
-	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
-
-	bool bCantPass = CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction;
-#if WITH_EDITOR
-	bCantPass = bCantPass && !bBypassObstacles;
-#endif
-
-	if (bCantPass)
-	{
-		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection, false);
-		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::InvalidDirection);
-		return;
-	}
-
-	bool bHitElement = NextTile.bHitElement;
-#if WITH_EDITOR
-	bHitElement = bHitElement && !bBypassObstacles;
-#endif
-
-	if (bHitElement)
-	{
-		auto Interaction = NextTile.HitElement->TriggerInteraction();
-		DancerUI->GetGameUI()->PromptTempoResult(Interaction, Interaction == EMoveResult::ActionCompleted);
-
-		if (Interaction == EMoveResult::Blocked)
-		{
-			ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Blocked);
-		}
-		return;
-	}
-
-	if (!NextTile.HitCell)
-	{
-		return;
-	}
-
-	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
-	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
-
-	bool bIsOnTempo = SongTempo->IsOnTempo(CurrentTile.TargetTempo, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true);
-#if WITH_EDITOR
-	bIsOnTempo = bIsOnTempo || bBypassOutOfTempo;
-#endif
-
-	if (bIsOnTempo)
-	{
-		if (InEndlessMode())
-		{
-			if (EndlessMode->ShouldShuffleWorldInstead(NextTile.Position))
-			{
-				DanceCharacter->RotateTowards(NextTile.Position);
-				EndlessMode->ShuffleWorldDown(CurrentTile.TargetTempo * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
-			}
-			else
-			{
-				EndlessMode->PlayerMoved(Direction);
-				DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
-			}
-		}
-		else
-		{
-			DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
-		}
-		DancerUI->GetGameUI()->PromptTempoResult(MoveResult, true);
-	}
-	else
-	{
-		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
-		MoveResult = EMoveResult::Bad;
-	}
-	DanceCharacter->ToggleReaction(MoveResult);
-	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(MoveResult);
 }
 
 void AChoreoPlayerController::OnPlayerDied()
@@ -308,4 +217,107 @@ void AChoreoPlayerController::FinishCalibration()
 	CalibrationEnded.Broadcast();
 	ComponentGetters::GetDanceAudioManager(GetWorld())->ResetSong();
 	DancerUI->GetGameUI()->CancelMenu();
+}
+
+
+bool AChoreoPlayerController::TryInteraction()
+{
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
+	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), DanceCharacter->GetLastInput());
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
+
+	bool bCantPass = CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != DanceCharacter->GetLastInput();
+#if WITH_EDITOR
+	bCantPass = bCantPass && !bBypassObstacles;
+#endif
+
+	if (bCantPass)
+	{
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection, false);
+		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::InvalidDirection);
+		return true;
+	}
+
+	bool bHitElement = NextTile.bHitElement;
+#if WITH_EDITOR
+	bHitElement = bHitElement && !bBypassObstacles;
+#endif
+
+	if (!bHitElement)
+	{
+		return false;
+	}
+
+	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
+	if (IsOnTempo())
+	{
+		auto Interaction = NextTile.HitElement->TriggerInteraction();
+		DancerUI->GetGameUI()->PromptTempoResult(Interaction, Interaction == EMoveResult::ActionCompleted);
+		if (Interaction == EMoveResult::Blocked)
+		{
+			ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Blocked);
+		}
+	}
+	else
+	{
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
+		DanceCharacter->ToggleReaction(EMoveResult::Bad);
+		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Bad);
+	}
+
+	return true;
+}
+
+bool AChoreoPlayerController::TryMovement()
+{
+	if (!Calibration->IsCalibrated())
+	{
+		Calibration->ReceiveInput();
+		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
+		Calibrating.Broadcast();
+		return true;
+	}
+
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
+	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
+	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), DanceCharacter->GetLastInput());
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
+
+	if (!NextTile.HitCell)
+	{
+		return false;
+	}
+
+	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
+	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
+
+	if (IsOnTempo())
+	{
+		if (InEndlessMode())
+		{
+			if (EndlessMode->ShouldShuffleWorldInstead(NextTile.Position))
+			{
+				DanceCharacter->RotateTowards(NextTile.Position);
+				EndlessMode->ShuffleWorldDown(CurrentTile.TargetTempo * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
+			}
+			else
+			{
+				EndlessMode->PlayerMoved(DanceCharacter->GetLastInput());
+				DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
+			}
+		}
+		else
+		{
+			DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
+		}
+		DancerUI->GetGameUI()->PromptTempoResult(MoveResult, true);
+	}
+	else
+	{
+		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
+		MoveResult = EMoveResult::Bad;
+	}
+	DanceCharacter->ToggleReaction(MoveResult);
+	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(MoveResult);
+	return true;
 }

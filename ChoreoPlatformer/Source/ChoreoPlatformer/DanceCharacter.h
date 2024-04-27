@@ -10,6 +10,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerMoved, float, Tempo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerNewPosition);
 
+struct FInputActionValue;
+
 USTRUCT(BlueprintType)
 struct FPigeonCameraSettings
 {
@@ -71,8 +73,17 @@ protected:
 	void ReachedNextTile();
 
 private:
+	void MoveTriggered(const FInputActionValue& Value);
+	void MoveReleased(const FInputActionValue& Value);
+	void MovePressed(const FInputActionValue& Value);
+	UPROPERTY()
+	FVector InputDirection;
+	UPROPERTY()
+	FVector LastInput;
 
 public:
+	FVector GetCurrentInput() const;
+	FVector GetLastInput() const;
 	UPROPERTY(BlueprintAssignable)
 	FPlayerMoved PlayerMoved;
 	UPROPERTY(BlueprintAssignable)
@@ -81,7 +92,6 @@ public:
 	void MoveTo(FVector position, float Duration);
 	void RotateTowards(FVector position);
 	void StopMovement();
-	class AChoreoPlayerController* GetChoreoController() const;
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
 	void InitializeToLevel(float Tempo);
 	void SetupPlayerCamera(FGameplayTag CameraStyle);

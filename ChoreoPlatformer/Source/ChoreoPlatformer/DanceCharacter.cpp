@@ -43,14 +43,17 @@ void ADanceCharacter::BeginPlay()
 void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	auto controller = GetChoreoController();
+	auto controller = ComponentGetters::GetController(GetWorld());
 	auto UIcontroller = ComponentGetters::GetDancerUIComponent(GetWorld());
 	if (auto EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, controller, &AChoreoPlayerController::Move);
+		//EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, controller, &AChoreoPlayerController::Move);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, controller, &AChoreoPlayerController::PauseGame);
 		EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Confirm);
 		EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Cancel);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADanceCharacter::MoveTriggered);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ADanceCharacter::MovePressed);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ADanceCharacter::MoveReleased);
 	}
 
 }
@@ -96,11 +99,6 @@ void ADanceCharacter::StopMovement()
 void ADanceCharacter::ReachedNextTile()
 {
 	PlayerNewPosition.Broadcast();
-}
-
-AChoreoPlayerController* ADanceCharacter::GetChoreoController() const
-{
-	return Cast<AChoreoPlayerController>(GetController());
 }
 
 void ADanceCharacter::ToggleReaction(EMoveResult MoveResult)
@@ -153,4 +151,39 @@ void ADanceCharacter::SetupPlayerCamera(FGameplayTag CameraStyle)
 		SpringArm->SetRelativeRotation(CameraSettings.ArmRotation);
 	}
 
+}
+
+void ADanceCharacter::MoveReleased(const FInputActionValue& Value)
+{
+	InputDirection = FVector::Zero();
+}
+
+void ADanceCharacter::MoveTriggered(const FInputActionValue& Value)
+{
+	InputDirection = Value.Get<FVector>();
+	if (InputDirection.X != 0 && InputDirection.Y != 0)
+	{
+		InputDirection.Y = 0;
+	}
+	LastInput = InputDirection;
+}
+
+void ADanceCharacter::MovePressed(const FInputActionValue& Value)
+{
+	InputDirection = Value.Get<FVector>();
+	if (InputDirection.X != 0 && InputDirection.Y != 0)
+	{
+		InputDirection.Y = 0;
+	}
+	LastInput = InputDirection;
+}
+
+FVector ADanceCharacter::GetCurrentInput() const
+{
+	return InputDirection;
+}
+
+FVector ADanceCharacter::GetLastInput() const
+{
+	return LastInput;
 }
