@@ -3,6 +3,8 @@
 
 #include "DancerHealthComponent.h"
 #include "ChoreoPlayerController.h"
+#include "InventoryComponent.h"
+#include "DanceAudioManager.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
 

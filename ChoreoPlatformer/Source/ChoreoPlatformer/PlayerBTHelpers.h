@@ -5,12 +5,7 @@
 #include "CoreMinimal.h"
 #include "GridCell.h"
 #include "DanceDefinitions.h"
-#include "TilemapLevelManager.h"
-#include "DancerHealthComponent.h"
-#include "LevelProgressComponent.h"
-#include "DancerUIComponent.h"
-#include "DanceAudioManager.h"
-#include "InventoryComponent.h"
+#include "CalibrationComponent.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PlayerBTHelpers.generated.h"
 
@@ -28,6 +23,8 @@ public:
 	static bool IsOnTempo(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static AChoreoPlayerController* GetChoreoPlayerController(AActor* Player);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static UCalibrationComponent* GetCalibrationComponent(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool EnemyCanMove(AActor* Enemy);
 	UFUNCTION(BlueprintCallable, BlueprintPure)

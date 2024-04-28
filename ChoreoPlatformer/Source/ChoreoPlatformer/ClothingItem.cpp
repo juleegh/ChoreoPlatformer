@@ -1,6 +1,9 @@
 #include "ClothingItem.h"
 #include "ComponentGetters.h"
 #include "TimelineCreatorComponent.h"
+#include "DanceCharacter.h"
+#include "DanceUtilsFunctionLibrary.h"
+#include "InventoryComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 

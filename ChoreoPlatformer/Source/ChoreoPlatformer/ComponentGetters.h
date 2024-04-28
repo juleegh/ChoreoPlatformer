@@ -3,19 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GridCell.h"
-#include "DanceDefinitions.h"
-#include "TilemapLevelManager.h"
-#include "DanceCharacter.h"
-#include "ChoreoPlayerController.h"
-#include "DancerHealthComponent.h"
-#include "LevelProgressComponent.h"
-#include "SongTempoComponent.h"
-#include "DancerUIComponent.h"
-#include "DanceAudioManager.h"
-#include "InventoryComponent.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ComponentGetters.generated.h"
+
+class AChoreoPlayerController;
+class ADanceCharacter;
+class UDancerHealthComponent;
+class UInventoryComponent;
+class ASectionLevelManager;
+class ATilemapLevelManager;
+class AEndlessLevelManager;
+class ADanceAudioManager;
+class USongTempoComponent;
+class UCalibrationComponent;
+class ULevelEventsComponent;
+class ULevelProgressComponent;
+class UDancerUIComponent;
+class ASectionStart;
+struct FGameplayTag;
 
 namespace ComponentGetters
 {
@@ -31,6 +36,7 @@ namespace ComponentGetters
 	ULevelEventsComponent* GetLevelEventsComponent(UWorld* WorldContextObject);
 	ULevelProgressComponent* GetLevelProgressComponent(UWorld* WorldContextObject);
 	UDancerUIComponent* GetDancerUIComponent(UWorld* WorldContextObject);
+	UCalibrationComponent* GetCalibrationComponent(UWorld* WorldContextObject);
 	ASectionStart* GetSectionStart(UWorld* WorldContextObject, const FGameplayTag& SectionIdentifier);
 }
 

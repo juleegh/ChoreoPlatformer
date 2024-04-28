@@ -3,6 +3,8 @@
 #include "Enemy.h"
 #include "Paper2D/Classes/PaperSpriteComponent.h"
 #include "ChoreoPlayerController.h"
+#include "SongTempoComponent.h"
+#include "DancerHealthComponent.h"
 #include "Components/SplineComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -10,6 +12,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
+#include "DanceCharacter.h"
 
 AEnemy::AEnemy()
 {

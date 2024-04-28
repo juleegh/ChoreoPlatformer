@@ -1,4 +1,16 @@
 #include "ComponentGetters.h"
+#include "GridCell.h"
+#include "DanceDefinitions.h"
+#include "TilemapLevelManager.h"
+#include "DanceCharacter.h"
+#include "ChoreoPlayerController.h"
+#include "DancerHealthComponent.h"
+#include "LevelProgressComponent.h"
+#include "SongTempoComponent.h"
+#include "DancerUIComponent.h"
+#include "DanceAudioManager.h"
+#include "CalibrationComponent.h"
+#include "InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 namespace ComponentGetters
@@ -56,6 +68,11 @@ namespace ComponentGetters
 	UDancerUIComponent* GetDancerUIComponent(UWorld* WorldContextObject)
 	{
 		return Cast<UDancerUIComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UDancerUIComponent::StaticClass()));
+	}
+
+	UCalibrationComponent* GetCalibrationComponent(UWorld* WorldContextObject)
+	{
+		return Cast<UCalibrationComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UCalibrationComponent::StaticClass()));
 	}
 
 	ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject)

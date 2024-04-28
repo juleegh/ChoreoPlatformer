@@ -5,12 +5,20 @@
 #include "CalibrationComponent.h"
 #include "GridCell.h"
 #include "TimelineCreatorComponent.h"
+#include "DancerUIComponent.h"
+#include "DancerHealthComponent.h"
+#include "DanceCharacter.h"
+#include "SongTempoComponent.h"
+#include "DanceAudioManager.h"
+#include "TilemapLevelManager.h"
 #include "ContextualElement.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "LevelProgressComponent.h"
 #include "ChoreoGameInstance.h"
 #include "ComponentGetters.h"
+#include "InventoryComponent.h"
 
 AChoreoPlayerController::AChoreoPlayerController()
 {
@@ -207,18 +215,6 @@ void AChoreoPlayerController::TriggerCalibration()
 	DancerUI->GetGameUI()->GoToGameScreen(GTCalibration);
 }
 
-void AChoreoPlayerController::FinishCalibration()
-{
-	if (!Calibration->IsCalibrated())
-	{
-		return;
-	}
-	CalibrationEnded.Broadcast();
-	ComponentGetters::GetDanceAudioManager(GetWorld())->ResetSong();
-	DancerUI->GetGameUI()->CancelMenu();
-}
-
-
 bool AChoreoPlayerController::TryInteraction()
 {
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
@@ -269,14 +265,6 @@ bool AChoreoPlayerController::TryInteraction()
 
 bool AChoreoPlayerController::TryMovement()
 {
-	if (!Calibration->IsCalibrated())
-	{
-		Calibration->ReceiveInput();
-		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
-		Calibrating.Broadcast();
-		return true;
-	}
-
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
 	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), DanceCharacter->GetLastInput());

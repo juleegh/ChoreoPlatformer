@@ -7,6 +7,8 @@
 #include "PaperTileMapActor.h"
 #include "ContextualElement.h"
 #include "ComponentGetters.h"
+#include "DanceCharacter.h"
+#include "ClothingItem.h"
 #include "Enemy.h"
 
 float UDanceUtilsFunctionLibrary::GetTargetTempo(ETempoTile TileType)

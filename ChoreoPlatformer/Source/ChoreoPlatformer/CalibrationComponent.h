@@ -8,6 +8,9 @@
 #include "Components/ActorComponent.h"
 #include "CalibrationComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrationEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrating);
+
 UCLASS()
 class CHOREOPLATFORMER_API UCalibrationComponent : public UActorComponent
 {
@@ -29,7 +32,14 @@ protected:
 	float GetCalibrationDelta();
 
 public:
-	bool IsCalibrated();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsCalibrated() const;
+	UFUNCTION(BlueprintCallable)
 	void ReceiveInput();
 	void StartCalibration();
+
+	UPROPERTY(BlueprintAssignable)
+	FCalibrating Calibrating;
+	UPROPERTY(BlueprintAssignable)
+	FCalibrationEnded CalibrationEnded;
 };

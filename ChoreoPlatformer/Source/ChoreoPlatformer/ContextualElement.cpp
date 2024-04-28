@@ -2,6 +2,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimelineCreatorComponent.h"
+#include "TilemapLevelManager.h"
+#include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"

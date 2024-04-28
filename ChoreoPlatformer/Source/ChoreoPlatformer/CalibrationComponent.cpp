@@ -3,6 +3,9 @@
 
 #include "CalibrationComponent.h"
 #include "ChoreoPlayerController.h"
+#include "SongTempoComponent.h"
+#include "DanceAudioManager.h"
+#include "DancerUIComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DanceUtilsFunctionLibrary.h"
@@ -22,7 +25,7 @@ void UCalibrationComponent::StartCalibration()
 }
 
 
-bool UCalibrationComponent::IsCalibrated()
+bool UCalibrationComponent::IsCalibrated() const
 {
 	return bIsCalibrated;
 }
@@ -34,14 +37,8 @@ float UCalibrationComponent::GetCalibrationDelta()
 	return (PostTempoMargin / PostTempos);
 }
 
-
 void UCalibrationComponent::ReceiveInput()
 {
-	if (bIsCalibrated)
-	{
-		return;
-	}
-
 	if (!SongTempo)
 	{
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
@@ -59,11 +56,15 @@ void UCalibrationComponent::ReceiveInput()
 
 	Tries++;
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
+	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
+	Calibrating.Broadcast();
 
 	UE_LOG(LogTemp, Warning, TEXT("Deviation: %f"), Percentage);
 	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) && Tries >= 8)
 	{
 		bIsCalibrated = true;
-		Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->FinishCalibration();
+		CalibrationEnded.Broadcast();
+		ComponentGetters::GetDanceAudioManager(GetWorld())->ResetSong();
+		ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->CancelMenu();
 	}
 }

@@ -7,6 +7,8 @@
 #include "PaperTileMapActor.h"
 #include "PaperTileMapComponent.h"
 #include "ContextualElement.h"
+#include "DanceCharacter.h"
+#include "DancerUIComponent.h"
 #include "PaperTileMap.h"
 #include "PaperTileLayer.h"
 #include "PaperTileSet.h"
@@ -17,6 +19,9 @@
 #include "TimerManager.h"
 #include "CityMesh.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "SongTempoComponent.h"
+#include "DanceAudioManager.h"
+#include "InventoryComponent.h"
 
 void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {

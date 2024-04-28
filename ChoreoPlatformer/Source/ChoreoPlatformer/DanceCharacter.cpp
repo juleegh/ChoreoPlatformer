@@ -12,6 +12,8 @@
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
 #include "DanceAudioManager.h"
+#include "DancerUIComponent.h"
+#include "SongTempoComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 

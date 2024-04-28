@@ -3,6 +3,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "ComponentGetters.h"
+#include "DanceCharacter.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 UInventoryComponent::UInventoryComponent()

@@ -8,9 +8,6 @@
 #include "GameFramework/PlayerController.h"
 #include "ChoreoPlayerController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrationEnded);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCalibrating);
-
 UCLASS()
 class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 {
@@ -54,7 +51,6 @@ protected:
 	void OnPlayerDied();
 	UFUNCTION()
 	void RespawnPlayer();
-	void TriggerResultFeedback(float Result);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool InEndlessMode();
 
@@ -71,10 +67,6 @@ public:
 	bool IsAlive();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsOnTempo();
-	UPROPERTY(BlueprintAssignable)
-	FCalibrating Calibrating;
-	UPROPERTY(BlueprintAssignable)
-	FCalibrationEnded CalibrationEnded;
 	UFUNCTION(BlueprintCallable)
 	void TogglePause();
 	UFUNCTION(BlueprintCallable)
@@ -86,7 +78,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TriggerCalibration();
 	void PauseGame(const FInputActionValue& Value);
-	void FinishCalibration();
 
 	UFUNCTION(BlueprintCallable)
 	bool TryInteraction();

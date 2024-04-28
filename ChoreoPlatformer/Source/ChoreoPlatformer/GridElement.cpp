@@ -4,6 +4,9 @@
 #include "GridElement.h"
 #include "Components/BoxComponent.h"
 #include "ChoreoPlayerController.h"
+#include "LevelProgressComponent.h"
+#include "DancerHealthComponent.h"
+#include "DanceCharacter.h"
 #include "ComponentGetters.h"
 
 AGridElement::AGridElement()

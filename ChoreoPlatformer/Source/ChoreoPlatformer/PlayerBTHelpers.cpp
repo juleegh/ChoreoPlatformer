@@ -1,5 +1,7 @@
 #include "PlayerBTHelpers.h"
 #include "ComponentGetters.h"
+#include "DanceUtilsFunctionLibrary.h"
+#include "SongTempoComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
@@ -34,6 +36,11 @@ bool UPlayerBTHelpersFunctionLibrary::ActorIsOnTempo(AActor* Actor)
 AChoreoPlayerController* UPlayerBTHelpersFunctionLibrary::GetChoreoPlayerController(AActor* WorldContextActor)
 {
 	return ComponentGetters::GetController(WorldContextActor->GetWorld());
+}
+
+UCalibrationComponent* UPlayerBTHelpersFunctionLibrary::GetCalibrationComponent(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetCalibrationComponent(WorldContextActor->GetWorld());
 }
 
 bool UPlayerBTHelpersFunctionLibrary::EnemyCanMove(AActor* EnemyActor)

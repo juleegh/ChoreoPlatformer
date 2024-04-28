@@ -3,6 +3,9 @@
 
 #include "ChoreoGameInstance.h"
 #include "MoviePlayer.h"
+#include "DancerUIComponent.h"
+#include "TilemapLevelManager.h"
+#include "ChoreoPlayerController.h"
 #include "ComponentGetters.h"
 
 void UChoreoGameInstance::Init()
