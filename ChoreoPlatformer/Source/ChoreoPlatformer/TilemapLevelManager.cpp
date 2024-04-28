@@ -166,8 +166,7 @@ void ASectionLevelManager::CurrentSectionEnd(FGameplayTag NextSection)
 	FTimerDelegate TimerCallback;
 
 	TimerCallback.BindLambda([this]() {
-		// Your lambda function code here
-		ComponentGetters::GetDanceCharacter(GetWorld())->SetupPlayerCamera(ComponentGetters::GetLevelEventsComponent(GetWorld())->GetLastEventData().FlavorTriggers.First());
+		ComponentGetters::GetGameCameraComponent(GetWorld())->SetupPlayerCamera(ComponentGetters::GetLevelEventsComponent(GetWorld())->GetLastEventData().FlavorTriggers.First());
 		});
 
 	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
@@ -189,7 +188,7 @@ void ASectionLevelManager::NextSectionStart()
 	{
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(CurrentSectionStart->GetActorLocation());
 		ComponentGetters::GetTilemapLevelManager(GetWorld())->LoadMap(CurrentSection);
-		ComponentGetters::GetDanceCharacter(GetWorld())->SetupPlayerCamera(FGameplayTag::EmptyTag);
+		ComponentGetters::GetGameCameraComponent(GetWorld())->SetupPlayerCamera(FGameplayTag::EmptyTag);
 		LevelStart.Broadcast();
 	}
 }

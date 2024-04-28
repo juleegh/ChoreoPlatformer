@@ -3,8 +3,6 @@
 
 #include "DanceCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "ChoreoPlayerController.h"
 #include "TimelineCreatorComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -22,11 +20,13 @@ ADanceCharacter::ADanceCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
 	ColorTimeline = CreateDefaultSubobject<UColorTimelineComponent>("Color Timeline");
+	GameCamera = CreateDefaultSubobject<UGameCameraComponent>("Game Camera");
 }
 
 void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GameCamera->FlavorCameraSettings = FlavorCameraSettings;
 	MoveTimeline->Initialize();
 	MoveTimeline->TimelineEnded.AddDynamic(this, &ADanceCharacter::ReachedNextTile);
 	ColorTimeline->Initialize();
@@ -126,33 +126,6 @@ void ADanceCharacter::ToggleReaction(EMoveResult MoveResult)
 		DanceAudio = ComponentGetters::GetDanceAudioManager(GetWorld());
 	}
 	DanceAudio->PlayMoveResult(MoveResult);
-}
-
-void ADanceCharacter::SetupPlayerCamera(FGameplayTag CameraStyle)
-{
-	FPigeonCameraSettings CameraSettings = FlavorCameraSettings[FGameplayTag::RequestGameplayTag(FName("CameraSettings.Default"))];
-	if (FlavorCameraSettings.Contains(CameraStyle))
-	{
-		CameraSettings = FlavorCameraSettings[CameraStyle];
-	}
-
-	GetMesh()->SetRelativeRotation(CameraSettings.PigeonRotation);
-	if (CameraSettings.bForcePigeonLocation)
-	{
-		SetActorLocation(CameraSettings.PigeonWorldLocation);
-	}
-	if (UCameraComponent* PigeonCamera = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass())))
-	{
-		PigeonCamera->SetRelativeRotation(CameraSettings.CameraRotation);
-	}
-	
-	if (USpringArmComponent* SpringArm = Cast<USpringArmComponent>(GetComponentByClass(USpringArmComponent::StaticClass())))
-	{
-		SpringArm->TargetOffset = CameraSettings.TargetOffset;
-		SpringArm->TargetArmLength = CameraSettings.TargetArmLength;
-		SpringArm->SetRelativeRotation(CameraSettings.ArmRotation);
-	}
-
 }
 
 void ADanceCharacter::MoveReleased(const FInputActionValue& Value)

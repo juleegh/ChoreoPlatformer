@@ -18,6 +18,7 @@ class USongTempoComponent;
 class UCalibrationComponent;
 class ULevelEventsComponent;
 class ULevelProgressComponent;
+class UGameCameraComponent;
 class UDancerUIComponent;
 class ASectionStart;
 struct FGameplayTag;
@@ -37,6 +38,7 @@ namespace ComponentGetters
 	ULevelProgressComponent* GetLevelProgressComponent(UWorld* WorldContextObject);
 	UDancerUIComponent* GetDancerUIComponent(UWorld* WorldContextObject);
 	UCalibrationComponent* GetCalibrationComponent(UWorld* WorldContextObject);
+	UGameCameraComponent* GetGameCameraComponent(UWorld* WorldContextObject);
 	ASectionStart* GetSectionStart(UWorld* WorldContextObject, const FGameplayTag& SectionIdentifier);
 }
 

@@ -11,6 +11,7 @@
 #include "DanceAudioManager.h"
 #include "CalibrationComponent.h"
 #include "InventoryComponent.h"
+#include "GameCameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 namespace ComponentGetters
@@ -73,6 +74,11 @@ namespace ComponentGetters
 	UCalibrationComponent* GetCalibrationComponent(UWorld* WorldContextObject)
 	{
 		return Cast<UCalibrationComponent>(WorldContextObject->GetFirstPlayerController()->GetComponentByClass(UCalibrationComponent::StaticClass()));
+	}
+
+	UGameCameraComponent* GetGameCameraComponent(UWorld* WorldContextObject)
+	{
+		return Cast<UGameCameraComponent>(GetDanceCharacter(WorldContextObject)->GetComponentByClass(UGameCameraComponent::StaticClass()));
 	}
 
 	ATilemapLevelManager* GetTilemapLevelManager(UWorld* WorldContextObject)

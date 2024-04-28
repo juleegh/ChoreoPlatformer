@@ -5,33 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "DanceDefinitions.h"
+#include "GameCameraComponent.h"
 #include "DanceCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerMoved, float, Tempo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerNewPosition);
 
 struct FInputActionValue;
-
-USTRUCT(BlueprintType)
-struct FPigeonCameraSettings
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	FVector TargetOffset;
-	UPROPERTY(EditDefaultsOnly)
-	float TargetArmLength;
-	UPROPERTY(EditDefaultsOnly)
-	FRotator ArmRotation;
-	UPROPERTY(EditDefaultsOnly)
-	FRotator CameraRotation;
-	UPROPERTY(EditDefaultsOnly)
-	FRotator PigeonRotation;
-	UPROPERTY(EditDefaultsOnly)
-	bool bForcePigeonLocation;
-	UPROPERTY(EditDefaultsOnly)
-	FVector PigeonWorldLocation;
-};
 
 UCLASS()
 class CHOREOPLATFORMER_API ADanceCharacter : public ACharacter
@@ -66,6 +46,8 @@ protected:
 	UPROPERTY()
 	class UColorTimelineComponent* ColorTimeline;
 	UPROPERTY()
+	UGameCameraComponent* GameCamera;
+	UPROPERTY()
 	class ADanceAudioManager* DanceAudio;
 	UFUNCTION()
 	virtual void BeginPlay() override;
@@ -94,6 +76,5 @@ public:
 	void StopMovement();
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
 	void InitializeToLevel(float Tempo);
-	void SetupPlayerCamera(FGameplayTag CameraStyle);
 	void ToggleReaction(EMoveResult MoveResult);
 };
