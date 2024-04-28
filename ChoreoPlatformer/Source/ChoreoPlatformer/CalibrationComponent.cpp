@@ -16,6 +16,20 @@ UCalibrationComponent::UCalibrationComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+
+void UCalibrationComponent::TriggerCalibration()
+{
+	auto controller = ComponentGetters::GetController(GetWorld());
+	if (controller->IsPaused())
+	{
+		controller->TogglePause();
+	}
+	
+	StartCalibration();
+	const FGameplayTag GTCalibration = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
+	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(GTCalibration);
+}
+
 void UCalibrationComponent::StartCalibration()
 {
 	bIsCalibrated = false;
@@ -23,7 +37,6 @@ void UCalibrationComponent::StartCalibration()
 	PostTempoMargin = 0;
 	Tries = 0;
 }
-
 
 bool UCalibrationComponent::IsCalibrated() const
 {

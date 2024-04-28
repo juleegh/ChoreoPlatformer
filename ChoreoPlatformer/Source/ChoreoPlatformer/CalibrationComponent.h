@@ -36,6 +36,8 @@ public:
 	bool IsCalibrated() const;
 	UFUNCTION(BlueprintCallable)
 	void ReceiveInput();
+	UFUNCTION(BlueprintCallable)
+	void TriggerCalibration();
 	void StartCalibration();
 
 	UPROPERTY(BlueprintAssignable)

@@ -75,7 +75,7 @@ void AChoreoPlayerController::CheckForCalibration()
 #if WITH_EDITOR
 	if (!bBypassCalibration)
 #endif
-		TriggerCalibration();
+		Calibration->TriggerCalibration();
 }
 
 void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
@@ -202,17 +202,6 @@ void AChoreoPlayerController::RespawnPlayer()
 	{
 		DanceCharacter->PlayerNewPosition.Broadcast();
 	}
-}
-
-void AChoreoPlayerController::TriggerCalibration()
-{
-	if (IsPaused())
-	{
-		TogglePause();
-	}
-	Calibration->StartCalibration();
-	const FGameplayTag GTCalibration = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
-	DancerUI->GetGameUI()->GoToGameScreen(GTCalibration);
 }
 
 bool AChoreoPlayerController::TryInteraction()

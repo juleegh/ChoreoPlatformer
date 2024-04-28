@@ -75,8 +75,6 @@ public:
 	void GoBackToMainMenu();
 	bool ShouldTakeDamage();
 	bool CanMove();
-	UFUNCTION(BlueprintCallable)
-	void TriggerCalibration();
 	void PauseGame(const FInputActionValue& Value);
 
 	UFUNCTION(BlueprintCallable)
