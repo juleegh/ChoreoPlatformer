@@ -164,13 +164,8 @@ public:
 protected:
 
 	UPROPERTY()
-	UEventsDataAsset* LevelEvents;
-	UPROPERTY()
-	TMap<FGameplayTag, int> Countdowns;
-	UPROPERTY()
 	FLevelEventInfo LastEventData;
 
-	void HandleCountdownEvent(FGameplayTag TriggerTag);
 	void HandleSectionEvent(FGameplayTag TriggerTag);
 	void ActivateTrigger(FGameplayTag TriggerTag);
 
@@ -193,7 +188,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-		class UBoxComponent* BoxComponent;
+	class UBoxComponent* BoxComponent;
 	UPROPERTY(EditInstanceOnly)
 	FGameplayTag ActorTrigger;
 	UPROPERTY(EditInstanceOnly)

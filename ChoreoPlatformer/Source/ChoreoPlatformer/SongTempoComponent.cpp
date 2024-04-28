@@ -27,11 +27,6 @@ float USongTempoComponent::GetAcceptancePercentage()
 
 bool USongTempoComponent::IsOnTempo(float target, float AcceptancePercentage, bool IncludeCalibration)
 {
-	if (CurrentPauseTempos > 0)
-	{
-		return false;
-	}
-	
 	return TempoResult(target, IncludeCalibration) <= AcceptancePercentage;
 }
 
@@ -69,11 +64,6 @@ bool USongTempoComponent::TempoPercentageIsAcceptable(float target, float Accept
 	return Residue < AcceptancePercentage * 0.5f || Residue >= (1 - AcceptancePercentage * 0.5f);
 }
 
-void USongTempoComponent::AddPauseTempos(int TemposToAdd)
-{
-	CurrentPauseTempos += TemposToAdd;
-}
-
 void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -84,14 +74,6 @@ void USongTempoComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	CurrentTime += DeltaTime;
 	if (!InTempo && TempoPercentageIsAcceptable(1, GetAcceptancePercentage()))
 	{
-		if (CurrentPauseTempos > 0)
-		{
-			CurrentPauseTempos--;
-			if (TempoCountdown.IsBound())
-			{
-				TempoCountdown.Broadcast(CurrentPauseTempos);
-			}
-		}
 		if (NewTempoStarted.IsBound())
 		{
 			NewTempoStarted.Broadcast();

@@ -119,16 +119,6 @@ void UGameUI::ExitGame()
     FPlatformMisc::RequestExit(false);
 }
 
-void UGameUI::UpdateCountdown(int TemposLeft)
-{
-    const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
-    if (GameWidgets.Contains(GTGameStats))
-    {
-        auto DancerStats = Cast<UDancerStats>(GameWidgets[GTGameStats]);
-        DancerStats->UpdateCountdown(TemposLeft);
-    }
-}
-
 void UGameUI::PromptTempoResult(EMoveResult MoveResult, bool AnimationType)
 {
     const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");

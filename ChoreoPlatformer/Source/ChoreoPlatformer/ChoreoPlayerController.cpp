@@ -49,7 +49,6 @@ void AChoreoPlayerController::BeginPlay()
 	Super::BeginPlay();
 	DanceCharacter = Cast<ADanceCharacter>(GetPawn());
 	DancerHealth->PlayerDied.AddDynamic(this, &AChoreoPlayerController::OnPlayerDied);
-	SongTempo->TempoCountdown.AddDynamic(DancerUI->GetGameUI(), &UGameUI::UpdateCountdown);
 
 	if (InGame())
 	{

@@ -47,8 +47,6 @@ class CHOREOPLATFORMER_API UDancerStats : public UChoreoActivatableWidget
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateCountdown(int TemposLeft);
-	UFUNCTION(BlueprintImplementableEvent)
 	void PromptTempoResult(EMoveResult MoveResult, bool AnimationType);
 };
 
@@ -58,8 +56,6 @@ class CHOREOPLATFORMER_API UGameUI : public UCommonActivatableWidget
 	GENERATED_BODY()
 public:
 	
-	UFUNCTION()
-	void UpdateCountdown(int TemposLeft);
 	UFUNCTION()
 	void PromptTempoResult(EMoveResult MoveResult, bool AnimationType);
 

@@ -205,11 +205,6 @@ void ASectionLevelManager::StartFromSection(const FGameplayTag SectionIdentifier
 ULevelEventsComponent::ULevelEventsComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	static ConstructorHelpers::FObjectFinder<UEventsDataAsset>DataAsset(TEXT("/Game/Events/LevelEvents"));
-	if (DataAsset.Succeeded())
-	{
-		LevelEvents = DataAsset.Object;
-	}
 }
 
 void ULevelEventsComponent::HandleEvent(FLevelEventInfo EventInfo)
@@ -220,21 +215,9 @@ void ULevelEventsComponent::HandleEvent(FLevelEventInfo EventInfo)
 
 void ULevelEventsComponent::ActivateTrigger(FGameplayTag TriggerTag)
 {
-	if (LevelEvents->CountdownEvents.Contains(TriggerTag))
-	{
-		HandleCountdownEvent(TriggerTag);
-	}
 	if (TriggerTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Level"))))
 	{
 		HandleSectionEvent(TriggerTag);
-	}
-}
-
-void ULevelEventsComponent::HandleCountdownEvent(FGameplayTag TriggerTag)
-{
-	if (!Countdowns.Contains(TriggerTag))
-	{
-		ComponentGetters::GetSongTempoComponent(GetWorld())->AddPauseTempos(LevelEvents->CountdownEvents[TriggerTag]);
 	}
 }
 
