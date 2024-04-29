@@ -6,6 +6,7 @@
 #include "GridCell.h"
 #include "DanceDefinitions.h"
 #include "CalibrationComponent.h"
+#include "GameCameraComponent.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PlayerBTHelpers.generated.h"
 
@@ -25,6 +26,8 @@ public:
 	static AChoreoPlayerController* GetChoreoPlayerController(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static UCalibrationComponent* GetCalibrationComponent(AActor* Player);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static UGameCameraComponent* GetGameCameraComponent(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool EnemyCanMove(AActor* Enemy);
 	UFUNCTION(BlueprintCallable, BlueprintPure)

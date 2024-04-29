@@ -43,6 +43,11 @@ UCalibrationComponent* UPlayerBTHelpersFunctionLibrary::GetCalibrationComponent(
 	return ComponentGetters::GetCalibrationComponent(WorldContextActor->GetWorld());
 }
 
+UGameCameraComponent* UPlayerBTHelpersFunctionLibrary::GetGameCameraComponent(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetGameCameraComponent(WorldContextActor->GetWorld());
+}
+
 bool UPlayerBTHelpersFunctionLibrary::EnemyCanMove(AActor* EnemyActor)
 {
 	auto Enemy = Cast<AEnemy>(EnemyActor);

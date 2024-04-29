@@ -53,9 +53,12 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, controller, &AChoreoPlayerController::PauseGame);
 		EnhancedInputComponent->BindAction(ConfirmAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Confirm);
 		EnhancedInputComponent->BindAction(CancelAction, ETriggerEvent::Triggered, UIcontroller, &UDancerUIComponent::Cancel);
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADanceCharacter::MoveTriggered);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ADanceCharacter::MovePressed);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADanceCharacter::MoveTriggered);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ADanceCharacter::MoveReleased);
+
+		EnhancedInputComponent->BindAction(CameraAction, ETriggerEvent::Started, this, &ADanceCharacter::MoveCamera);
+		EnhancedInputComponent->BindAction(CameraAction, ETriggerEvent::Completed, this, &ADanceCharacter::StopCamera);
 	}
 
 }
@@ -133,32 +136,52 @@ void ADanceCharacter::MoveReleased(const FInputActionValue& Value)
 	InputDirection = FVector::Zero();
 }
 
-void ADanceCharacter::MoveTriggered(const FInputActionValue& Value)
+void ADanceCharacter::ClearInput()
 {
-	InputDirection = Value.Get<FVector>();
-	if (InputDirection.X != 0 && InputDirection.Y != 0)
-	{
-		InputDirection.Y = 0;
-	}
-	LastInput = InputDirection;
+	InputDirection = FVector::Zero();
 }
 
 void ADanceCharacter::MovePressed(const FInputActionValue& Value)
 {
+	//TODO:
+	// Increase camera speed
+	// Block player to move with held input
+	// Invert camera movement direction
+	// Limit camera movement area
+
 	InputDirection = Value.Get<FVector>();
 	if (InputDirection.X != 0 && InputDirection.Y != 0)
 	{
 		InputDirection.Y = 0;
 	}
-	LastInput = InputDirection;
+}
+
+void ADanceCharacter::MoveTriggered(const FInputActionValue& Value)
+{
+	//TODO:
+	// Increase camera speed
+	// Block player to move with held input
+	// Invert camera movement direction
+	// Limit camera movement area
+	if (!GameCamera->IsMovingCamera())
+	{
+		return;
+	}
+	InputDirection = Value.Get<FVector>();
+}
+
+void ADanceCharacter::MoveCamera(const FInputActionValue& Value)
+{
+	GameCamera->ToggleCameraMovement(true);
+}
+
+void ADanceCharacter::StopCamera(const FInputActionValue& Value)
+{
+	InputDirection = FVector::Zero();
+	GameCamera->ToggleCameraMovement(false);
 }
 
 FVector ADanceCharacter::GetCurrentInput() const
 {
 	return InputDirection;
-}
-
-FVector ADanceCharacter::GetLastInput() const
-{
-	return LastInput;
 }

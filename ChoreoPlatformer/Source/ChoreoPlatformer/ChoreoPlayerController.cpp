@@ -206,11 +206,12 @@ void AChoreoPlayerController::RespawnPlayer()
 
 bool AChoreoPlayerController::TryInteraction()
 {
+	FVector Direction = DanceCharacter->GetCurrentInput();
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
-	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), DanceCharacter->GetLastInput());
+	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
 
-	bool bCantPass = CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != DanceCharacter->GetLastInput();
+	bool bCantPass = CurrentTile.bForcesDirection && CurrentTile.ForcedDirection != Direction;
 #if WITH_EDITOR
 	bCantPass = bCantPass && !bBypassObstacles;
 #endif
@@ -219,6 +220,7 @@ bool AChoreoPlayerController::TryInteraction()
 	{
 		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::InvalidDirection, false);
 		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::InvalidDirection);
+		DanceCharacter->ClearInput();
 		return true;
 	}
 
@@ -233,6 +235,7 @@ bool AChoreoPlayerController::TryInteraction()
 	}
 
 	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
+	DanceCharacter->ClearInput();
 	if (IsOnTempo())
 	{
 		auto Interaction = NextTile.HitElement->TriggerInteraction();
@@ -254,9 +257,10 @@ bool AChoreoPlayerController::TryInteraction()
 
 bool AChoreoPlayerController::TryMovement()
 {
+	FVector Direction = DanceCharacter->GetCurrentInput();
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
-	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), DanceCharacter->GetLastInput());
+	FVector TargetPosition = UDanceUtilsFunctionLibrary::GetTransformedPosition(DanceCharacter->GetActorLocation(), Direction);
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, TargetPosition);
 
 	if (!NextTile.HitCell)
@@ -278,7 +282,7 @@ bool AChoreoPlayerController::TryMovement()
 			}
 			else
 			{
-				EndlessMode->PlayerMoved(DanceCharacter->GetLastInput());
+				EndlessMode->PlayerMoved(Direction);
 				DanceCharacter->MoveTo(NextTile.Position, CurrentTile.TargetTempo);
 			}
 		}
@@ -295,5 +299,6 @@ bool AChoreoPlayerController::TryMovement()
 	}
 	DanceCharacter->ToggleReaction(MoveResult);
 	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(MoveResult);
+	DanceCharacter->ClearInput();
 	return true;
 }

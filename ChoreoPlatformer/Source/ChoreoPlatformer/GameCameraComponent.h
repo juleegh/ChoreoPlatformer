@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "GameFramework/SaveGame.h"
-#include "GameFramework/Actor.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/Actor.h"
 #include "GameCameraComponent.generated.h"
 
 USTRUCT(BlueprintType)
@@ -38,7 +37,25 @@ class CHOREOPLATFORMER_API UGameCameraComponent : public UActorComponent
 public:
 	UGameCameraComponent();
 	
+protected:
+	UPROPERTY()
+	FVector RelativePosition;
+	UPROPERTY()
+	float LastDelta;
+	UPROPERTY()
+	bool bIsMovingCamera = false;
+	UPROPERTY()
+	float CameraSpeed = 1000.f;
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+public:
 	UPROPERTY()
 	TMap<FGameplayTag, FPigeonCameraSettings> FlavorCameraSettings;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsMovingCamera() const;
+	void ToggleCameraMovement(bool bMove);
+	UFUNCTION(BlueprintCallable)
+	void MoveCamera();
 	void SetupPlayerCamera(FGameplayTag CameraStyle);
 };

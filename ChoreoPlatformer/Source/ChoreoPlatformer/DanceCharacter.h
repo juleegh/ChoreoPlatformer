@@ -32,6 +32,8 @@ protected:
 	class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* CancelAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* CameraAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
 	TMap<EMoveResult, FColor> ReactionColors;
 	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
@@ -55,17 +57,17 @@ protected:
 	void ReachedNextTile();
 
 private:
+	void MovePressed(const FInputActionValue& Value);
 	void MoveTriggered(const FInputActionValue& Value);
 	void MoveReleased(const FInputActionValue& Value);
-	void MovePressed(const FInputActionValue& Value);
+	void MoveCamera(const FInputActionValue& Value);
+	void StopCamera(const FInputActionValue& Value);
 	UPROPERTY()
 	FVector InputDirection;
-	UPROPERTY()
-	FVector LastInput;
 
 public:
 	FVector GetCurrentInput() const;
-	FVector GetLastInput() const;
+	void ClearInput();
 	UPROPERTY(BlueprintAssignable)
 	FPlayerMoved PlayerMoved;
 	UPROPERTY(BlueprintAssignable)
