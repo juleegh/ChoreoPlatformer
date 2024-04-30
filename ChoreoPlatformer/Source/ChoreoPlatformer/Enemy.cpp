@@ -222,8 +222,8 @@ void AForwardEnemy::DoTempoAction()
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	SetActorRotation(Rotation);
 	
-	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
-	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, Position);
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, Position);
 
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency();
 	MoveTimeline->MoveToPosition(NextTile.Position, Speed);

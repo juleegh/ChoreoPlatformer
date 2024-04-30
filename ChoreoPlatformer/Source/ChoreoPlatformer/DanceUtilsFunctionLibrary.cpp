@@ -89,7 +89,6 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 			if (auto player = Cast<ADanceCharacter>(hit.GetActor()))
 			{
 				DetectedInfo.bHitPlayer = true;
-				DetectedInfo.Position = player->GetActorLocation();
 			}
 			
 			if (auto gridCell = Cast<AGridCell>(hit.GetActor()))
