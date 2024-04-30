@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "DanceCharacter.h"
 #include "ComponentGetters.h"
 
 UCalibrationComponent::UCalibrationComponent()
@@ -69,6 +70,7 @@ void UCalibrationComponent::ReceiveInput()
 
 	Tries++;
 	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
+	ComponentGetters::GetDanceCharacter(GetWorld())->ClearInput();
 	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
 	Calibrating.Broadcast();
 
