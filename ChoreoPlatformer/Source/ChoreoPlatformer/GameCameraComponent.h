@@ -8,6 +8,8 @@
 #include "GameFramework/Actor.h"
 #include "GameCameraComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCameraToggled);
+
 USTRUCT(BlueprintType)
 struct FPigeonCameraSettings
 {
@@ -51,6 +53,8 @@ protected:
 public:
 	UPROPERTY()
 	TMap<FGameplayTag, FPigeonCameraSettings> FlavorCameraSettings;
+	UPROPERTY(BlueprintAssignable)
+	FCameraToggled CameraToggled;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsMovingCamera() const;

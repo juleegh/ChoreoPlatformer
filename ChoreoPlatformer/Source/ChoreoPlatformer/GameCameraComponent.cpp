@@ -67,6 +67,7 @@ void UGameCameraComponent::ToggleCameraMovement(bool bMove)
 			RelativePosition = PigeonCamera->GetRelativeLocation();
 		}
 	}
+	CameraToggled.Broadcast();
 }
 
 void UGameCameraComponent::MoveCamera()
