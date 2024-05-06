@@ -235,7 +235,6 @@ bool AChoreoPlayerController::TryInteraction()
 	}
 
 	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
-	DanceCharacter->ClearInput();
 	if (IsOnTempo())
 	{
 		auto Interaction = NextTile.HitElement->TriggerInteraction();
@@ -244,6 +243,10 @@ bool AChoreoPlayerController::TryInteraction()
 		{
 			ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Blocked);
 		}
+		if (!NextTile.bBlockedByElement)
+		{
+			return false;
+		}
 	}
 	else
 	{
@@ -251,7 +254,7 @@ bool AChoreoPlayerController::TryInteraction()
 		DanceCharacter->ToggleReaction(EMoveResult::Bad);
 		ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Bad);
 	}
-
+	DanceCharacter->ClearInput();
 	return true;
 }
 

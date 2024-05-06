@@ -39,6 +39,7 @@ enum class EMoveResult : uint8
 	PlayerHit,
 	PlayerDied,
 	EnemyOK,
+	ObjectMoved,
 	None,
 };
 
@@ -56,6 +57,8 @@ struct FTileInfo
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitElement = false;
+	UPROPERTY(BlueprintReadOnly)
+	bool bBlockedByElement = false;
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitEnemy = false;
 	UPROPERTY(BlueprintReadOnly)

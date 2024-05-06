@@ -38,6 +38,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanInteract() { return !bFinished; }
 	virtual void Reset();
+	virtual bool BlocksPlayerMovement() { return true; }
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnReset();
 };
@@ -89,21 +90,6 @@ public:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API AItemObstacle : public AContextualElement
-{
-	GENERATED_BODY()
-
-protected:
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	FGameplayTag RequiredItem;
-
-	void RemoveObstacle();
-	virtual void PostObstacleActions() {}
-public:
-	EMoveResult TriggerInteraction() override;
-};
-
-UCLASS()
 class CHOREOPLATFORMER_API ARotatingAnchor : public AContextualElement
 {
 	GENERATED_BODY()
@@ -141,10 +127,30 @@ public:
 };
 
 UCLASS()
-class CHOREOPLATFORMER_API ATileHole : public AItemObstacle
+class CHOREOPLATFORMER_API ATileHole : public AContextualElement
+{
+	GENERATED_BODY()
+
+public:
+	void Reset() override;
+	EMoveResult TriggerInteraction() override;
+	void ToggleHighlight(bool activated) override;
+	void CoverHole();
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API APlacingTile : public AContextualElement
 {
 	GENERATED_BODY()
 
 protected:
-	void PostObstacleActions() override;
+	UPROPERTY()
+	FVector InitialPosition;
+	virtual void BeginPlay() override;
+
+public:
+	EMoveResult TriggerInteraction() override;
+	void ToggleHighlight(bool activated) override;
+	void Reset() override;
+	bool BlocksPlayerMovement() override { return false; }
 };

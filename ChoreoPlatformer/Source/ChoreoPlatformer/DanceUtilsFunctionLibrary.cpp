@@ -72,6 +72,7 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 			if (auto element = Cast<AContextualElement>(hit.GetActor()))
 			{
 				DetectedInfo.bHitElement = true;
+				DetectedInfo.bBlockedByElement = element->BlocksPlayerMovement();
 				DetectedInfo.Position = element->GetActorLocation();
 				DetectedInfo.HitElement = element;
 			}

@@ -4,6 +4,7 @@
 #include "TimelineCreatorComponent.h"
 #include "TilemapLevelManager.h"
 #include "DanceCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
@@ -122,30 +123,6 @@ EMoveResult ALever::TriggerInteraction()
 	return EMoveResult::None;
 }
 
-EMoveResult AItemObstacle::TriggerInteraction()
-{
-	//if (ComponentGetters::GetInventoryComponent(GetWorld)->HasItem(RequiredItem) && !bFinished)
-	{
-		bFinished = true;
-		RemoveObstacle();
-		return EMoveResult::None;
-	}
-}
-
-void AItemObstacle::RemoveObstacle()
-{
-	//ComponentGetters::GetInventoryComponent(GetWorld())->RemoveItem(RequiredItem);
-	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	ToggleHighlight(false);
-	PostObstacleActions();
-	RefreshState();
-}
-
-void ATileHole::PostObstacleActions()
-{
-	ComponentGetters::GetTilemapLevelManager(GetWorld())->SpawnTile(GetActorLocation(), GetActorRotation(), ETempoTile::Black, FGameplayTag::EmptyTag);
-}
-
 void ARotatingAnchor::ToggleHighlight(bool activated)
 {
 	if (BelongingLever)
@@ -204,5 +181,104 @@ EMoveResult ARotationButton::TriggerInteraction()
 		return EMoveResult::ActionCompleted;
 	}
 	return EMoveResult::None;
+}
+
+void ATileHole::ToggleHighlight(bool activated)
+{
+	if (bFinished)
+		return;
+	ColorTimeline->FadeInDirection(activated);
+	TArray<AActor*> FoundTiles;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlacingTile::StaticClass(), FoundTiles);
+	for (AActor* ConnectedTile : FoundTiles)
+	{
+		if (auto Tile = Cast<APlacingTile>(ConnectedTile))
+		{
+			if (Tile->CanInteract())
+			{
+				Tile->ColorTimeline->FadeInDirection(activated);
+			}
+		}
+	}
+}
+
+EMoveResult ATileHole::TriggerInteraction()
+{
+	return EMoveResult::Blocked;
+}
+
+void ATileHole::CoverHole()
+{
+	BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ToggleHighlight(false);
+	bFinished = true;
+	RefreshState();
+}
+
+void ATileHole::Reset()
+{
+	Super::Reset();
+	BoxComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+}
+
+void APlacingTile::BeginPlay()
+{
+	Super::BeginPlay();
+	InitialPosition = GetActorLocation();
+}
+
+void APlacingTile::ToggleHighlight(bool activated)
+{
+	if (bFinished)
+		return;
+	ColorTimeline->FadeInDirection(activated);
+	TArray<AActor*> FoundTiles;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATileHole::StaticClass(), FoundTiles);
+	for (AActor* ConnectedTile : FoundTiles)
+	{
+		if (auto Tile = Cast<ATileHole>(ConnectedTile))
+		{
+			if (Tile->CanInteract())
+			{
+				Tile->ColorTimeline->FadeInDirection(activated);
+			}
+		}
+	}
+}
+
+EMoveResult APlacingTile::TriggerInteraction()
+{
+	FVector Direction = (GetActorLocation() - ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation());
+	Direction.Normalize();
+	Direction *= 100;
+	FVector NextPosition = GetActorLocation() + Direction;
+	
+	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
+	if (!NextTile.HitCell)
+	{
+		NextPosition = GetActorLocation() - Direction;
+		NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
+	}
+	SetActorLocation(NextTile.HitCell->GetActorLocation());
+
+	if (auto Hole = Cast<ATileHole>(NextTile.HitElement))
+	{
+		Hole->CoverHole();
+		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		bFinished = true;
+		RefreshState();
+	}
+	
+	return EMoveResult::ObjectMoved;
+}
+
+void APlacingTile::Reset()
+{
+	Super::Reset();
+	if (InitialPosition != FVector::Zero())
+	{
+		SetActorLocation(InitialPosition);
+	}
+	BoxComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 }
 
