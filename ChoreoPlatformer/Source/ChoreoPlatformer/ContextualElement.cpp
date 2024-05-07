@@ -249,12 +249,17 @@ void APlacingTile::ToggleHighlight(bool activated)
 EMoveResult APlacingTile::TriggerInteraction()
 {
 	FVector Direction = (GetActorLocation() - ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation());
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
+	if (CurrentTile.bForcesDirection)
+	{
+		Direction = CurrentTile.ForcedDirection;
+	}
 	Direction.Normalize();
 	Direction *= 100;
 	FVector NextPosition = GetActorLocation() + Direction;
 	
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
-	if (!NextTile.HitCell)
+	if (!NextTile.HitCell || NextTile.bHitEnemy)
 	{
 		NextPosition = GetActorLocation() - Direction;
 		NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);

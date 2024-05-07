@@ -255,7 +255,7 @@ FVector AForwardEnemy::GetNextTile(FVector Position)
 
 	FVector NextPosition = Position + Direction;
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
-	if (!NextTile.HitCell)
+	if (!NextTile.HitCell || NextTile.HitElement)
 	{
 		NextPosition = Position - Direction;
 	}
