@@ -248,7 +248,11 @@ void APlacingTile::ToggleHighlight(bool activated)
 
 EMoveResult APlacingTile::TriggerInteraction()
 {
-	FVector Direction = (GetActorLocation() - ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation());
+	FVector PlayerPosition = ComponentGetters::GetDanceCharacter(GetWorld())->GetActorLocation();
+	FVector Position = GetActorLocation();
+	PlayerPosition.Z = 0;
+	Position.Z = 0;
+	FVector Direction = (Position - PlayerPosition);
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	if (CurrentTile.bForcesDirection)
 	{
