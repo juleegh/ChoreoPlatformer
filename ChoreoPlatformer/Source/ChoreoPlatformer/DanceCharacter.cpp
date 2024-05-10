@@ -26,6 +26,7 @@ ADanceCharacter::ADanceCharacter()
 void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentMovementSpeed = 0;
 	GameCamera->FlavorCameraSettings = FlavorCameraSettings;
 	MoveTimeline->Initialize();
 	MoveTimeline->TimelineEnded.AddDynamic(this, &ADanceCharacter::ReachedNextTile);
@@ -65,7 +66,7 @@ void ADanceCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ADanceCharacter::InitializeToLevel(float Tempo)
 {
-	GetMesh()->SetPlayRate(Tempo);
+	GetMesh()->SetPlayRate(1 / Tempo);
 }
 
 void ADanceCharacter::MoveTo(FVector position, float Duration)
@@ -83,6 +84,7 @@ void ADanceCharacter::MoveTo(FVector position, float Duration)
 		UDanceUtilsFunctionLibrary::ToggleHighlight(Adjacent, true);
 	}
 
+	CurrentMovementSpeed = 1 / Duration;
 	PlayerMoved.Broadcast(Duration);
 	RotateTowards(position);
 	MoveTimeline->MoveToPosition(position, Duration * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
@@ -99,6 +101,7 @@ void ADanceCharacter::StopMovement()
 {
 	MoveTimeline->Reset();
 	MoveTimeline->Stop(true);
+	CurrentMovementSpeed = 0;
 }
 
 void ADanceCharacter::Respawn(FVector NewPosition)
@@ -109,6 +112,7 @@ void ADanceCharacter::Respawn(FVector NewPosition)
 
 void ADanceCharacter::ReachedNextTile()
 {
+	CurrentMovementSpeed = 0;
 	PlayerNewPosition.Broadcast();
 }
 
@@ -149,12 +153,6 @@ void ADanceCharacter::ClearInput()
 
 void ADanceCharacter::MovePressed(const FInputActionValue& Value)
 {
-	//TODO:
-	// Increase camera speed
-	// Block player to move with held input
-	// Invert camera movement direction
-	// Limit camera movement area
-
 	InputDirection = Value.Get<FVector>();
 	if (InputDirection.X != 0 && InputDirection.Y != 0)
 	{
@@ -165,9 +163,6 @@ void ADanceCharacter::MovePressed(const FInputActionValue& Value)
 void ADanceCharacter::MoveTriggered(const FInputActionValue& Value)
 {
 	//TODO:
-	// Increase camera speed
-	// Block player to move with held input
-	// Invert camera movement direction
 	// Limit camera movement area
 	if (!GameCamera->IsMovingCamera())
 	{
@@ -190,4 +185,9 @@ void ADanceCharacter::StopCamera(const FInputActionValue& Value)
 FVector ADanceCharacter::GetCurrentInput() const
 {
 	return InputDirection;
+}
+
+float ADanceCharacter::GetMovementSpeed() const
+{
+	return CurrentMovementSpeed;
 }

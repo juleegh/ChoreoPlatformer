@@ -25,6 +25,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static AChoreoPlayerController* GetChoreoPlayerController(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static class ADanceCharacter* GetDanceCharacter(AActor* Player);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static UCalibrationComponent* GetCalibrationComponent(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static UGameCameraComponent* GetGameCameraComponent(AActor* Player);

@@ -64,6 +64,8 @@ private:
 	void StopCamera(const FInputActionValue& Value);
 	UPROPERTY()
 	FVector InputDirection;
+	UPROPERTY()
+	float CurrentMovementSpeed;
 
 public:
 	FVector GetCurrentInput() const;
@@ -80,4 +82,6 @@ public:
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
 	void InitializeToLevel(float Tempo);
 	void ToggleReaction(EMoveResult MoveResult);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetMovementSpeed() const;
 };

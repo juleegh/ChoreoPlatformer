@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
+#include "DanceCharacter.h"
 #include "Enemy.h"
 
 FVector UPlayerBTHelpersFunctionLibrary::GetPlayerInput(AActor* Player)
@@ -36,6 +37,11 @@ bool UPlayerBTHelpersFunctionLibrary::ActorIsOnTempo(AActor* Actor)
 AChoreoPlayerController* UPlayerBTHelpersFunctionLibrary::GetChoreoPlayerController(AActor* WorldContextActor)
 {
 	return ComponentGetters::GetController(WorldContextActor->GetWorld());
+}
+
+ADanceCharacter* UPlayerBTHelpersFunctionLibrary::GetDanceCharacter(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetDanceCharacter(WorldContextActor->GetWorld());
 }
 
 UCalibrationComponent* UPlayerBTHelpersFunctionLibrary::GetCalibrationComponent(AActor* WorldContextActor)
