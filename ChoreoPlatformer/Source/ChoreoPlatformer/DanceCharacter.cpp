@@ -101,6 +101,12 @@ void ADanceCharacter::StopMovement()
 	MoveTimeline->Stop(true);
 }
 
+void ADanceCharacter::Respawn(FVector NewPosition)
+{
+	SetActorLocation(NewPosition);
+	MoveTimeline->Reset();
+}
+
 void ADanceCharacter::ReachedNextTile()
 {
 	PlayerNewPosition.Broadcast();

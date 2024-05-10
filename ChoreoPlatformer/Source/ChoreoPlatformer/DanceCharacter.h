@@ -76,6 +76,7 @@ public:
 	void MoveTo(FVector position, float Duration);
 	void RotateTowards(FVector position);
 	void StopMovement();
+	void Respawn(FVector Position);
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }
 	void InitializeToLevel(float Tempo);
 	void ToggleReaction(EMoveResult MoveResult);

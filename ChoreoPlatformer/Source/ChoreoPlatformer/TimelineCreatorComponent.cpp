@@ -197,6 +197,7 @@ void UMovementTimelineComponent::RotateCallback(float interpolatedVal)
 
 void UMovementTimelineComponent::Reset()
 {
+	OriginLocation = TimelineTarget->GetActorLocation();
 	TargetLocation = TimelineTarget->GetActorLocation();
 }
 

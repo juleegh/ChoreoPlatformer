@@ -4,6 +4,8 @@
 #include "LevelProgressComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GridElement.h"
+#include "DanceCharacter.h"
+#include "ComponentGetters.h"
 #include "GameFramework/PlayerStart.h"
 
 ULevelProgressComponent::ULevelProgressComponent()
@@ -18,11 +20,11 @@ void ULevelProgressComponent::ToggleCheckpoint(ACheckpoint* NewCheckpoint)
 
 void ULevelProgressComponent::LoadCheckpoint()
 {
-	APawn* character = Cast<AController>(GetOwner())->GetPawn();
+	FVector RespawnPos;
 
 	if (CurrentCheckpoint)
 	{
-		character->SetActorLocation(CurrentCheckpoint->GetActorLocation());
+		RespawnPos = CurrentCheckpoint->GetActorLocation();
 	}
 	else
 	{
@@ -31,8 +33,12 @@ void ULevelProgressComponent::LoadCheckpoint()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
 		for (auto Start : PlayerStarts)
 		{
-			character->SetActorLocation(Start->GetActorLocation());
+			RespawnPos = Start->GetActorLocation();
 			break;
 		}
+	}
+	if (auto DanceCharacter = ComponentGetters::GetDanceCharacter(GetWorld()))
+	{
+		DanceCharacter->Respawn(RespawnPos);
 	}
 }
