@@ -282,8 +282,6 @@ void AEndlessLevelManager::Initialize()
 
 	LoadNextMap(TileMap.Get());
 	CurrentTiles = NextTiles;
-	/*
-	*/
 }
 
 void AEndlessLevelManager::ShuffleWorldDown(float ElapsedTime)

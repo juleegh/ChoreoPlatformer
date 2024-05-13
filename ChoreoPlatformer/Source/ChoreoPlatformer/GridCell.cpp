@@ -37,7 +37,7 @@ AGridCell::AGridCell()
 
 void AGridCell::Initialize(ETempoTile Properties, const FGameplayTag& BelongingSection)
 {
-	TileType = Properties;
+	TileType = Properties == ETempoTile::Ending ? ETempoTile::Black : Properties;
 	Section = BelongingSection;
 	ToggleStaticTrigger(ExitType, Properties == ETempoTile::Ending);
 	if (TempoFlipbooks.Contains(Properties))
