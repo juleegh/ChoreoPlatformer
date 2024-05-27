@@ -84,7 +84,7 @@ void ADanceCharacter::MoveTo(FVector position, float Duration)
 		UDanceUtilsFunctionLibrary::ToggleHighlight(Adjacent, true);
 	}
 
-	CurrentMovementSpeed = 1 / Duration;
+	CurrentMovementSpeed = Duration >= 1 ? 1 : -1 / Duration;
 	PlayerMoved.Broadcast(Duration);
 	RotateTowards(position);
 	MoveTimeline->MoveToPosition(position, Duration * ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f);
