@@ -71,7 +71,7 @@ void ACityMesh::CheckTiling()
 		Height = 1;
 	}
 
-	while (Width*Height > TilingMeshes.Num())
+	while (Width * Height > TilingMeshes.Num())
 	{
 		auto Tiled = NewObject<UStaticMeshComponent>(this);
 		Tiled->RegisterComponent();
@@ -95,13 +95,20 @@ void ACityMesh::CheckTiling()
 	{
 		if (Tiled != ObjectMesh)
 		{
-			Tiled->SetRelativeLocation(FVector(column * XDistance, 0, row * YDistance));
+			float PosDeltaX = bRandomPositionDelta ? FMath::RandRange(-PositionDeltaThreshold, PositionDeltaThreshold) : 0;
+			float PosDeltaY = bRandomPositionDelta ? FMath::RandRange(-PositionDeltaThreshold, PositionDeltaThreshold) : 0;
+			FVector Position = FVector(column * XDistance + PosDeltaX, bChangeTilingOrientation ? row * YDistance + PosDeltaY : 0, bChangeTilingOrientation ? 0 : row * YDistance + PosDeltaY);
+			Tiled->SetRelativeLocation(Position);
 			Tiled->SetRelativeRotation(FRotator(0));
-			if (bRandomRotation)
+			if (bRandomRotation || bRandomRectangularRotation)
 			{
 				float Rot = FMath::RandRange(0, 360);
-				int Angle = Rot / 90;
-				Tiled->SetRelativeRotation(FRotator(0, Angle * 90, 0));
+				if (bRandomRectangularRotation)
+				{
+					int Angle = Rot / 90;
+					Rot = Angle * 90;
+				}
+				Tiled->SetRelativeRotation(FRotator(0, Rot, 0));
 			}
 		}
 		column++;

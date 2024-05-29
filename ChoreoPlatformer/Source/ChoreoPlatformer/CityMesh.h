@@ -32,8 +32,6 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	bool bMetallic;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
-	bool bRandomRotation;
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	float OcclusionDistance = 400;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	float OcclusionVolume = 700;
@@ -45,6 +43,16 @@ public:
 	int Height = 1;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Tiling")
 	float YDistance = 200;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Tiling")
+	bool bChangeTilingOrientation = false;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	bool bRandomRectangularRotation = false;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	bool bRandomRotation = false;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	bool bRandomPositionDelta = false;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	float PositionDeltaThreshold = 10;
 
 protected:
 	UPROPERTY()
