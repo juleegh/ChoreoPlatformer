@@ -46,6 +46,8 @@ protected:
 	UPROPERTY()
 	bool bIsDead = false;
 	UPROPERTY()
+	bool bBlockedForAccuracy = false;
+	UPROPERTY()
 	FTimerHandle DelayTimerHandle;
 	UFUNCTION()
 	void OnPlayerDied();

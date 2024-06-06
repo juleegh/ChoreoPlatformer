@@ -81,12 +81,12 @@ void AChoreoPlayerController::CheckForCalibration()
 void AChoreoPlayerController::GoToLevel(const FGameplayTag Level)
 {
 	auto SectionManager = ComponentGetters::GetSectionLevelManager(GetWorld());
-	
+
 	if (!InGame())
 	{
 		FString LevelName = Level.RequestDirectParent().GetTagName().ToString();
 		LevelName.RemoveFromStart("Level.");
-		
+
 		if (auto GameInstance = Cast<UChoreoGameInstance>(GetGameInstance()))
 		{
 			GameInstance->CurrentLevel = Level;
@@ -147,7 +147,7 @@ void AChoreoPlayerController::TogglePause()
 bool AChoreoPlayerController::CanMove()
 {
 	const FGameplayTag GTEOL = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
-	if (!InGame() || IsPaused() || DancerUI->GetGameUI()->IsScreenActive(GTEOL) || bIsDead)
+	if (!InGame() || IsPaused() || DancerUI->GetGameUI()->IsScreenActive(GTEOL) || bIsDead || bBlockedForAccuracy)
 	{
 		return false;
 	}
@@ -299,6 +299,15 @@ bool AChoreoPlayerController::TryMovement()
 	{
 		DancerUI->GetGameUI()->PromptTempoResult(EMoveResult::Bad, false);
 		MoveResult = EMoveResult::Bad;
+		bBlockedForAccuracy = true;
+
+		float DelayDuration = 1.0f;
+		FTimerDelegate TimerCallback;
+		TimerCallback.BindLambda([this]()
+			{
+				bBlockedForAccuracy = false;
+			});
+		GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
 	}
 	DanceCharacter->ToggleReaction(MoveResult);
 	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(MoveResult);
