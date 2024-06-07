@@ -197,6 +197,7 @@ bool AChoreoPlayerController::ShouldTakeDamage()
 void AChoreoPlayerController::RespawnPlayer()
 {
 	bIsDead = false;
+	bBlockedForAccuracy = false;
 	LevelProgress->LoadCheckpoint();
 	if (DanceCharacter->PlayerNewPosition.IsBound())
 	{
@@ -305,6 +306,7 @@ bool AChoreoPlayerController::TryMovement()
 		FTimerDelegate TimerCallback;
 		TimerCallback.BindLambda([this]()
 			{
+				bIsDead = false;
 				bBlockedForAccuracy = false;
 			});
 		GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
