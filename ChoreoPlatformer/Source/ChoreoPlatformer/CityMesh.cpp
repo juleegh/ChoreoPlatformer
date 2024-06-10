@@ -29,7 +29,9 @@ void ACityMesh::UpdatedMesh()
 	SetActorLabel(SelectedMesh->GetFName().ToString());
 #endif
 	PaintMaterial();
-	CheckTiling();
+	CheckTilingUnits();
+	CheckTilingColoring();
+	CheckTilingPositioning();
 
 	for (auto Tiled : TilingMeshes)
 	{
@@ -50,6 +52,7 @@ void ACityMesh::PaintMaterial()
 	if (!ObjectMat)
 	{
 		ObjectMat = ObjectMesh->CreateDynamicMaterialInstance(0, ObjectMesh->GetMaterial(0));
+		TilingMats.Add(ObjectMat);
 	}
 	ObjectMat->SetVectorParameterValue(FName("First"), ColorSlot1);
 	ObjectMat->SetVectorParameterValue(FName("Second"), ColorSlot2);
@@ -60,7 +63,7 @@ void ACityMesh::PaintMaterial()
 	ObjectMat->SetScalarParameterValue(FName("Metallic"), bMetallic);
 }
 
-void ACityMesh::CheckTiling()
+void ACityMesh::CheckTilingUnits()
 {
 	if (Width < 1)
 	{
@@ -86,8 +89,63 @@ void ACityMesh::CheckTiling()
 		auto Tiled = TilingMeshes.Last();
 		TilingMeshes.Remove(Tiled);
 		Tiled->DestroyComponent();
-	}
 
+		if (ChromaticAberration1Threshold > 0 || ChromaticAberration2Threshold > 0 || ChromaticAberration3Threshold > 0)
+		{
+			auto TiledMat = TilingMats.Last();
+			TilingMats.Remove(TiledMat);
+			TiledMat->BeginDestroy();
+		}
+	}
+}
+
+void ACityMesh::CheckTilingColoring()
+{
+	if (ChromaticAberration1Threshold <= 0 && ChromaticAberration2Threshold <= 0 && ChromaticAberration3Threshold <= 0)
+	{
+		TilingMats.Empty();
+		TilingMats.Add(ObjectMat);
+	}
+	else
+	{
+		if (TilingMats.Num() < TilingMeshes.Num())
+		{
+			for (auto Tiled : TilingMeshes)
+			{
+				if (Tiled == ObjectMesh)
+					continue;
+
+				auto TiledMat = Tiled->CreateDynamicMaterialInstance(0, ObjectMaterial);
+				TiledMat->SetScalarParameterValue(FName("ShouldOclude"), bOccluded);
+				TiledMat->SetScalarParameterValue(FName("OcclusionDistance"), OcclusionDistance);
+				TiledMat->SetScalarParameterValue(FName("OcclusionVolume"), OcclusionVolume);
+				TiledMat->SetScalarParameterValue(FName("Metallic"), bMetallic);
+
+				Tiled->SetMaterial(0, TiledMat);
+				TilingMats.Add(TiledMat);
+			}
+		}
+
+		for (auto TiledMat : TilingMats)
+		{
+			if (ChromaticAberration1Threshold > 0)
+			{
+				TiledMat->SetVectorParameterValue(FName("First"), FColor(ColorSlot1.R + FMath::RandRange(-ChromaticAberration1Threshold, ChromaticAberration1Threshold), ColorSlot1.G + FMath::RandRange(-ChromaticAberration1Threshold, ChromaticAberration1Threshold), ColorSlot1.B + FMath::RandRange(-ChromaticAberration1Threshold, ChromaticAberration1Threshold), 1));
+			}
+			if (ChromaticAberration2Threshold > 0)
+			{
+				TiledMat->SetVectorParameterValue(FName("Second"), FColor(ColorSlot2.R + FMath::RandRange(-ChromaticAberration2Threshold, ChromaticAberration2Threshold), ColorSlot2.G + FMath::RandRange(-ChromaticAberration2Threshold, ChromaticAberration2Threshold), ColorSlot2.B + FMath::RandRange(-ChromaticAberration2Threshold, ChromaticAberration2Threshold), 1));
+			}
+			if (ChromaticAberration3Threshold > 0)
+			{
+				TiledMat->SetVectorParameterValue(FName("Third"), FColor(ColorSlot3.R + FMath::RandRange(-ChromaticAberration3Threshold, ChromaticAberration3Threshold), ColorSlot3.G + FMath::RandRange(-ChromaticAberration3Threshold, ChromaticAberration3Threshold), ColorSlot3.B + FMath::RandRange(-ChromaticAberration3Threshold, ChromaticAberration3Threshold), 1));
+			}
+		}
+	}
+}
+
+void ACityMesh::CheckTilingPositioning()
+{
 	float column = 0;
 	float row = 0;
 
@@ -117,7 +175,7 @@ void ACityMesh::CheckTiling()
 			column = 0;
 			row++;
 		}
-	}	
+	}
 }
 
 void ACityMesh::MoveToPosition(FVector Position, float elapsedTime)

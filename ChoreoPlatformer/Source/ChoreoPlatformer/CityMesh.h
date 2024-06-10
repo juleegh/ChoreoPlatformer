@@ -18,6 +18,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UStaticMeshComponent* ObjectMesh;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UMaterial* ObjectMaterial;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Mesh Material")
 	UStaticMesh* SelectedMesh;
@@ -53,10 +55,18 @@ public:
 	bool bRandomPositionDelta = false;
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
 	float PositionDeltaThreshold = 10;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	float ChromaticAberration1Threshold = 0;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	float ChromaticAberration2Threshold = 0;
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Randomness")
+	float ChromaticAberration3Threshold = 0;
 
 protected:
 	UPROPERTY()
 	class UMaterialInstanceDynamic* ObjectMat;
+	UPROPERTY()
+	TArray<class UMaterialInstanceDynamic*> TilingMats;
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> TilingMeshes;
 	UPROPERTY()
@@ -66,5 +76,7 @@ protected:
 #endif
 	virtual void BeginPlay() override;
 	void PaintMaterial();
-	void CheckTiling();
+	void CheckTilingUnits();
+	void CheckTilingPositioning();
+	void CheckTilingColoring();
 };
