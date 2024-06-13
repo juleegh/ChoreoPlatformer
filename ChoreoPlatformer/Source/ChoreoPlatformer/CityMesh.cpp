@@ -128,6 +128,10 @@ void ACityMesh::CheckTilingColoring()
 
 		for (auto TiledMat : TilingMats)
 		{
+			TiledMat->SetVectorParameterValue(FName("First"), ColorSlot1);
+			TiledMat->SetVectorParameterValue(FName("Second"), ColorSlot2);
+			TiledMat->SetVectorParameterValue(FName("Third"), ColorSlot3);
+			
 			if (ChromaticAberration1Threshold > 0)
 			{
 				TiledMat->SetVectorParameterValue(FName("First"), FColor(ColorSlot1.R + FMath::RandRange(-ChromaticAberration1Threshold, ChromaticAberration1Threshold), ColorSlot1.G + FMath::RandRange(-ChromaticAberration1Threshold, ChromaticAberration1Threshold), ColorSlot1.B + FMath::RandRange(-ChromaticAberration1Threshold, ChromaticAberration1Threshold), 1));
