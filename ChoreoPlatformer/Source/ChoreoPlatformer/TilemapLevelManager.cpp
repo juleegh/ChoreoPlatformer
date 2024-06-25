@@ -22,6 +22,7 @@
 #include "SongTempoComponent.h"
 #include "DanceAudioManager.h"
 #include "InventoryComponent.h"
+#include "GameCameraComponent.h"
 
 void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 {
@@ -166,7 +167,7 @@ void ASectionLevelManager::CurrentSectionEnd(FGameplayTag NextSection)
 	FTimerDelegate TimerCallback;
 
 	TimerCallback.BindLambda([this]() {
-		ComponentGetters::GetGameCameraComponent(GetWorld())->SetupPlayerCamera(ComponentGetters::GetLevelEventsComponent(GetWorld())->GetLastEventData().FlavorTriggers.First());
+		ComponentGetters::GetGameCameraComponent(GetWorld())->SetupPlayerCamera(ComponentGetters::GetLevelEventsComponent(GetWorld())->GetLastEventData().EventTrigger);
 		});
 
 	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
@@ -265,7 +266,6 @@ void AEventTrigger::OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent
 {
 	FLevelEventInfo EventInfo;
 	EventInfo.EventTrigger = ActorTrigger;
-	EventInfo.FlavorTriggers.AddTag(FlavorTrigger);
 	ComponentGetters::GetLevelEventsComponent(GetWorld())->HandleEvent(EventInfo);
 }
 

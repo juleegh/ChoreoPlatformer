@@ -7,6 +7,7 @@
 #include "TilemapLevelManager.h"
 #include "ChoreoPlayerController.h"
 #include "ComponentGetters.h"
+#include "GameCameraComponent.h"
 
 void UChoreoGameInstance::Init()
 {
@@ -39,6 +40,7 @@ void UChoreoGameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
         {
             SectionLevelManager->StartFromSection(CurrentLevel);
         }
+        ComponentGetters::GetGameCameraComponent(GetWorld())->InitializeCameras();
         ComponentGetters::GetController(GetWorld())->CheckForCalibration();
     }
     else

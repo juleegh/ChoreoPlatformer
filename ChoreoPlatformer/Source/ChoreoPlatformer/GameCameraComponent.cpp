@@ -2,6 +2,7 @@
 
 
 #include "GameCameraComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "DanceCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -12,33 +13,37 @@ UGameCameraComponent::UGameCameraComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UGameCameraComponent::SetupPlayerCamera(FGameplayTag CameraStyle)
+void UGameCameraComponent::InitializeCameras()
 {
-	FPigeonCameraSettings CameraSettings = FlavorCameraSettings[FGameplayTag::RequestGameplayTag(FName("CameraSettings.Default"))];
-	if (FlavorCameraSettings.Contains(CameraStyle))
+	PictureCameras.Empty();
+	TArray<AActor*> PictureCamerasActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APictureCameraActor::StaticClass(), PictureCamerasActors);
+	for (auto Actor : PictureCamerasActors)
 	{
-		CameraSettings = FlavorCameraSettings[CameraStyle];
+		if (auto PictureCamera = Cast<APictureCameraActor>(Actor))
+		{
+			PictureCameras.Add(PictureCamera->GetLevelTag(), PictureCamera);
+		}
 	}
+}
 
+void UGameCameraComponent::SetupPlayerCamera(FGameplayTag CameraId)
+{
 	auto DanceCharacter = Cast<ADanceCharacter>(GetOwner());
+	DanceCharacter->SetActorRotation(FRotator::ZeroRotator);
+	if (!PictureCameras.Contains(CameraId))
+	{
+		DanceCharacter->GetMesh()->SetRelativeRotation(FRotator::MakeFromEuler(FVector(0,0,-90)));
+		GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(DanceCharacter, 0.f, EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+		return;
+	}
+	FPigeonCameraSettings CameraSettings = PictureCameras[CameraId]->GetCameraSettings();
 	DanceCharacter->GetMesh()->SetRelativeRotation(CameraSettings.PigeonRotation);
 	if (CameraSettings.bForcePigeonLocation)
 	{
 		DanceCharacter->SetActorLocation(CameraSettings.PigeonWorldLocation);
 	}
-	if (UCameraComponent* PigeonCamera = Cast<UCameraComponent>(DanceCharacter->GetComponentByClass(UCameraComponent::StaticClass())))
-	{
-		PigeonCamera->SetRelativeRotation(CameraSettings.CameraRotation);
-		PigeonCamera->SetRelativeLocation(RelativePosition);
-	}
-
-	if (USpringArmComponent* SpringArm = Cast<USpringArmComponent>(DanceCharacter->GetComponentByClass(USpringArmComponent::StaticClass())))
-	{
-		SpringArm->TargetOffset = CameraSettings.TargetOffset;
-		SpringArm->TargetArmLength = CameraSettings.TargetArmLength;
-		SpringArm->SetRelativeRotation(CameraSettings.ArmRotation);
-	}
-
+	GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(PictureCameras[CameraId], 0.25f, EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
 }
 
 void UGameCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -93,4 +98,14 @@ void UGameCameraComponent::MoveCamera()
 			PigeonCamera->AddRelativeLocation(Delta, true, nullptr, ETeleportType::None);
 		}
 	}
+}
+
+FGameplayTag& APictureCameraActor::GetLevelTag()
+{
+	return LevelTag;
+}
+
+FPigeonCameraSettings& APictureCameraActor::GetCameraSettings()
+{
+	return FlavorCameraSettings;
 }

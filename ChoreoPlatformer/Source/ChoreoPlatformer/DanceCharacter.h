@@ -40,8 +40,6 @@ protected:
 	TMap<EMoveResult, class UParticleSystem*> ReactionParticles;
 	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
 	TMap<EMoveResult, class UAnimMontage*> ReactionAnimations;
-	UPROPERTY(EditDefaultsOnly, Category = "Visuals")
-	TMap<FGameplayTag, FPigeonCameraSettings> FlavorCameraSettings;
 
 	UPROPERTY()
 	class UMovementTimelineComponent* MoveTimeline;

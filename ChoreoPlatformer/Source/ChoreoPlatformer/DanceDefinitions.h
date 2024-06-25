@@ -110,7 +110,20 @@ struct CHOREOPLATFORMER_API FTileSpriteInfo
 };
 
 USTRUCT(BlueprintType)
-struct CHOREOPLATFORMER_API FLevelEventInfo : public FTableRowBase
+struct FPigeonCameraSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	FRotator PigeonRotation;
+	UPROPERTY(EditAnywhere)
+	bool bForcePigeonLocation;
+	UPROPERTY(EditAnywhere)
+	FVector PigeonWorldLocation;
+};
+
+USTRUCT(BlueprintType)
+struct CHOREOPLATFORMER_API FLevelEventInfo
 {
 	GENERATED_BODY()
 
@@ -119,6 +132,4 @@ struct CHOREOPLATFORMER_API FLevelEventInfo : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "EventInfo"))
 	FGameplayTag EventTrigger;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "EventInfo"))
-	FGameplayTagContainer FlavorTriggers;
 };

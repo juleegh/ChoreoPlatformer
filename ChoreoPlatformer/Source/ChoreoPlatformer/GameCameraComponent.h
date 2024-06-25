@@ -6,30 +6,11 @@
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
+#include "Camera/CameraActor.h"
+#include "DanceDefinitions.h"
 #include "GameCameraComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCameraToggled);
-
-USTRUCT(BlueprintType)
-struct FPigeonCameraSettings
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly)
-	FVector TargetOffset;
-	UPROPERTY(EditDefaultsOnly)
-	float TargetArmLength;
-	UPROPERTY(EditDefaultsOnly)
-	FRotator ArmRotation;
-	UPROPERTY(EditDefaultsOnly)
-	FRotator CameraRotation;
-	UPROPERTY(EditDefaultsOnly)
-	FRotator PigeonRotation;
-	UPROPERTY(EditDefaultsOnly)
-	bool bForcePigeonLocation;
-	UPROPERTY(EditDefaultsOnly)
-	FVector PigeonWorldLocation;
-};
 
 UCLASS()
 class CHOREOPLATFORMER_API UGameCameraComponent : public UActorComponent
@@ -41,6 +22,8 @@ public:
 	
 protected:
 	UPROPERTY()
+	TMap<FGameplayTag, class APictureCameraActor*> PictureCameras;
+	UPROPERTY()
 	FVector RelativePosition;
 	UPROPERTY()
 	float LastDelta;
@@ -51,15 +34,31 @@ protected:
 	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	UPROPERTY()
-	TMap<FGameplayTag, FPigeonCameraSettings> FlavorCameraSettings;
 	UPROPERTY(BlueprintAssignable)
 	FCameraToggled CameraToggled;
 
+	void InitializeCameras();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsMovingCamera() const;
 	void ToggleCameraMovement(bool bMove);
 	UFUNCTION(BlueprintCallable)
 	void MoveCamera();
-	void SetupPlayerCamera(FGameplayTag CameraStyle);
+	void SetupPlayerCamera(FGameplayTag CameraId);
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API APictureCameraActor : public ACameraActor
+{
+	GENERATED_BODY()
+
+public:
+	APictureCameraActor() {}
+	FGameplayTag& GetLevelTag();
+	FPigeonCameraSettings& GetCameraSettings();
+
+protected:
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly)
+	FGameplayTag LevelTag;
+	UPROPERTY(EditInstanceOnly)
+	FPigeonCameraSettings FlavorCameraSettings;
 };

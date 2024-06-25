@@ -61,6 +61,7 @@ void AChoreoPlayerController::BeginPlay()
 	if (InGame())
 	{
 		DancerUI->GetGameUI()->LoadGame();
+		ComponentGetters::GetGameCameraComponent(GetWorld())->InitializeCameras();
 		CheckForCalibration();
 	}
 	else

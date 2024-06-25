@@ -182,8 +182,6 @@ class CHOREOPLATFORMER_API AEventTrigger : public AActor
 
 public:
 	AEventTrigger();
-	UFUNCTION(BlueprintCallable)
-	FGameplayTag GetFlavorTrigger() { return FlavorTrigger; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -191,8 +189,6 @@ protected:
 	class UBoxComponent* BoxComponent;
 	UPROPERTY(EditInstanceOnly)
 	FGameplayTag ActorTrigger;
-	UPROPERTY(EditInstanceOnly)
-	FGameplayTag FlavorTrigger;
 	UFUNCTION()
 	void OnOverlapRangeBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

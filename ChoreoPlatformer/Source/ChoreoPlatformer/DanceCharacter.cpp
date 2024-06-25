@@ -27,7 +27,6 @@ void ADanceCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentMovementSpeed = 0;
-	GameCamera->FlavorCameraSettings = FlavorCameraSettings;
 	MoveTimeline->Initialize();
 	MoveTimeline->TimelineEnded.AddDynamic(this, &ADanceCharacter::ReachedNextTile);
 	ColorTimeline->Initialize();
