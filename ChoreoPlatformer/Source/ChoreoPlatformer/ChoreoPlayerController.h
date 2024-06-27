@@ -41,6 +41,7 @@ protected:
 	bool bBypassOutOfTempo = true;
 	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
 	bool bBypassCalibration = false;
+	
 	UPROPERTY()
 	class AEndlessLevelManager* EndlessMode;
 	UPROPERTY()
@@ -59,6 +60,8 @@ protected:
 public:
 	AChoreoPlayerController();
 	void CheckForCalibration();
+	UPROPERTY(EditDefaultsOnly, Category = "Debugging")
+	bool bUnlockAllCollectables = false;
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UCommonActivatableWidget> GameUIClass;
 	UFUNCTION(BlueprintCallable, BlueprintPure)

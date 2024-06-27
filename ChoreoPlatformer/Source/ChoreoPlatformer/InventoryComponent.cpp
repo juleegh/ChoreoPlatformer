@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ComponentGetters.h"
 #include "DanceCharacter.h"
+#include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 UInventoryComponent::UInventoryComponent()
@@ -147,5 +148,9 @@ FClothingItemInfo* UInventoryComponent::GetClothingInfo(FGameplayTag& ItemType)
 
 bool UInventoryComponent::HasCollectedItem(FGameplayTag& ItemType)
 {
+#if WITH_EDITOR
+	return Inventory.Contains(ItemType) || ComponentGetters::GetController(GetWorld())->bUnlockAllCollectables;
+#endif
+
 	return Inventory.Contains(ItemType);
 }
