@@ -133,11 +133,7 @@ void ARotatingAnchor::ToggleHighlight(bool activated)
 
 void ARotatingAnchor::Reset()
 {
-	if (Tile)
-	{
-		Tile->SetActorRotation(InitialRotation);
-		Tile = nullptr;
-	}
+	Tile = nullptr;
 }
 
 void ARotatingAnchor::Rotate(float Direction)
