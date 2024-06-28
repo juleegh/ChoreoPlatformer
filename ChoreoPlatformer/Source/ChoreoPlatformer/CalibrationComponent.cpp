@@ -25,7 +25,7 @@ void UCalibrationComponent::TriggerCalibration()
 	{
 		controller->TogglePause();
 	}
-	
+
 	StartCalibration();
 	const FGameplayTag GTCalibration = FGameplayTag::RequestGameplayTag("GameUI.CalibrationScreen");
 	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->GoToGameScreen(GTCalibration);
@@ -34,9 +34,9 @@ void UCalibrationComponent::TriggerCalibration()
 void UCalibrationComponent::StartCalibration()
 {
 	bIsCalibrated = false;
-	PostTempos = 0;
 	PostTempoMargin = 0;
 	Tries = 0;
+	UsedTempos.Empty();
 }
 
 bool UCalibrationComponent::IsCalibrated() const
@@ -46,9 +46,46 @@ bool UCalibrationComponent::IsCalibrated() const
 
 float UCalibrationComponent::GetCalibrationDelta()
 {
-	if (PostTempos == 0)
+	if (UsedTempos.Num() == 0)
 		return 0;
-	return (PostTempoMargin / PostTempos);
+	return (PostTempoMargin / UsedTempos.Num());
+}
+
+void UCalibrationComponent::ProcessCurrentInput(float Percentage)
+{
+
+	if (Percentage > 0.5f)
+	{
+		UsedTempos.Add(1 - Percentage);
+	}
+	else
+	{
+		UsedTempos.Add(-Percentage);
+	}
+	if (UsedTempos.Num() >= 8)
+	{
+		UsedTempos.RemoveAt(0);
+	}
+	PostTempoMargin = 0;
+	for (float Tempo : UsedTempos)
+	{
+		PostTempoMargin += Tempo;
+	}
+
+	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
+}
+
+void UCalibrationComponent::UseInputPassive()
+{
+	if (!SongTempo)
+	{
+		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
+	}
+	float Percentage = SongTempo->TempoPercentage();
+	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true))
+	{
+		ProcessCurrentInput(Percentage);
+	}
 }
 
 void UCalibrationComponent::ReceiveInput()
@@ -58,23 +95,13 @@ void UCalibrationComponent::ReceiveInput()
 		SongTempo = GetWorld()->GetFirstPlayerController()->FindComponentByClass<USongTempoComponent>();
 	}
 	float Percentage = SongTempo->TempoPercentage();
-	PostTempos++;
-	if (Percentage > 0.5f)
-	{
-		PostTempoMargin += 1 - Percentage;
-	}
-	else
-	{
-		PostTempoMargin -= Percentage;
-	}
-
+	ProcessCurrentInput(Percentage);
 	Tries++;
-	SongTempo->SetupCalibrationDeficit(GetCalibrationDelta());
+	
 	ComponentGetters::GetDanceCharacter(GetWorld())->ClearInput();
 	ComponentGetters::GetDanceAudioManager(GetWorld())->PlayMoveResult(EMoveResult::Calibrating);
 	Calibrating.Broadcast();
 
-	UE_LOG(LogTemp, Warning, TEXT("Deviation: %f"), Percentage);
 	if (SongTempo->IsOnTempo(1, UDanceUtilsFunctionLibrary::GetAcceptanceRate(), true) && Tries >= 8)
 	{
 		bIsCalibrated = true;

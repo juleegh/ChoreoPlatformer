@@ -24,12 +24,13 @@ protected:
 	class USongTempoComponent* SongTempo;
 	bool bIsCalibrated = true;
 	UPROPERTY()
-	float PostTempos = 0;
+	TArray<float> UsedTempos;
 	UPROPERTY()
 	float PostTempoMargin;
 	UPROPERTY()
 	int Tries = 0;
 	float GetCalibrationDelta();
+	void ProcessCurrentInput(float Percentage);
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -39,6 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TriggerCalibration();
 	void StartCalibration();
+	void UseInputPassive();
 
 	UPROPERTY(BlueprintAssignable)
 	FCalibrating Calibrating;

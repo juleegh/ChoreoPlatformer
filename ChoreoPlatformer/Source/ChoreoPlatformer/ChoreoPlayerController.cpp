@@ -262,6 +262,7 @@ bool AChoreoPlayerController::TryInteraction()
 
 bool AChoreoPlayerController::TryMovement()
 {
+	Calibration->UseInputPassive();
 	FVector Direction = DanceCharacter->GetCurrentInput();
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
 	float Result = SongTempo->TempoResult(CurrentTile.TargetTempo, true);
