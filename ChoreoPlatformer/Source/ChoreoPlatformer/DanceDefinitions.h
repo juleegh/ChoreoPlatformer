@@ -94,8 +94,10 @@ struct CHOREOPLATFORMER_API FClothingItemInfo : public FTableRowBase
 	FGameplayTag BodySocket;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Icon"))
 	UTexture2D* Icon;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Model"))
 	UStaticMesh* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Model"))
+	UMaterial* Material;
 };
 
 USTRUCT(BlueprintType)

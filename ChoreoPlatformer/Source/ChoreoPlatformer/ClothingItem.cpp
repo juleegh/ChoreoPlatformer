@@ -69,6 +69,10 @@ void AClothingItem::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 		if (ItemInfo->Identifier.MatchesTag(ItemType) && ItemInfo->Mesh)
 		{
 			ItemMesh->SetStaticMesh(ItemInfo->Mesh);
+			if (ItemInfo->Material)
+			{
+				ItemMesh->SetMaterial(0, ItemInfo->Material);
+			}
 			BodySocket = ItemInfo->BodySocket;
 			return;
 		}
