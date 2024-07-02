@@ -34,7 +34,7 @@ void ATilemapLevelManager::LoadMap(const FGameplayTag& Level)
 	auto LevelSection = ComponentGetters::GetSectionStart(GetWorld(), Level);
 	ComponentGetters::GetDanceCharacter(GetWorld())->SetActorLocation(LevelSection->GetActorLocation());
 
-	auto TileMapActor = Cast<APaperTileMapActor>(UDanceUtilsFunctionLibrary::GetClosestActor(LevelSection, FoundSections));
+	auto TileMapActor = LevelSection->Tilemap;
 	auto TileMap = TileMapActor->GetRenderComponent()->TileMap;
 	LoadTileMap(TileMap, TileMapActor->GetActorLocation(), Level);
 

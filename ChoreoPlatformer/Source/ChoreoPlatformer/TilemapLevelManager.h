@@ -209,5 +209,7 @@ protected:
 	FGameplayTag SectionIdentifier;
 
 public:
+	UPROPERTY(EditInstanceOnly)
+	class APaperTileMapActor* Tilemap;
 	FGameplayTag GetSectionIdentifier() { return SectionIdentifier; }
 };
