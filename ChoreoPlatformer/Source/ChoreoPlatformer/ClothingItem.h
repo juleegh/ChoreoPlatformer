@@ -17,7 +17,7 @@ class CHOREOPLATFORMER_API AClothingItem : public AGridElement, public IInterfac
 public:
 	AClothingItem();
 protected:
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Meta = (Category = "ClothingItem"))
 	FGameplayTag ItemType;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (Category = "ClothingItem"))

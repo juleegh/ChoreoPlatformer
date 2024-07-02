@@ -23,7 +23,7 @@ public:
 	UInventoryComponent();
 
 protected:
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 
 	UPROPERTY()
 	TArray<AClothingItem*> Outfit;

@@ -74,7 +74,7 @@ protected:
 #if WITH_EDITOR
 	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	void PaintMaterial();
 	void CheckTilingUnits();
 	void CheckTilingPositioning();

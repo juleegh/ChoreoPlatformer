@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "ComponentGetters.h"
+#include "DanceAudioManager.h"
 #include "DanceUtilsFunctionLibrary.h"
 
 USongTempoComponent::USongTempoComponent()

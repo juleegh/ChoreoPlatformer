@@ -14,7 +14,7 @@ class CHOREOPLATFORMER_API AChoreoPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 
 	UPROPERTY()
 	class USongTempoComponent* SongTempo;

@@ -50,7 +50,7 @@ protected:
 	UPROPERTY()
 	class ADanceAudioManager* DanceAudio;
 	UFUNCTION()
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	UFUNCTION()
 	void ReachedNextTile();
 
@@ -72,7 +72,7 @@ public:
 	FPlayerMoved PlayerMoved;
 	UPROPERTY(BlueprintAssignable)
 	FPlayerNewPosition PlayerNewPosition;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveTo(FVector position, float Duration);
 	void RotateTowards(FVector position);
 	void StopMovement();

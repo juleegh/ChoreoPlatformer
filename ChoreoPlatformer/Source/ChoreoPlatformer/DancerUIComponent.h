@@ -120,7 +120,7 @@ protected:
 	UPROPERTY()
 	UGameUI* GameUI;
 
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 };
 
 UCLASS()

@@ -29,7 +29,7 @@ public:
     void Initialize();
     void PlayTimeline();
     void Stop(bool bForceFinishAction);
-    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     bool IsRunning() const;
     bool ReachedHalfwayPoint() const;
     UPROPERTY()

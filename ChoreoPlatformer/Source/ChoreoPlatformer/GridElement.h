@@ -15,7 +15,7 @@ public:
 	AGridElement();
 
 protected:
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UBoxComponent* BoxComponent;
 	UPROPERTY()
@@ -28,8 +28,6 @@ protected:
 
 	virtual void OnEnterRange() {};
 	virtual void OnExitRange() {};
-public:	
-	//virtual void Tick(float DeltaTime) override;
 };
 
 UCLASS()

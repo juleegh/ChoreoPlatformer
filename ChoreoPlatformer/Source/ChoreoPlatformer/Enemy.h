@@ -36,7 +36,7 @@ protected:
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
 
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	virtual void DoTempoAction() {}
 	virtual void DoDamage(FVector DamageArea);

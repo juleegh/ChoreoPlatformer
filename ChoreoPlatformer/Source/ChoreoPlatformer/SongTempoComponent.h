@@ -37,8 +37,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FNewTempoStarted NewTempoStarted;
 	void SetupCalibrationDeficit(float Deficit);
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	bool IsStopped() { return !bIsCountingTempo; }
 	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (IncludeCalibration = "false"))

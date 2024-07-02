@@ -16,11 +16,11 @@ class CHOREOPLATFORMER_API UChoreoGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	virtual void Init() override;
+	void Init() override;
 	FGameplayTag CurrentLevel;
 
 	UFUNCTION()
-	virtual void BeginLoadingScreen(const FString& MapName);
+	void BeginLoadingScreen(const FString& MapName);
 	UFUNCTION()
-	virtual void EndLoadingScreen(UWorld* InLoadedWorld);
+	void EndLoadingScreen(UWorld* InLoadedWorld);
 };

@@ -18,7 +18,7 @@ public:
 	UDancerHealthComponent();
 
 protected:
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	bool ShouldTakeDamage();
 	UPROPERTY()
 	TMap<ETempoAccuracy, int> Steps;

@@ -20,7 +20,7 @@ public:
 protected:
 	UPROPERTY()
 	bool bFinished = false;
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
 
@@ -82,7 +82,7 @@ class CHOREOPLATFORMER_API ALever : public AContextualElement
 protected:
 	UPROPERTY(EditInstanceOnly)
 	TArray<ADoor*> ConnectedDoors;
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 public:
 	ALever() {}
 	EMoveResult TriggerInteraction() override;
@@ -119,7 +119,7 @@ protected:
 	TArray<ARotatingAnchor*> ConnectedTiles;
 	UPROPERTY(EditDefaultsOnly)
 	float Direction = 90;
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 public:
 	ARotationButton() {}
 	EMoveResult TriggerInteraction() override;
@@ -146,7 +146,7 @@ class CHOREOPLATFORMER_API APlacingTile : public AContextualElement
 protected:
 	UPROPERTY()
 	FVector InitialPosition;
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
 
 public:
 	EMoveResult TriggerInteraction() override;
