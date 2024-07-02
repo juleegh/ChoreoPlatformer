@@ -29,6 +29,8 @@ public:
     void Initialize();
     void PlayTimeline();
     void Stop(bool bForceFinishAction);
+    virtual void Reset() {}
+    virtual void ForceStopTimeline() {}
     void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     bool IsRunning() const;
     bool ReachedHalfwayPoint() const;
@@ -50,8 +52,6 @@ protected:
     void TimelineCallback(float val);
     UFUNCTION()
     void TimelineFinishedCallback();
-    virtual void Reset() {}
-    virtual void ForceStopTimeline() {}
 
     UPROPERTY()
     TEnumAsByte<ETimelineDirection::Type> TimelineDirection;

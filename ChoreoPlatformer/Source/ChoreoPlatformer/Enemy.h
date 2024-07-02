@@ -39,7 +39,7 @@ protected:
 	void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	virtual void DoTempoAction() {}
-	virtual void DoDamage(FVector DamageArea);
+	void DoDamage(FVector DamageArea);
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartedWalking();
 	UFUNCTION(BlueprintImplementableEvent)

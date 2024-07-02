@@ -50,11 +50,11 @@ class CHOREOPLATFORMER_API ABrickWall : public AContextualElement
 
 public:
 	ABrickWall() {}
+	EMoveResult TriggerInteraction() override;
 
 protected:
 	UPROPERTY()
 	int HitsLeft = 2;
-	EMoveResult TriggerInteraction() override;
 };
 
 UCLASS()
@@ -69,8 +69,6 @@ public:
 	UPROPERTY()
 	class ALever* BelongingLever;
 	void ToggleHighlight(bool activated) override;
-
-protected:
 	EMoveResult TriggerInteraction() override;
 };
 
