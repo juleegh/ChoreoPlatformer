@@ -8,6 +8,7 @@
 #include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
 #include "ComponentGetters.h"
+#include "CityMesh.h"
 
 AContextualElement::AContextualElement()
 {
@@ -140,7 +141,7 @@ void ARotatingAnchor::Rotate(float Direction)
 {
 	if (!Tile)
 	{
-		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({this, ComponentGetters::GetDanceCharacter(GetWorld())}, GetActorLocation());
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
 		Tile = TileInfo.HitCell;
 		InitialRotation = Tile->GetActorRotation();
 	}
@@ -257,7 +258,7 @@ EMoveResult APlacingTile::TriggerInteraction()
 	Direction.Normalize();
 	Direction *= 100;
 	FVector NextPosition = GetActorLocation() + Direction;
-	
+
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
 	if (!NextTile.HitCell || NextTile.bHitEnemy)
 	{
@@ -273,7 +274,7 @@ EMoveResult APlacingTile::TriggerInteraction()
 		bFinished = true;
 		RefreshState();
 	}
-	
+
 	return EMoveResult::ObjectMoved;
 }
 
@@ -285,5 +286,107 @@ void APlacingTile::Reset()
 		SetActorLocation(InitialPosition);
 	}
 	BoxComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+}
+
+AWater::AWater()
+{
+	WaterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Water Mesh"));
+	WaterMesh->SetCollisionResponseToAllChannels(ECR_Overlap);
+	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
+	WaterMesh->SetupAttachment(RootComponent);
+}
+
+void AWater::BeginPlay()
+{
+	Super::BeginPlay();
+	MoveTimeline->Initialize();
+	InitialLevel = FMath::CeilToInt(GetActorLocation().Z / 50) * 50;
+	InitialLevel += 10;
+	FVector current = GetActorLocation();
+	current.Z = InitialLevel;
+	SetActorLocation(current);
+	DanceCharacter = ComponentGetters::GetDanceCharacter(GetWorld());
+}
+
+#if WITH_EDITOR
+void AWater::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	Height = FMath::CeilToInt(Height / 50) * 50;
+	WidthX = FMath::CeilToInt(WidthX / 50) * 50;
+	WidthY = FMath::CeilToInt(WidthY / 50) * 50;
+	WaterMesh->SetRelativeScale3D(FVector(WidthX, WidthY, Height) * ScaleFactor);
+	WaterMesh->SetRelativeLocation(FVector(0, 0, -Height));
+}
+#endif
+
+void AWater::Reset()
+{
+	if (InitialLevel == 0)
+	{
+		return;
+	}
+	FVector current = GetActorLocation();
+	current.Z = InitialLevel;
+	SetActorLocation(current);
+
+	for (auto Floater : FloatingActors)
+	{
+		current = Floater->GetActorLocation();
+		current.Z = InitialLevel;
+		Floater->MoveToPosition(current, 0.4f);
+	}
+}
+
+bool AWater::ChangeWaterLevel(float Direction)
+{
+	float CurrentLevel = GetActorLocation().Z;
+	float DancerLocation = DanceCharacter->GetActorLocation().Z;
+	if (Direction > 0 && (CurrentLevel >= InitialLevel + (MaxLevel * 50) || CurrentLevel + Height + 50 >= DancerLocation))
+	{
+		return false;
+	}
+
+	if (Direction < 0 && CurrentLevel <= InitialLevel + (MinLevel * 50))
+	{
+		return false;
+	}
+	FVector MoveDirection = (FVector::UpVector * Direction).GetSafeNormal() * 50;
+	MoveTimeline->Stop(false);
+	MoveTimeline->MoveToPosition(GetActorLocation() + MoveDirection, 0.4f);
+	for (auto Floater : FloatingActors)
+	{
+		Floater->MoveToPosition(Floater->GetActorLocation() + MoveDirection, 0.4f);
+	}
+	return true;
+}
+
+void AWater::ToggleHighlight(bool activated)
+{
+	ColorTimeline->FadeInDirection(activated);
+	for (AWaterButton* ConnectedButton : ConnectedButtons)
+	{
+		ConnectedButton->ColorTimeline->FadeInDirection(activated);
+	}
+}
+
+EMoveResult AWater::TriggerInteraction()
+{
+	return EMoveResult::Blocked;
+}
+
+EMoveResult AWaterButton::TriggerInteraction()
+{
+	if (ConnectedWater->ChangeWaterLevel(Direction))
+	{
+		return EMoveResult::ActionCompleted;
+	}
+	return EMoveResult::Blocked;
+}
+
+void AWaterButton::ToggleHighlight(bool activated)
+{
+	ColorTimeline->FadeInDirection(activated);
+	ConnectedWater->ColorTimeline->FadeInDirection(activated);
 }
 

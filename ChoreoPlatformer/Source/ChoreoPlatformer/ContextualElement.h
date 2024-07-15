@@ -152,3 +152,62 @@ public:
 	void Reset() override;
 	bool BlocksPlayerMovement() override { return false; }
 };
+
+UCLASS()
+class CHOREOPLATFORMER_API AWater : public AContextualElement
+{
+	GENERATED_BODY()
+
+public:
+	AWater();
+	void Reset() override;
+	bool ChangeWaterLevel(float Direction);
+	void ToggleHighlight(bool activated) override;
+	UPROPERTY(EditInstanceOnly)
+	TArray<class ACityMesh*> FloatingActors;
+	UPROPERTY(EditInstanceOnly)
+	TArray<class AWaterButton*> ConnectedButtons;
+
+protected:
+	void BeginPlay() override;
+	EMoveResult TriggerInteraction() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		float ScaleFactor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UStaticMeshComponent* WaterMesh;
+	UPROPERTY(EditInstanceOnly, Category = "Water Editing")
+	float Height;
+	UPROPERTY(EditInstanceOnly, Category = "Water Editing")
+	float WidthX;
+	UPROPERTY(EditInstanceOnly, Category = "Water Editing")
+	float WidthY;
+	UPROPERTY(EditInstanceOnly, Category = "Water Editing")
+	float MinLevel;
+	UPROPERTY(EditInstanceOnly, Category = "Water Editing")
+	float MaxLevel;
+	UPROPERTY()
+	float InitialLevel;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UMovementTimelineComponent* MoveTimeline;
+
+#if WITH_EDITOR
+	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AWaterButton : public AContextualElement
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditInstanceOnly)
+	TSoftObjectPtr<AWater> ConnectedWater;
+	UPROPERTY(EditDefaultsOnly)
+	float Direction = 1;
+public:
+	AWaterButton() {}
+	EMoveResult TriggerInteraction() override;
+	void ToggleHighlight(bool activated) override;
+};
