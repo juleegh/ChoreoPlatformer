@@ -153,6 +153,9 @@ void ADanceCharacter::ClearInput()
 void ADanceCharacter::MovePressed(const FInputActionValue& Value)
 {
 	InputDirection = Value.Get<FVector>();
+	InputDirection.X = InputDirection.X == 0 ? 0 : InputDirection.X < 0 ? -1.0f : 1.0f;
+	InputDirection.Y = InputDirection.Y == 0 ? 0 : InputDirection.Y < 0 ? -1.0f : 1.0f;
+
 	if (InputDirection.X != 0 && InputDirection.Y != 0)
 	{
 		InputDirection.Y = 0;
