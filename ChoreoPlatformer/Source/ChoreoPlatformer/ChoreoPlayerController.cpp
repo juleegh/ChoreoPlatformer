@@ -274,6 +274,11 @@ bool AChoreoPlayerController::TryMovement()
 		return false;
 	}
 
+	if (NextTile.HitCell->GetActorLocation().Z >= CurrentTile.HitCell->GetActorLocation().Z + 100 || NextTile.HitCell->GetActorLocation().Z <= CurrentTile.HitCell->GetActorLocation().Z - 100)
+	{
+		return false;
+	}
+
 	DancerHealth->CountStep(UDanceUtilsFunctionLibrary::GetTempoResult(Result));
 	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
 

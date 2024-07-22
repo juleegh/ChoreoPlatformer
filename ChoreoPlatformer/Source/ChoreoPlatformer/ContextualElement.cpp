@@ -301,7 +301,6 @@ void AWater::BeginPlay()
 	Super::BeginPlay();
 	MoveTimeline->Initialize();
 	InitialLevel = FMath::CeilToInt(GetActorLocation().Z / 50) * 50;
-	InitialLevel += 10;
 	FVector current = GetActorLocation();
 	current.Z = InitialLevel;
 	SetActorLocation(current);
@@ -316,26 +315,26 @@ void AWater::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 	WidthX = FMath::CeilToInt(WidthX / 50) * 50;
 	WidthY = FMath::CeilToInt(WidthY / 50) * 50;
 	WaterMesh->SetRelativeScale3D(FVector(WidthX, WidthY, Height) * ScaleFactor);
-	WaterMesh->SetRelativeLocation(FVector(0, 0, -Height));
+	WaterMesh->SetRelativeLocation(FVector(0, 0, -Height - 10));
 }
 #endif
 
 void AWater::Reset()
 {
-	if (InitialLevel == 0)
-	{
-		return;
-	}
 	FVector current = GetActorLocation();
-	current.Z = InitialLevel;
-	SetActorLocation(current);
-
-	for (auto Floater : FloatingActors)
+	if (current.Z != InitialLevel && InitialLevel != 0)
 	{
-		current = Floater->GetActorLocation();
 		current.Z = InitialLevel;
-		Floater->MoveToPosition(current, 0.4f);
+		SetActorLocation(current);
+		
+		for (auto Floater : FloatingActors)
+		{
+			current = Floater->GetActorLocation();
+			current.Z = InitialLevel;
+			Floater->MoveToPosition(current, 0.4f);
+		}
 	}
+
 }
 
 bool AWater::ChangeWaterLevel(float Direction)
@@ -358,15 +357,23 @@ bool AWater::ChangeWaterLevel(float Direction)
 	{
 		Floater->MoveToPosition(Floater->GetActorLocation() + MoveDirection, 0.4f);
 	}
+	for (auto Floater : FloatingTiles)
+	{
+		Floater->Float(MoveDirection);
+	}
 	return true;
 }
 
 void AWater::ToggleHighlight(bool activated)
 {
-	ColorTimeline->FadeInDirection(activated);
 	for (AWaterButton* ConnectedButton : ConnectedButtons)
 	{
 		ConnectedButton->ColorTimeline->FadeInDirection(activated);
+	}
+
+	for (AWaterTileAnchor* ConnectedTile : FloatingTiles)
+	{
+		ConnectedTile->ColorTimeline->FadeInDirection(activated);
 	}
 }
 
@@ -386,7 +393,51 @@ EMoveResult AWaterButton::TriggerInteraction()
 
 void AWaterButton::ToggleHighlight(bool activated)
 {
-	ColorTimeline->FadeInDirection(activated);
-	ConnectedWater->ColorTimeline->FadeInDirection(activated);
+	ConnectedWater->ToggleHighlight(activated);
+}
+
+void AWaterTileAnchor::ToggleHighlight(bool activated)
+{
+
+}
+
+void AWaterTileAnchor::Reset()
+{
+	Tile = nullptr;
+
+	FVector current = GetActorLocation();
+	if (current.Z != InitialLevel && InitialLevel != 0)
+	{
+		current.Z = InitialLevel;
+		SetActorLocation(current);
+	}
+}
+
+void AWaterTileAnchor::Float(FVector Delta)
+{
+	if (!Tile)
+	{
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
+		Tile = TileInfo.HitCell;
+	}
+
+	MoveTimeline->MoveToPosition(GetActorLocation() + Delta, 0.4f);
+	Tile->MoveToPosition(Tile->GetActorLocation() + Delta, 0.4f);
+
+}
+
+AWaterTileAnchor::AWaterTileAnchor()
+{
+	MoveTimeline = CreateDefaultSubobject<UMovementTimelineComponent>("Move Timeline");
+}
+
+void AWaterTileAnchor::BeginPlay()
+{
+	Super::BeginPlay();
+	MoveTimeline->Initialize();
+	InitialLevel = FMath::CeilToInt(GetActorLocation().Z / 50) * 50;
+	FVector current = GetActorLocation();
+	current.Z = InitialLevel;
+	SetActorLocation(current);
 }
 

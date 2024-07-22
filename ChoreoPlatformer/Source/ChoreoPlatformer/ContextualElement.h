@@ -167,6 +167,8 @@ public:
 	TArray<class ACityMesh*> FloatingActors;
 	UPROPERTY(EditInstanceOnly)
 	TArray<class AWaterButton*> ConnectedButtons;
+	UPROPERTY(EditInstanceOnly)
+	TArray<class AWaterTileAnchor*> FloatingTiles;
 
 protected:
 	void BeginPlay() override;
@@ -210,4 +212,25 @@ public:
 	AWaterButton() {}
 	EMoveResult TriggerInteraction() override;
 	void ToggleHighlight(bool activated) override;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API AWaterTileAnchor : public AContextualElement
+{
+	GENERATED_BODY()
+
+public:
+	AWaterTileAnchor();
+	void Reset() override;
+	void ToggleHighlight(bool activated) override;
+	void Float(FVector Delta);
+
+protected:
+	void BeginPlay() override;
+	UPROPERTY()
+	float InitialLevel; 
+	UPROPERTY()
+	class AGridCell* Tile;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UMovementTimelineComponent* MoveTimeline;
 };
