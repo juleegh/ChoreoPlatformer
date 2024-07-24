@@ -202,7 +202,7 @@ void ARotatingEnemy::DoTempoAction()
 	MoveTimeline->RotateToPosition(Rotation, Speed);
 	ScaleTimeline->ScaleUp(FVector::Zero(), FVector::One(), Speed);
 	ColorTimeline->Blink();
-	
+
 	StartedRotating(rotDirection);
 	MarkNextTarget();
 }
@@ -221,7 +221,7 @@ void AForwardEnemy::DoTempoAction()
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	SetActorRotation(Rotation);
-	
+
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, Position);
 
@@ -255,7 +255,10 @@ FVector AForwardEnemy::GetNextTile(FVector Position)
 
 	FVector NextPosition = Position + Direction;
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, NextPosition);
-	if (!NextTile.HitCell || NextTile.HitElement)
+
+	if (!NextTile.HitCell || NextTile.HitElement
+		|| NextTile.HitCell->GetActorLocation().Z >= CurrentTile.HitCell->GetActorLocation().Z + 100
+		|| NextTile.HitCell->GetActorLocation().Z <= CurrentTile.HitCell->GetActorLocation().Z - 100)
 	{
 		NextPosition = Position - Direction;
 	}
