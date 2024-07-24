@@ -370,11 +370,6 @@ void AWater::ToggleHighlight(bool activated)
 	{
 		ConnectedButton->ColorTimeline->FadeInDirection(activated);
 	}
-
-	for (AWaterTileAnchor* ConnectedTile : FloatingTiles)
-	{
-		ConnectedTile->ColorTimeline->FadeInDirection(activated);
-	}
 }
 
 EMoveResult AWater::TriggerInteraction()

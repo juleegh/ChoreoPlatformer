@@ -247,6 +247,10 @@ FVector AForwardEnemy::GetNextTile(FVector Position)
 {
 	FVector Direction = GetActorForwardVector();
 	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, Position);
+	if (!CurrentTile.HitCell)
+	{
+		return FVector::Zero();
+	}
 	if (CurrentTile.bForcesDirection)
 	{
 		Direction = CurrentTile.ForcedDirection;
