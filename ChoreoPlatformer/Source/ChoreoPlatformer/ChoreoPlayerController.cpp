@@ -236,6 +236,11 @@ bool AChoreoPlayerController::TryInteraction()
 		return false;
 	}
 
+	if (FMath::Abs(NextTile.HitElement->GetActorLocation().Z - CurrentTile.HitCell->GetActorLocation().Z) >= 100)
+	{
+		return false;
+	}
+
 	EMoveResult MoveResult = CurrentTile.TargetTempo >= 1 ? EMoveResult::Black_OK : EMoveResult::Half_OK;
 	if (IsOnTempo())
 	{

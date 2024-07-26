@@ -23,6 +23,7 @@ protected:
 	void BeginPlay() override;
 	UPROPERTY()
 	class ADanceCharacter* DanceCharacter;
+	float GetTempoDuration();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

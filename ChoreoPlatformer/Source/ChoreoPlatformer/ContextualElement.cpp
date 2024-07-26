@@ -2,6 +2,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimelineCreatorComponent.h"
+#include "SongTempoComponent.h"
 #include "TilemapLevelManager.h"
 #include "DanceCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -31,6 +32,11 @@ void AContextualElement::BeginPlay()
 	ColorTimeline->Initialize();
 	ColorTimeline->AddMesh(InteractionHighlight);
 	ColorTimeline->Reset();
+}
+
+float AContextualElement::GetTempoDuration()
+{
+	return ComponentGetters::GetSongTempoComponent(GetWorld())->GetFrequency() * 0.95f;
 }
 
 void AContextualElement::ToggleHighlight(bool activated)
@@ -331,7 +337,7 @@ void AWater::Reset()
 		{
 			current = Floater->GetActorLocation();
 			current.Z = InitialLevel;
-			Floater->MoveToPosition(current, 0.4f);
+			Floater->MoveToPosition(current, GetTempoDuration());
 		}
 	}
 
@@ -341,7 +347,9 @@ bool AWater::ChangeWaterLevel(float Direction)
 {
 	float CurrentLevel = GetActorLocation().Z;
 	float DancerLocation = DanceCharacter->GetActorLocation().Z;
-	if (Direction > 0 && (CurrentLevel >= InitialLevel + (MaxLevel * 50) || CurrentLevel + Height + 50 >= DancerLocation))
+	auto DancerTile = UDanceUtilsFunctionLibrary::CheckPosition({ DanceCharacter }, DanceCharacter->GetActorLocation());
+	bool WillDrown = CurrentLevel + Height + 50 >= DancerLocation && DancerTile.HitCell->GetTileType() != ETempoTile::Floater;
+	if (Direction > 0 && (CurrentLevel >= InitialLevel + (MaxLevel * 50) || WillDrown))
 	{
 		return false;
 	}
@@ -352,10 +360,10 @@ bool AWater::ChangeWaterLevel(float Direction)
 	}
 	FVector MoveDirection = (FVector::UpVector * Direction).GetSafeNormal() * 50;
 	MoveTimeline->Stop(false);
-	MoveTimeline->MoveToPosition(GetActorLocation() + MoveDirection, 0.4f);
+	MoveTimeline->MoveToPosition(GetActorLocation() + MoveDirection, GetTempoDuration());
 	for (auto Floater : FloatingActors)
 	{
-		Floater->MoveToPosition(Floater->GetActorLocation() + MoveDirection, 0.4f);
+		Floater->MoveToPosition(Floater->GetActorLocation() + MoveDirection, GetTempoDuration());
 	}
 	for (auto Floater : FloatingTiles)
 	{
@@ -416,9 +424,14 @@ void AWaterTileAnchor::Float(FVector Delta)
 		Tile = TileInfo.HitCell;
 	}
 
-	MoveTimeline->MoveToPosition(GetActorLocation() + Delta, 0.4f);
-	Tile->MoveToPosition(Tile->GetActorLocation() + Delta, 0.4f);
-
+	MoveTimeline->MoveToPosition(GetActorLocation() + Delta, GetTempoDuration());
+	auto TileLocation = Tile->GetActorLocation();
+	Tile->MoveToPosition(TileLocation + Delta, GetTempoDuration());
+	FTileInfo ThisCell = UDanceUtilsFunctionLibrary::CheckPosition({ this }, TileLocation);
+	if (ThisCell.bHitPlayer)
+	{
+		ComponentGetters::GetDanceCharacter(GetWorld())->MoveTo(TileLocation + Delta + FVector::UpVector * 100.f, GetTempoDuration());
+	}
 }
 
 AWaterTileAnchor::AWaterTileAnchor()
