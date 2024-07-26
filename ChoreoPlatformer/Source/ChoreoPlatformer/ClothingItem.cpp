@@ -24,6 +24,17 @@ void AClothingItem::BeginPlay()
 	OriginScale = GetActorScale();
 	ProjectileTimeline->Initialize();
 	ProjectileTimeline->TimelineEnded.AddDynamic(this, &AClothingItem::LandedOnGround);
+
+	if (auto* ClothingInfo = ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType))
+	{
+		if (!ObjectMat)
+		{
+			ObjectMat = ItemMesh->CreateDynamicMaterialInstance(0, ItemMesh->GetMaterial(0));
+		}
+		ObjectMat->SetVectorParameterValue(FName("First"), ClothingInfo->Color1);
+		ObjectMat->SetVectorParameterValue(FName("Second"), ClothingInfo->Color2);
+		ObjectMat->SetVectorParameterValue(FName("Third"), ClothingInfo->Color3);
+	}
 }
 
 void AClothingItem::OnEnterRange()

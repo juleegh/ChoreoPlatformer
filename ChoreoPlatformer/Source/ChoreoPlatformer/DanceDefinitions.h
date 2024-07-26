@@ -99,6 +99,12 @@ struct CHOREOPLATFORMER_API FClothingItemInfo : public FTableRowBase
 	UStaticMesh* Mesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Model"))
 	UMaterial* Material;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Model"))
+	FColor Color1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Model"))
+	FColor Color2;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (Category = "Model"))
+	FColor Color3;
 };
 
 USTRUCT(BlueprintType)

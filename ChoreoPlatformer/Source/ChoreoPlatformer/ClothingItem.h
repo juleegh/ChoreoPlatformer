@@ -32,6 +32,8 @@ protected:
 	FVector OriginPosition;
 	UPROPERTY()
 	FVector OriginScale;
+	UPROPERTY()
+	class UMaterialInstanceDynamic* ObjectMat;
 	UPROPERTY(BlueprintReadOnly)
 	bool bFinished = false;
 	UFUNCTION(BlueprintImplementableEvent)
