@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "GridElement.h"
 #include "ComponentGetters.h"
 #include "CityMesh.h"
 
@@ -409,10 +410,15 @@ void AWaterTileAnchor::Reset()
 	Tile = nullptr;
 
 	FVector current = GetActorLocation();
+	FTileInfo ThisCell = UDanceUtilsFunctionLibrary::CheckPosition({ this }, GetActorLocation());
 	if (current.Z != InitialLevel && InitialLevel != 0)
 	{
 		current.Z = InitialLevel;
 		SetActorLocation(current);
+	}
+	if (ThisCell.HitCheckpoint)
+	{
+		ThisCell.HitCheckpoint->SetActorLocation(current + FVector::UpVector * 50.f);
 	}
 }
 
@@ -431,6 +437,10 @@ void AWaterTileAnchor::Float(FVector Delta)
 	if (ThisCell.bHitPlayer)
 	{
 		ComponentGetters::GetDanceCharacter(GetWorld())->MoveTo(TileLocation + Delta + FVector::UpVector * 100.f, GetTempoDuration());
+	}
+	if (ThisCell.HitCheckpoint)
+	{
+		ThisCell.HitCheckpoint->SetActorLocation(TileLocation + Delta + FVector::UpVector * 100.f);
 	}
 }
 

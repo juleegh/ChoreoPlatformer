@@ -65,7 +65,11 @@ struct FTileInfo
 	UPROPERTY(BlueprintReadOnly)
 	bool bHitPlayer = false;
 	UPROPERTY(BlueprintReadOnly)
+	bool bHitWater = false;
+	UPROPERTY(BlueprintReadOnly)
 	class AContextualElement* HitElement = nullptr;
+	UPROPERTY(BlueprintReadOnly)
+	class ACheckpoint* HitCheckpoint = nullptr;
 	UPROPERTY(BlueprintReadOnly)
 	class AGridCell* HitCell = nullptr;
 	UPROPERTY(BlueprintReadOnly)

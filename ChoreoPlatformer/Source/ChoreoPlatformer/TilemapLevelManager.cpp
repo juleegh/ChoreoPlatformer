@@ -82,14 +82,14 @@ void ATilemapLevelManager::LoadTileMap(const UPaperTileMap* TileMap, const FVect
 				if (TileInfo.TileSet == nullptr || TileInfo.TileSet != TileSet.Get())
 					continue;
 
-				auto TileType = TileInfo.PackedTileIndex;
+				auto TileType = (ETempoTile) TileInfo.PackedTileIndex;
 
 				FRotator DeltaRotation = FRotator(0);
 				DeltaRotation.Yaw = 90 * TileInfo.GetFlagsAsIndex() - 90;
 
 				const FVector DeltaPos = AnchorLocation + FVector::RightVector * row * TileInfo.TileSet->GetTileSize().X + FVector::ForwardVector * column * TileInfo.TileSet->GetTileSize().Y + FVector::UpVector * LayerPos;
 
-				SpawnTile(DeltaPos, DeltaRotation, (ETempoTile)TileType, SectionIdentifier);
+				SpawnTile(DeltaPos, DeltaRotation, TileType, SectionIdentifier);
 			}
 		}
 		LayerPos -= 50.f;

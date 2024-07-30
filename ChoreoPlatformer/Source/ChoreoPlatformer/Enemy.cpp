@@ -214,15 +214,19 @@ void AForwardEnemy::DoTempoAction()
 	{
 		return;
 	}
+	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
+	if (CurrentTile.bHitWater)
+	{
+		return;
+	}
 	DoDamage(GetActorLocation());
 
 	FVector Position = GetNextTile(GetActorLocation());
-
 	FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Position);
 	FRotator Rotation = FRotator(0, LookAt.Yaw, 0);
 	SetActorRotation(Rotation);
 
-	FTileInfo CurrentTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
+	
 	FTileInfo NextTile = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, Position);
 
 	float Speed = CurrentTile.TargetTempo * SongTempo->GetFrequency();

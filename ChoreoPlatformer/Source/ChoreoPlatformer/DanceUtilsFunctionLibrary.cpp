@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PaperTileMapActor.h"
 #include "ContextualElement.h"
+#include "GridElement.h"
 #include "ComponentGetters.h"
 #include "DanceCharacter.h"
 #include "ClothingItem.h"
@@ -87,9 +88,19 @@ FTileInfo UDanceUtilsFunctionLibrary::CheckPosition(TArray<AActor*> ToIgnore, FV
 				DetectedInfo.TileMapActor = tileMap;
 			}
 
+			if (auto checkpoint = Cast<ACheckpoint>(hit.GetActor()))
+			{
+				DetectedInfo.HitCheckpoint = checkpoint;
+			}
+
 			if (auto player = Cast<ADanceCharacter>(hit.GetActor()))
 			{
 				DetectedInfo.bHitPlayer = true;
+			}
+
+			if (auto water = Cast<AWater>(hit.GetActor()))
+			{
+				DetectedInfo.bHitWater = true;
 			}
 			
 			if (auto gridCell = Cast<AGridCell>(hit.GetActor()))
