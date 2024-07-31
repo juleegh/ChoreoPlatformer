@@ -164,8 +164,6 @@ void ADanceCharacter::MovePressed(const FInputActionValue& Value)
 
 void ADanceCharacter::MoveTriggered(const FInputActionValue& Value)
 {
-	//TODO:
-	// Limit camera movement area
 	if (!GameCamera->IsMovingCamera())
 	{
 		return;

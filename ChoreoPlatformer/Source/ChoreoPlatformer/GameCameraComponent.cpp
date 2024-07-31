@@ -7,6 +7,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "DanceUtilsFunctionLibrary.h"
 
 UGameCameraComponent::UGameCameraComponent()
 {
@@ -25,6 +26,7 @@ void UGameCameraComponent::InitializeCameras()
 			PictureCameras.Add(PictureCamera->GetLevelTag(), PictureCamera);
 		}
 	}
+	PigeonCamera = Cast<UCameraComponent>(GetWorld()->GetFirstPlayerController()->GetPawn()->GetComponentByClass(UCameraComponent::StaticClass()));
 }
 
 void UGameCameraComponent::SetupPlayerCamera(FGameplayTag CameraId)
@@ -33,8 +35,9 @@ void UGameCameraComponent::SetupPlayerCamera(FGameplayTag CameraId)
 	DanceCharacter->SetActorRotation(FRotator::ZeroRotator);
 	if (!PictureCameras.Contains(CameraId))
 	{
-		DanceCharacter->GetMesh()->SetRelativeRotation(FRotator::MakeFromEuler(FVector(0,0,-90)));
+		DanceCharacter->GetMesh()->SetRelativeRotation(FRotator::MakeFromEuler(FVector(0, 0, -90)));
 		GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(DanceCharacter, 0.f, EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+		PigeonCamera->SetRelativeLocation(RelativePosition);
 		return;
 	}
 	FPigeonCameraSettings CameraSettings = PictureCameras[CameraId]->GetCameraSettings();
@@ -66,11 +69,9 @@ void UGameCameraComponent::ToggleCameraMovement(bool bMove)
 	}
 	else
 	{
+		RelativePosition = PigeonCamera->GetRelativeLocation();
 		auto DanceCharacter = Cast<ADanceCharacter>(GetOwner());
-		if (UCameraComponent* PigeonCamera = Cast<UCameraComponent>(DanceCharacter->GetComponentByClass(UCameraComponent::StaticClass())))
-		{
-			RelativePosition = PigeonCamera->GetRelativeLocation();
-		}
+		RelativeHeight = FVector::UpVector * (PigeonCamera->GetComponentLocation() - DanceCharacter->GetActorLocation()).Z;
 	}
 	CameraToggled.Broadcast();
 }
@@ -79,24 +80,26 @@ void UGameCameraComponent::MoveCamera()
 {
 	auto DanceCharacter = Cast<ADanceCharacter>(GetOwner());
 	FVector Direction = FVector(-DanceCharacter->GetCurrentInput().Y, DanceCharacter->GetCurrentInput().X, 0);
-	FVector Delta = Direction * CameraSpeed * LastDelta;
+	FVector PositionDelta = Direction * CameraSpeed * LastDelta;
+	FVector EndLocation = PigeonCamera->GetComponentLocation() + PositionDelta * 2;
+	FVector HeightPosition = PigeonCamera->GetRelativeLocation().Z * FVector::UpVector;
+	FVector HeightDelta = FVector::Zero();
 
-	if (UCameraComponent* PigeonCamera = Cast<UCameraComponent>(DanceCharacter->GetComponentByClass(UCameraComponent::StaticClass())))
+	auto DownCheck = UDanceUtilsFunctionLibrary::CheckPosition({DanceCharacter}, EndLocation);
+	if (DownCheck.HitCell)
 	{
-		FVector StartLocation = PigeonCamera->GetComponentLocation();
-		FVector EndLocation = StartLocation + Delta * 2;
+		HeightDelta = DownCheck.HitCell->GetActorLocation().Z * FVector::UpVector - HeightPosition;
+	}
 
-		float Radius = 100.0f;
-		ECollisionChannel TraceChannel = ECC_WorldStatic;
-		FCollisionQueryParams TraceParams = FCollisionQueryParams::DefaultQueryParam;
-
-		FHitResult HitResult;
-		bool bHit = GetWorld()->SweepSingleByChannel(HitResult, StartLocation, EndLocation, FQuat::Identity, TraceChannel, FCollisionShape::MakeSphere(Radius), TraceParams);
-
-		if (!bHit)
-		{
-			PigeonCamera->AddRelativeLocation(Delta, true, nullptr, ETeleportType::None);
-		}
+	FHitResult HitResult;
+	bool bHit = GetWorld()->SweepSingleByChannel(HitResult, PigeonCamera->GetComponentLocation(), EndLocation, FQuat::Identity, ECollisionChannel::ECC_WorldStatic, FCollisionShape::MakeSphere(50.f), FCollisionQueryParams::DefaultQueryParam);
+	if (!bHit)
+	{
+		PigeonCamera->AddRelativeLocation(PositionDelta + HeightDelta, true, nullptr, ETeleportType::None);
+	}
+	else
+	{
+		PigeonCamera->AddRelativeLocation(-HitResult.ImpactNormal * CameraSpeed *0.5f * LastDelta, true, nullptr, ETeleportType::None);
 	}
 }
 

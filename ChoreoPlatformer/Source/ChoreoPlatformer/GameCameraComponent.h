@@ -26,11 +26,15 @@ protected:
 	UPROPERTY()
 	FVector RelativePosition;
 	UPROPERTY()
+	FVector RelativeHeight;
+	UPROPERTY()
 	float LastDelta;
 	UPROPERTY()
 	bool bIsMovingCamera = false;
 	UPROPERTY()
 	float CameraSpeed = 1000.f;
+	UPROPERTY()
+	class UCameraComponent* PigeonCamera;
 	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
