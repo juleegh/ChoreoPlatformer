@@ -35,6 +35,8 @@ protected:
 	FGameplayTag Section = FGameplayTag::EmptyTag;
 	UPROPERTY()
 	class ASectionLevelManager* SectionLevelManager;
+	UPROPERTY()
+	FVector StartPosition;
 
 	void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)

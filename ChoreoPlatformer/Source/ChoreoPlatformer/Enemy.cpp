@@ -62,6 +62,11 @@ void AEnemy::SetupEnemy()
 	{
 		Section = CurrentTile.HitCell->GetSection();
 	}
+	if (StartPosition == FVector::Zero())
+	{
+		StartPosition = GetActorLocation();
+	}
+	SetActorLocation(StartPosition);
 }
 
 bool AEnemy::CurrentlyActive() const
