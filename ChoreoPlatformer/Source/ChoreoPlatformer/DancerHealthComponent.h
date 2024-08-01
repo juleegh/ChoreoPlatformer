@@ -25,6 +25,9 @@ protected:
 	UPROPERTY()
 	float Accuracy;
 	float GetTotalSteps();
+	bool bInvulnerable = false;
+	UPROPERTY()
+	FTimerHandle DelayTimerHandle;
 public:	
 	UPROPERTY(BlueprintAssignable)
 	FPlayerDied PlayerDied;

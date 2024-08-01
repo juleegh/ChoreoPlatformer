@@ -75,6 +75,7 @@ public:
 	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveTo(FVector position, float Duration);
 	void RotateTowards(FVector position);
+	bool CurrentlyMoving();
 	void StopMovement();
 	void Respawn(FVector Position);
 	class UMovementTimelineComponent* GetMovementTimeline() { return MoveTimeline; }

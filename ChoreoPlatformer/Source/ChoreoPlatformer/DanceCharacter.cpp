@@ -96,6 +96,11 @@ void ADanceCharacter::RotateTowards(FVector position)
 	GetController()->SetControlRotation(Rotation);
 }
 
+bool ADanceCharacter::CurrentlyMoving()
+{
+	return MoveTimeline->IsRunning();
+}
+
 void ADanceCharacter::StopMovement()
 {
 	MoveTimeline->Reset();

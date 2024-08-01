@@ -21,10 +21,15 @@ void UDancerHealthComponent::BeginPlay()
 	Steps.Add(ETempoAccuracy::Bad, 0);
 	Steps.Add(ETempoAccuracy::Great, 0);
 	Steps.Add(ETempoAccuracy::Perfect, 0);
+	bInvulnerable = false;
 }
 
 bool UDancerHealthComponent::ShouldTakeDamage()
 {
+	if (bInvulnerable)
+	{
+		return false;
+	}
 	if (auto Controller = Cast<AChoreoPlayerController>(GetOwner()))
 	{
 		return Controller->ShouldTakeDamage();
@@ -55,6 +60,17 @@ void UDancerHealthComponent::TakeHit(int Damage)
 	if (!ComponentGetters::GetInventoryComponent(GetWorld())->LoseHealthItem())
 	{
 		Restart();
+	}
+	else
+	{
+		float DelayDuration = 2.0f;
+		FTimerDelegate TimerCallback;
+		bInvulnerable = true;
+		TimerCallback.BindLambda([this]()
+			{
+				bInvulnerable = false;
+			});
+		GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, TimerCallback, DelayDuration, false);
 	}
 }
 

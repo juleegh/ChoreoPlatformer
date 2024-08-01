@@ -190,7 +190,7 @@ void AChoreoPlayerController::OnPlayerDied()
 bool AChoreoPlayerController::ShouldTakeDamage()
 {
 #if WITH_EDITOR
-	return bShouldTakeDamage && !bIsDead;
+	return bShouldTakeDamage && !bIsDead && !DanceCharacter->CurrentlyMoving();
 #endif
 	return !bIsDead;
 }
