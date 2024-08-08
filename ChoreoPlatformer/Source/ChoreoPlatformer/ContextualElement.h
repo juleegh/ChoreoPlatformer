@@ -235,3 +235,37 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UMovementTimelineComponent* MoveTimeline;
 };
+
+UCLASS()
+class CHOREOPLATFORMER_API ADynamicTileAnchor : public AContextualElement
+{
+	GENERATED_BODY()
+
+public:
+	void Reset() override;
+	void ToggleHighlight(bool activated) override;
+	void Repaint(ETempoTile TileType);
+	class ATileChangerButton* BelongingLever;
+
+protected:
+	UPROPERTY()
+	class AGridCell* Tile;
+};
+
+UCLASS()
+class CHOREOPLATFORMER_API ATileChangerButton : public AContextualElement
+{
+	GENERATED_BODY()
+
+protected:
+	void BeginPlay() override;
+	UPROPERTY(EditInstanceOnly)
+	TArray<ADynamicTileAnchor*> ConnectedTiles;
+	UPROPERTY(EditInstanceOnly)
+	TArray<ETempoTile> TypesOfTile;
+	UPROPERTY()
+	int TileIndex = 0;
+public:
+	EMoveResult TriggerInteraction() override;
+	void ToggleHighlight(bool activated) override;
+};

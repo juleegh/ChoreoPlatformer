@@ -459,3 +459,61 @@ void AWaterTileAnchor::BeginPlay()
 	SetActorLocation(current);
 }
 
+void ADynamicTileAnchor::Reset()
+{
+	Tile = nullptr;
+}
+
+void ADynamicTileAnchor::ToggleHighlight(bool activated)
+{
+	if (BelongingLever)
+	{
+		BelongingLever->ToggleHighlight(activated);
+	}
+}
+
+void ADynamicTileAnchor::Repaint(ETempoTile TileType)
+{
+	if (!Tile)
+	{
+		auto TileInfo = UDanceUtilsFunctionLibrary::CheckPosition({ this, ComponentGetters::GetDanceCharacter(GetWorld()) }, GetActorLocation());
+		Tile = TileInfo.HitCell;
+	}
+	Tile->Initialize(TileType, Tile->GetSection());
+}
+
+void ATileChangerButton::BeginPlay()
+{
+	Super::BeginPlay();
+	for (ADynamicTileAnchor* ConnectedTile : ConnectedTiles)
+	{
+		ConnectedTile->BelongingLever = this;
+	}
+}
+
+EMoveResult ATileChangerButton::TriggerInteraction()
+{
+	TileIndex = TileIndex == TypesOfTile.Num() - 1 ? 0 : TileIndex + 1;
+	RefreshState();
+	for (ADynamicTileAnchor* ConnectedTile : ConnectedTiles)
+	{
+		ConnectedTile->Repaint(TypesOfTile[TileIndex]);
+		auto DoorTile = UDanceUtilsFunctionLibrary::CheckPosition({ ConnectedTile }, ConnectedTile->GetActorLocation());
+		if (DoorTile.HitCell)
+		{
+			DoorTile.HitCell->PromptTrigger();
+		}
+	}
+	bFinished = true;
+	return EMoveResult::ActionCompleted;
+}
+
+void ATileChangerButton::ToggleHighlight(bool activated)
+{
+	ColorTimeline->FadeInDirection(activated);
+	for (ADynamicTileAnchor* ConnectedTile : ConnectedTiles)
+	{
+		ConnectedTile->ColorTimeline->FadeInDirection(activated);
+	}
+}
+
