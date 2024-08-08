@@ -198,21 +198,13 @@ class CHOREOPLATFORMER_API UCollectablesUI : public UChoreoActivatableWidget
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UDataTable* ItemsData;
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AActor> ClothesBP;
 	UPROPERTY()
-	TMap<FGameplayTag, bool> OwnedItems;
-	UPROPERTY()
-	TMap<FGameplayTag, class AActor*> CurrentOutfit;
-	UPROPERTY()
-	class USkeletalMeshComponent* SkeletalMesh;
+	class APreviewPigeon* PreviewPigeon;
 	
 	void LoadOwnedItems();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	TMap<FGameplayTag, bool> GetItems();
+	TMap<FGameplayTag, bool>& GetItems();
 
 	UFUNCTION(BlueprintCallable)
 	void PutOnItem(FGameplayTag ItemType);

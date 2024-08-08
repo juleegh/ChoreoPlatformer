@@ -6,6 +6,7 @@
 #include "DanceCharacter.h"
 #include "ChoreoPlayerController.h"
 #include "DanceUtilsFunctionLibrary.h"
+#include "PreviewPigeon.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -17,6 +18,16 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	LoadCollectables();
+
+	TArray<AActor*> PigeonModels;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APreviewPigeon::StaticClass(), PigeonModels);
+
+	for (auto Pigeon : PigeonModels)
+	{
+		PreviewPigeon = Cast<APreviewPigeon>(Pigeon);
+		PreviewPigeon->LoadItemData();
+		break;
+	}
 }
 
 void UInventoryComponent::LoadCollectables()
@@ -68,6 +79,7 @@ void UInventoryComponent::AddItem(AClothingItem* Item)
 	TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
 	Item->AttachToComponent(SkeletalMesh, TransformRules, GetBodySection(Item->GetItemType()));
 	ComponentGetters::GetDanceCharacter(GetWorld())->ToggleReaction(EMoveResult::ItemGained);
+	PreviewPigeon->PutOnItem(Item->GetItemType());
 }
 
 bool UInventoryComponent::HasHealthItem()
@@ -75,7 +87,7 @@ bool UInventoryComponent::HasHealthItem()
 	return !Outfit.IsEmpty();
 }
 
-TArray<AClothingItem*> UInventoryComponent::GetOutfit()
+TArray<AClothingItem*>& UInventoryComponent::GetOutfit()
 {
 	return Outfit;
 }
@@ -97,6 +109,7 @@ bool UInventoryComponent::LoseHealthItem()
 	ComponentGetters::GetDanceCharacter(GetWorld())->ToggleReaction(EMoveResult::PlayerHit);
 	InventoryChanged.Broadcast(false);
 	Last->PutBack(UDanceUtilsFunctionLibrary::GetAvailablePosition(ComponentGetters::GetDanceCharacter(GetWorld()), 2));
+	PreviewPigeon->PutOnItem(Last->GetItemType());
 	return true;
 }
 
@@ -117,6 +130,7 @@ void UInventoryComponent::ClearItemsEndOfLevel()
 		Outfit.Remove(Last);
 		Last->PutBack({}, true);
 	}
+	PreviewPigeon->Clear();
 	InventoryCleared.Broadcast();
 }
 

@@ -26,6 +26,8 @@ protected:
 	void BeginPlay() override;
 
 	UPROPERTY()
+	class APreviewPigeon* PreviewPigeon;
+	UPROPERTY()
 	TArray<AClothingItem*> Outfit;
 	UPROPERTY()
 	TArray<FGameplayTag> Inventory;
@@ -49,7 +51,8 @@ public:
 	bool HasHealthItem();
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int HealthItemQuantity();
-	TArray<AClothingItem*> GetOutfit();
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	TArray<AClothingItem*>& GetOutfit();
 	bool LoseHealthItem();
 	void ClearItemsEndOfLevel();
 	FName GetBodySection(FGameplayTag& ItemType);

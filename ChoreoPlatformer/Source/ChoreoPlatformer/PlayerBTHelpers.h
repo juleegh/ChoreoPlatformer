@@ -31,6 +31,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static UGameCameraComponent* GetGameCameraComponent(AActor* Player);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static class UInventoryComponent* GetInventoryComponent(AActor* Player);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool EnemyCanMove(AActor* Enemy);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool ActorIsOnTempo(AActor* Player);

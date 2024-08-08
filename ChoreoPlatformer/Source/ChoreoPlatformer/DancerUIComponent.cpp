@@ -10,257 +10,228 @@
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Engine/StaticMeshActor.h"
+#include "PreviewPigeon.h"
 
 UDancerUIComponent::UDancerUIComponent()
 {
-    PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 UDancerUIComponent* UChoreoActivatableWidget::GetDancerUIComponent()
 {
-    return ComponentGetters::GetDancerUIComponent(GetWorld());
+	return ComponentGetters::GetDancerUIComponent(GetWorld());
 }
 
 AChoreoPlayerController* UChoreoActivatableWidget::GetController()
 {
-    return Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
+	return Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 AChoreoPlayerController* UGameUI::GetController()
 {
-    return Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
+	return Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UChoreoActivatableWidget::SetSelected(UChoreoButtonBase* NewSelected)
 {
-    SelectedButton = NewSelected;
+	SelectedButton = NewSelected;
 }
 
 UDancerUIComponent* UChoreoButtonBase::GetDancerUIComponent()
 {
-    return ComponentGetters::GetDancerUIComponent(GetWorld());
+	return ComponentGetters::GetDancerUIComponent(GetWorld());
 }
 
 void UChoreoButtonBase::OnClicked()
 {
-    OnButtonBaseClicked.Broadcast(this);
+	OnButtonBaseClicked.Broadcast(this);
 }
 
 void UDancerUIComponent::BeginPlay()
 {
-    Super::BeginPlay();
+	Super::BeginPlay();
 
-    GameUI = Cast<UGameUI>(CreateWidget<UCommonUserWidget>(GetWorld()->GetFirstPlayerController(), ComponentGetters::GetController(GetWorld())->GameUIClass));
-    GameUI->AddToViewport();
-    GameUI->SetVisibility(ESlateVisibility::Visible);
+	GameUI = Cast<UGameUI>(CreateWidget<UCommonUserWidget>(GetWorld()->GetFirstPlayerController(), ComponentGetters::GetController(GetWorld())->GameUIClass));
+	GameUI->AddToViewport();
+	GameUI->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UDancerUIComponent::Confirm(const FInputActionValue& Value)
 {
-    GameUI->ConfirmMenu();
+	GameUI->ConfirmMenu();
 }
 
 void UDancerUIComponent::Cancel(const FInputActionValue& Value)
 {
-    GameUI->CancelMenu();
+	GameUI->CancelMenu();
 }
 
 void UGameUI::LoadMenu()
 {
-    ClearGameWidgets();
-    GameWidgets.Empty();
-    const FGameplayTag GTMainMenu = FGameplayTag::RequestGameplayTag("GameUI.MainMenu");
-    PushMenuWidget(WidgetClasses[GTMainMenu], GTMainMenu);
+	ClearGameWidgets();
+	GameWidgets.Empty();
+	const FGameplayTag GTMainMenu = FGameplayTag::RequestGameplayTag("GameUI.MainMenu");
+	PushMenuWidget(WidgetClasses[GTMainMenu], GTMainMenu);
 }
 
 void UGameUI::LoadGame()
 {
-    ClearMenuWidgets();
-    MenuWidgets.Empty();
-    const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
-    PushGameWidget(WidgetClasses[GTGameStats], GTGameStats);
+	ClearMenuWidgets();
+	MenuWidgets.Empty();
+	const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
+	PushGameWidget(WidgetClasses[GTGameStats], GTGameStats);
 }
 
 void UGameUI::GoToMenuScreen(const FGameplayTag MenuScreen)
 {
-    if (WidgetClasses.Contains(MenuScreen))
-    {
-        PushMenuWidget(WidgetClasses[MenuScreen], MenuScreen);
-    }
+	if (WidgetClasses.Contains(MenuScreen))
+	{
+		PushMenuWidget(WidgetClasses[MenuScreen], MenuScreen);
+	}
 }
 
 void UGameUI::GoToGameScreen(const FGameplayTag GameScreen)
 {
-    if (WidgetClasses.Contains(GameScreen))
-    {
-        PushGameWidget(WidgetClasses[GameScreen], GameScreen);
-    }
+	if (WidgetClasses.Contains(GameScreen))
+	{
+		PushGameWidget(WidgetClasses[GameScreen], GameScreen);
+	}
 }
 
 void UGameUI::RemoveWidgetFromPile(const FGameplayTag& Identifier)
 {
-    if (GameWidgets.Contains(Identifier))
-    {
-        RemoveWidget(GameWidgets[Identifier]);
-        GameWidgets[Identifier] = nullptr;
-    }
-    if (MenuWidgets.Contains(Identifier))
-    {
-        RemoveWidget(MenuWidgets[Identifier]);
-        MenuWidgets[Identifier] = nullptr;
-    }
+	if (GameWidgets.Contains(Identifier))
+	{
+		RemoveWidget(GameWidgets[Identifier]);
+		GameWidgets[Identifier] = nullptr;
+	}
+	if (MenuWidgets.Contains(Identifier))
+	{
+		RemoveWidget(MenuWidgets[Identifier]);
+		MenuWidgets[Identifier] = nullptr;
+	}
 }
 
 bool UGameUI::IsScreenActive(const FGameplayTag& Screen)
 {
-    return GameWidgets.Contains(Screen) && IsValid(GameWidgets[Screen]);
+	return GameWidgets.Contains(Screen) && IsValid(GameWidgets[Screen]);
 }
 
 void UGameUI::ExitGame()
 {
-    FPlatformMisc::RequestExit(false);
+	FPlatformMisc::RequestExit(false);
 }
 
 void UGameUI::PromptTempoResult(EMoveResult MoveResult, bool AnimationType)
 {
-    const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
-    if (GameWidgets.Contains(GTGameStats))
-    {
-        auto DancerStats = Cast<UDancerStats>(GameWidgets[GTGameStats]);
-        DancerStats->PromptTempoResult(MoveResult, AnimationType);
-    }
+	const FGameplayTag GTGameStats = FGameplayTag::RequestGameplayTag("GameUI.GameStats");
+	if (GameWidgets.Contains(GTGameStats))
+	{
+		auto DancerStats = Cast<UDancerStats>(GameWidgets[GTGameStats]);
+		DancerStats->PromptTempoResult(MoveResult, AnimationType);
+	}
 }
 
 void ULevelSelectionUI::ChangedLevelSelected(int index)
 {
-    LevelIndex = index;
+	LevelIndex = index;
 }
 
 void ULevelSelectionUI::ChangedWorldSelected(int indexDelta)
 {
-    WorldIndex += indexDelta;
-    if (WorldIndex < 0)
-    {
-        WorldIndex = 0;
-    }
-    else if (WorldIndex >= WorldLevels.Num())
-    {
-        WorldIndex = WorldLevels.Num() - 1;
-    }
-    LevelIndex = 1;
+	WorldIndex += indexDelta;
+	if (WorldIndex < 0)
+	{
+		WorldIndex = 0;
+	}
+	else if (WorldIndex >= WorldLevels.Num())
+	{
+		WorldIndex = WorldLevels.Num() - 1;
+	}
+	LevelIndex = 1;
 }
 
 void ULevelSelectionUI::LoadSelected()
 {
-    FName LevelName = FName(WorldLevels[WorldIndex].GetTagName().ToString() + "." + FString::FromInt(LevelIndex));
-    Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GoToLevel(FGameplayTag::RequestGameplayTag(LevelName));
+	FName LevelName = FName(WorldLevels[WorldIndex].GetTagName().ToString() + "." + FString::FromInt(LevelIndex));
+	Cast<AChoreoPlayerController>(GetWorld()->GetFirstPlayerController())->GoToLevel(FGameplayTag::RequestGameplayTag(LevelName));
 }
 
 const FGameplayTag& ULevelSelectionUI::GetCurrentWorldTag() const
 {
-    return WorldLevels[WorldIndex];
+	return WorldLevels[WorldIndex];
 }
 
 int ULevelCompleteUI::GetStepsByAccuracy(ETempoAccuracy Accuracy)
 {
-    return ComponentGetters::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(Accuracy);
+	return ComponentGetters::GetDancerHealthComponent(GetWorld())->GetStepsByAccuracy(Accuracy);
 }
 
 TArray<FGameplayTag> ULevelCompleteUI::GetItems()
 {
-    TArray<FGameplayTag> Outfit;
-    auto InventoryOutfit = ComponentGetters::GetInventoryComponent(GetWorld())->GetOutfit();
-    for (auto ClothingItem : InventoryOutfit)
-    {
-        Outfit.Add(ClothingItem->GetItemType());
-    }
-    return Outfit;
+	TArray<FGameplayTag> Outfit;
+	auto InventoryOutfit = ComponentGetters::GetInventoryComponent(GetWorld())->GetOutfit();
+	for (auto ClothingItem : InventoryOutfit)
+	{
+		Outfit.Add(ClothingItem->GetItemType());
+	}
+	return Outfit;
 }
 
 FClothingItemInfo& ULevelCompleteUI::GetClothingItem(FGameplayTag ItemType)
 {
-    return *ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType);
+	return *ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType);
 }
 
 void ULevelCompleteUI::GoToNextSection()
 {
-    const FGameplayTag GTEndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
-    ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
-    ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(GTEndOfLevel);
+	const FGameplayTag GTEndOfLevel = FGameplayTag::RequestGameplayTag("GameUI.EndOfLevel");
+	ComponentGetters::GetSectionLevelManager(GetWorld())->NextSectionStart();
+	ComponentGetters::GetDancerUIComponent(GetWorld())->GetGameUI()->RemoveWidgetFromPile(GTEndOfLevel);
 }
 
 void UCollectablesUI::LoadOwnedItems()
 {
-    TArray<AActor*> PigeonModels;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), PigeonModels);
+	TArray<AActor*> PigeonModels;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APreviewPigeon::StaticClass(), PigeonModels);
 
-    for (auto Pigeon : PigeonModels)
-    {
-        if (auto Mesh = Cast<USkeletalMeshComponent>(Pigeon->GetComponentByClass(USkeletalMeshComponent::StaticClass())))
-        {
-            SkeletalMesh = Mesh;
-            break;
-        }
-    }
-
-    TArray<FClothingItemInfo*> Items;
-    ItemsData->GetAllRows<FClothingItemInfo>(TEXT("ContextString"), Items);
-    
-    for (auto ItemInfo : Items)
-    {
-        OwnedItems.Add(ItemInfo->Identifier, HasCollectedItem(ItemInfo->Identifier));
-
-        if (!CurrentOutfit.Contains(ItemInfo->BodySocket))
-        {
-            auto ClothingActor = GetWorld()->SpawnActor<AActor>(ClothesBP);
-            FAttachmentTransformRules TransformRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-            TransformRules.ScaleRule = EAttachmentRule::KeepWorld;
-            ClothingActor->AttachToComponent(SkeletalMesh, TransformRules, ItemInfo->BodySocket.GetTagName());
-            CurrentOutfit.Add(ItemInfo->BodySocket, ClothingActor);
-        }
-    }
-
+	for (auto Pigeon : PigeonModels)
+	{
+		PreviewPigeon = Cast<APreviewPigeon>(Pigeon);
+		PreviewPigeon->LoadItemData();
+		break;
+	}
 }
 
-TMap<FGameplayTag, bool> UCollectablesUI::GetItems()
+TMap<FGameplayTag, bool>& UCollectablesUI::GetItems()
 {
-    if (OwnedItems.IsEmpty())
-    {
-        LoadOwnedItems();
-    }
+	if (!PreviewPigeon)
+	{
+		LoadOwnedItems();
+	}
 
-    return OwnedItems;
+	return PreviewPigeon->GetItems();
 }
 
 FClothingItemInfo& UCollectablesUI::GetClothingItem(FGameplayTag ItemType)
 {
-    return *ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType);
+	return *ComponentGetters::GetInventoryComponent(GetWorld())->GetClothingInfo(ItemType);
 }
 
 
 bool UCollectablesUI::HasCollectedItem(FGameplayTag ItemType)
 {
-    return ComponentGetters::GetInventoryComponent(GetWorld())->HasCollectedItem(ItemType);
+	return ComponentGetters::GetInventoryComponent(GetWorld())->HasCollectedItem(ItemType);
 }
 
 void UCollectablesUI::PutOnItem(FGameplayTag ItemType)
 {
-    auto ItemInfo = GetClothingItem(ItemType);
-    if (!HasCollectedItem(ItemInfo.Identifier))
-    {
-        return;
-    }
+	auto ItemInfo = GetClothingItem(ItemType);
+	if (!HasCollectedItem(ItemInfo.Identifier))
+	{
+		return;
+	}
 
-    AActor* ClothingActor = CurrentOutfit[ItemInfo.BodySocket];
-    auto Clothing = Cast<UStaticMeshComponent>(ClothingActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
-
-    if (Clothing->GetStaticMesh() == ItemInfo.Mesh)
-    {
-        Clothing->SetStaticMesh(nullptr);
-        return;
-    }
-
-    Clothing->SetStaticMesh(ItemInfo.Mesh);
+	PreviewPigeon->PutOnItem(ItemType);
 }
 

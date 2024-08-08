@@ -7,6 +7,7 @@
 #include "ChoreoPlayerController.h"
 #include "DanceCharacter.h"
 #include "Enemy.h"
+#include "InventoryComponent.h"
 
 FVector UPlayerBTHelpersFunctionLibrary::GetPlayerInput(AActor* Player)
 {
@@ -52,6 +53,11 @@ UCalibrationComponent* UPlayerBTHelpersFunctionLibrary::GetCalibrationComponent(
 UGameCameraComponent* UPlayerBTHelpersFunctionLibrary::GetGameCameraComponent(AActor* WorldContextActor)
 {
 	return ComponentGetters::GetGameCameraComponent(WorldContextActor->GetWorld());
+}
+
+UInventoryComponent* UPlayerBTHelpersFunctionLibrary::GetInventoryComponent(AActor* WorldContextActor)
+{
+	return ComponentGetters::GetInventoryComponent(WorldContextActor->GetWorld());
 }
 
 bool UPlayerBTHelpersFunctionLibrary::EnemyCanMove(AActor* EnemyActor)
